@@ -4,19 +4,20 @@
 #' \code{getWGBSABsignal} returns estimated A/B compartments from whole genome bisulfite sequencing data
 #'
 #' @details 
+#' This function estimates A/B compartments with some Dirichlet smoothing and shrinking towards a global mean of targets or across samples
 #'
-#' @param mat 
-#' @param res 
-#' @param globalMeanSet 
-#' @param noMean 
-#' @param targets 
-#' @param parallel 
-#' @param allchrs 
-#' @param chr 
-#' @param regions 
-#' @param genome 
-#' @param preprocess 
-#' @param ... 
+#' @param mat A BSseq object
+#' @param res Compartment resolution
+#' @param globalMeanSet The global mean to shrink towards (calculated on the fly if NULL)
+#' @param noMean Whether to shrink towards a global mean
+#' @param targets Target samples to shrink towards
+#' @param parallel Parallel estimation
+#' @param allchrs Analyze all chromosomes (chr should be NULL if TRUE)
+#' @param chr Chromosomes to analyze (list of arbitrary chromosomes)
+#' @param regions GRanges object of loci locations (calculated on the fly)
+#' @param genome Genome to analyze
+#' @param preprocess Preprocessing with filtering, smoothing, and imputation
+#' @param ... Other args
 #'
 #' @return compartment estimates
 #' @export
