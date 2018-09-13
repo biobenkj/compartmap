@@ -78,7 +78,7 @@ getCompartments <- function(obj, type = c("atac", "wgbs", "array"), res = 1e6, p
   # ATACseq
   # Check whether the input object is a RSE object for ATACseq data
   if (is(obj, "RangedSummarizedExperiment") & type == "atac") {
-    bar
+    stop("Not implemented yet")
   } else {
     stop("obj needs to be a RangedSummarizedExperiment object. Can be generated using the ATACseeker package.")
   }
@@ -86,7 +86,7 @@ getCompartments <- function(obj, type = c("atac", "wgbs", "array"), res = 1e6, p
   # Methylation array (e.g. 450k or EPIC)
   # Check whether the input object is an RGset object for array data
   if (is(obj, "RGSet") & type == "array") {
-    blah
+    stop("Not implemented yet")
   } else {
     stop("obj needs to be an RGSet object. Can be generated using the minfi package.")
   }
