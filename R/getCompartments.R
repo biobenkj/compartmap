@@ -53,7 +53,6 @@ getCompartments <- function(obj, type = c("atac", "wgbs", "array"), res = 1e6, p
     
     #Check for parallel and run A/B inference
     if (parallel == TRUE & gmean == TRUE) {
-      options(mc.cores=detectCores()/2) # RAM blows up otherwise - still no guarantee 
       warning("Running inference in parallel is memory hungry. No guarantee this won't error due to lack of memory.")
       compartments <- getWGBSABsignal(mat = obj, res = res, globalMeanSet = NULL, noMean = FALSE,
                                       targets = targets, parallel = TRUE, allchrs = allchrs, chr = chrs,
