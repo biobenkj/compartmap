@@ -1,25 +1,28 @@
 Package: compartmentalizer
 Type: Package
-Title: Informative Title for Your Package
-Description: A longer statement about what this does. It must have at least one
-    complete sentence, and it may not begin with the name of the package or
-    "This package". Any URL must be enclosed in angle brackets. Any R packages
-    or other software you reference must be in single quotes. 'R CMD check'
-    may not report on these, but see  <https://cran.r-project.org/doc/manuals/r-release/R-exts.html#The-DESCRIPTION-file>.
-    Failure to obey may result in CRAN rejecting your package submission.
+Title: A/B compartment inference from ATAC-seq, WGBS, and methylation array data
+Description: A longer statement about what this does.
 Version: 0.1.0
 Date: 2018-09-12
-Authors@R: person(c("Benjamin", "K"), "Johnson", role=c("aut", "cre"), email="ben.johnson@vai.org")
-Author: Benjamin K Johnson [aut, cre]
+Author: Benjamin K Johnson [aut, cre], Tim Triche, Jr. [aut, cre], Kasper Hansen [aut, cre], Jean-Philippe Fortin [aut, cre] 
 Maintainer: Benjamin K Johnson <ben.johnson@vai.org>
 URL: https://github.com/biobenkj/compartmentalizer
 BugReports: https://github.com/biobenkj/compartmentalizer/issues
+Encoding: UTF-8
 License: MIT + file LICENSE
 Depends:
     R (>= 3.0.0)
 Imports:
+    biscuiteer,
+    GenomicRanges,
+    gtools,
+    mixOmics,
+    impute,
+    parallel,
+    Homo.sapiens,
+    Mus.musculus
 Suggests:
     covr,
     testthat
-RoxygenNote: 6.0.0
+RoxygenNote: 6.0.1
 Roxygen: list(markdown = TRUE)

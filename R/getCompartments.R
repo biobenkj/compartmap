@@ -1,7 +1,7 @@
 #' @title Estimate A/B compartments
 #'
 #' @description 
-#' \code{get_compartments} returns estimated A/B compartments from ATAC-seq, whole genome bisulfite sequencing, and methylation array data
+#' \code{getCompartments} returns estimated A/B compartments from ATAC-seq, whole genome bisulfite sequencing, and methylation array data
 #'
 #' @details 
 #' This is a wrapper function to perform A/B compartment inference. Compartmentalizer implements a James-Stein estimator to shrink per-sample compartment estimates towards a global mean. The expected input for this function can be generated using packages like minfi, biscuiteer, and ATACseeker.
@@ -15,6 +15,7 @@
 #' @param regions GRanges object that contains corresponding genomic locations of the loci
 #' @param genome Genome to use (default is hg19)
 #' @param preprocess Should the data be preprocessed (currently only supports WGBS data)
+#' @param gmean Squeeze towards a global mean? (default is TRUE)
 #' @param ... Other parameters to pass to internal functions
 #'
 #' @return A p x n matrix (samples as columns and compartments as rows) to pass to embed_compartments
@@ -25,7 +26,7 @@
 #' @examples
 #' 
 
-get_compartments <- function(obj, type = c("atac", "wgbs", "array"), res = 1e6, parallel = FALSE,
+getCompartments <- function(obj, type = c("atac", "wgbs", "array"), res = 1e6, parallel = FALSE,
                              chrs = "chr1", shrink.targets = NULL, regions = NULL, genome = "hg19",
                              preprocess = TRUE, gmean = TRUE, ...) {
   
@@ -52,7 +53,6 @@ get_compartments <- function(obj, type = c("atac", "wgbs", "array"), res = 1e6, 
     
     #Check for parallel and run A/B inference
     if (parallel == TRUE & gmean == TRUE) {
-      library(parallel)
       options(mc.cores=detectCores()/2) # RAM blows up otherwise - still no guarantee 
       warning("Running inference in parallel is memory hungry. No guarantee this won't error due to lack of memory.")
       compartments <- getWGBSABsignal(mat = obj, res = res, globalMeanSet = NULL, noMean = FALSE,
