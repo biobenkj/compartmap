@@ -70,6 +70,7 @@ getCompartments <- function(obj, type = c("atac", "wgbs", "array"), res = 1e6, p
                                       targets = shrink.targets, parallel = FALSE, allchrs = allchrs, chr = chrs,
                                       regions = regions, genome = genome, preprocess = preprocess, ...)
     }
+    return(compartments)
   } else {
     stop("obj needs to be a BSseq object. Can be generated using the biscuiteer package.")
   }
@@ -94,6 +95,4 @@ getCompartments <- function(obj, type = c("atac", "wgbs", "array"), res = 1e6, p
   } else {
     stop("obj needs to be an RGSet object. Can be generated using the minfi package.")
   }
-  
-  return(compartments)
 }
