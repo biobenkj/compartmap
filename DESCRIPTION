@@ -1,4 +1,4 @@
-Package: compartmentalizer
+Package: compartmap
 Type: Package
 Title: A/B compartment inference from ATAC-seq, WGBS, and methylation array data
 Description: A longer statement about what this does.
@@ -6,8 +6,8 @@ Version: 0.1.0
 Date: 2018-09-12
 Author: Benjamin K Johnson [aut, cre], Tim Triche, Jr. [aut, cre], Kasper Hansen [aut, cre], Jean-Philippe Fortin [aut, cre] 
 Maintainer: Benjamin K Johnson <ben.johnson@vai.org>
-URL: https://github.com/biobenkj/compartmentalizer
-BugReports: https://github.com/biobenkj/compartmentalizer/issues
+URL: https://github.com/biobenkj/compartmap
+BugReports: https://github.com/biobenkj/compartmap/issues
 Encoding: UTF-8
 License: MIT + file LICENSE
 Depends:

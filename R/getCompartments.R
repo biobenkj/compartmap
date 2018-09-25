@@ -55,20 +55,20 @@ getCompartments <- function(obj, type = c("atac", "wgbs", "array"), res = 1e6, p
     if (parallel == TRUE & gmean == TRUE) {
       warning("Running inference in parallel is memory hungry. No guarantee this won't error due to lack of memory.")
       compartments <- getWGBSABsignal(mat = obj, res = res, globalMeanSet = NULL, noMean = FALSE,
-                                      targets = targets, parallel = TRUE, allchrs = allchrs, chr = chrs,
-                                      regions = regions, genome = genome, preprocess = preprocess)
+                                      targets = shrink.targets, parallel = TRUE, allchrs = allchrs, chr = chrs,
+                                      regions = regions, genome = genome, preprocess = preprocess, ...)
     }
     # Not parallel and shrink towards global mean
     else if (parallel == FALSE & gmean == TRUE) {
       compartments <- getWGBSABsignal(mat = obj, res = res, globalMeanSet = NULL, noMean = FALSE,
-                                      targets = targets, parallel = FALSE, allchrs = allchrs, chr = chrs,
-                                      regions = regions, genome = genome, preprocess = preprocess)
+                                      targets = shrink.targets, parallel = FALSE, allchrs = allchrs, chr = chrs,
+                                      regions = regions, genome = genome, preprocess = preprocess, ...)
     }
     # Not shrinking towards global mean
     else {
       compartments <- getWGBSABsignal(mat = obj, res = res, globalMeanSet = NULL, noMean = TRUE,
-                                      targets = targets, parallel = FALSE, allchrs = allchrs, chr = chrs,
-                                      regions = regions, genome = genome, preprocess = preprocess)
+                                      targets = shrink.targets, parallel = FALSE, allchrs = allchrs, chr = chrs,
+                                      regions = regions, genome = genome, preprocess = preprocess, ...)
     }
   } else {
     stop("obj needs to be a BSseq object. Can be generated using the biscuiteer package.")
@@ -85,7 +85,12 @@ getCompartments <- function(obj, type = c("atac", "wgbs", "array"), res = 1e6, p
   # Methylation array (e.g. 450k or EPIC)
   # Check whether the input object is an RGset object for array data
   if (is(obj, "RGSet") & type == "array") {
-    stop("Not implemented yet")
+    
+    #Check for parallel and run A/B inference
+    if (parallel == TRUE) {
+      warning("Running inference in parallel is memory hungry. No guarantee this won't error due to lack of memory.")
+      #compartments <- getMethArrayABsignal()
+    }
   } else {
     stop("obj needs to be an RGSet object. Can be generated using the minfi package.")
   }

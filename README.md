@@ -1,6 +1,6 @@
-# compartmentalizer
+# compartmap
 
-[![Build Status](https://travis-ci.org/biobenkj/compartmentalizer.png?branch=master)](https://travis-ci.org/biobenkj/compartmentalizer)  [![codecov](https://codecov.io/gh/biobenkj/compartmentalizer/branch/master/graph/badge.svg)](https://codecov.io/gh/biobenkj/compartmentalizer)
+[![Build Status](https://travis-ci.org/biobenkj/compartmentalizer.png?branch=master)](https://travis-ci.org/biobenkj/compartmap)  [![codecov](https://codecov.io/gh/biobenkj/compartmentalizer/branch/master/graph/badge.svg)](https://codecov.io/gh/biobenkj/compartmap)
 
 ## How to finish setting up your new package
 
@@ -13,7 +13,7 @@ Go to https://github.com/biobenkj and create a new repository. Then, in the dire
     git init
     git add --all
     git commit -m "Initial commit of package skeleton"
-    git remote add origin git@github.com:biobenkj/compartmentalizer.git
+    git remote add origin git@github.com:biobenkj/compartmap.git
     git push -u origin master
 
 ### 2. Travis
@@ -24,20 +24,20 @@ If you have a codecov.io account, running your tests on Travis will trigger the 
 
 ### 3. Appveyor
 
-Go to [Appveyor's new project page](https://ci.appveyor.com/projects/new) and select your new repository from the list. Then you can go to the [badges](https://ci.appveyor.com/project/biobenkj/compartmentalizer/settings/badges) page, copy the markdown code it provides, and paste it up with the other badges above. (Their badge API has a random token in it, so `skeletor` can't include it in the template for you.)
+Go to [Appveyor's new project page](https://ci.appveyor.com/projects/new) and select your new repository from the list. Then you can go to the [badges](https://ci.appveyor.com/project/biobenkj/compartmap/settings/badges) page, copy the markdown code it provides, and paste it up with the other badges above. (Their badge API has a random token in it, so `skeletor` can't include it in the template for you.)
 
 ### 4. Delete this "How to finish setting up your new package" section from your README.md
 
 ## Installing
 
-<!-- If you're putting `compartmentalizer` on CRAN, it can be installed with
+<!-- If you're putting `compartmap` on CRAN, it can be installed with
 
-    install.packages("compartmentalizer") -->
+    install.packages("compartmap") -->
 
 The pre-release version of the package can be pulled from GitHub using the [devtools](https://github.com/hadley/devtools) package:
 
     # install.packages("devtools")
-    devtools::install_github("biobenkj/compartmentalizer", build_vignettes=TRUE)
+    devtools::install_github("biobenkj/compartmap", build_vignettes=TRUE)
 
 ## For developers
 

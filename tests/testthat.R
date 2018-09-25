@@ -1,2 +1,2 @@
 library(testthat)
-test_check("compartmentalizer")
+test_check("compartmap")
