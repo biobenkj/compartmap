@@ -84,7 +84,12 @@ getCompartments <- function(obj, type = c("atac", "wgbs", "array"), res = 1e6, p
   # ATACseq
   # Check whether the input object is a RSE object for ATACseq data
   if (is(obj, "RangedSummarizedExperiment") & type == "atac") {
-    stop("Not implemented yet")
+    if (allchrs == TRUE) {
+      compartments <- getATACABsignal(obj = obj, res = res, parallel = parallel, allchrs = allchrs, ...)
+    } else {
+      compartments <- getATACABsignal(obj = obj, res = res, parallel = parallel, allchrs = FALSE, ...)
+    }
+    return(compartments)
   } else {
     stop("obj needs to be a RangedSummarizedExperiment object. Can be generated using the ATACseeker package.")
   }

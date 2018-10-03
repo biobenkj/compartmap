@@ -12,7 +12,7 @@
 #' @param allchrs Whether all autosomes should be used for A/B inference
 #' @param ... Additional arguments
 #'
-#' @return A GRanges object containing A/B compartment estimates
+#' @return A p x n matrix (samples as columns and compartments as rows) of compartments
 #' @export
 #'
 #' @examples

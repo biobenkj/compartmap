@@ -2,6 +2,7 @@
 
 export(filterAndImputeWGBS)
 export(getABSignal)
+export(getATACABsignal)
 export(getArrayABsignal)
 export(getBinMatrix)
 export(getCompartments)
