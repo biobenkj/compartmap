@@ -97,7 +97,6 @@ getCompartments <- function(obj, type = c("atac", "wgbs", "array"), res = 1e6, p
       } else {
       compartments <- getArrayABsignal(obj = obj, res = res, parallel = parallel, allchrs = FALSE, ...)
       }
-    }
     return(compartments)
   } else {
     stop("obj needs to be an GenomicRatioSet object. Can be generated using the minfi package.")

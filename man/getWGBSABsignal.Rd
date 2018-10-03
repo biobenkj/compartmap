@@ -4,14 +4,14 @@
 \alias{getWGBSABsignal}
 \title{Estimate A/B compartments from WGBS data}
 \usage{
-getWGBSABsignal(mat, res = 1e+06, globalMeanSet = NULL, noMean = FALSE,
+getWGBSABsignal(obj, res = 1e+06, globalMeanSet = NULL, noMean = FALSE,
   targets = NULL, parallel = FALSE, allchrs = FALSE, chr = NULL,
   regions = NULL, genome = "hg19", preprocess = TRUE, ...)
 }
 \arguments{
-\item{mat}{A BSseq object}
+\item{obj}{A BSseq object}
 
-\item{res}{Compartment resolution}
+\item{res}{Compartment resolution (in bp)}
 
 \item{globalMeanSet}{The global mean to shrink towards (calculated on the fly if NULL)}
 

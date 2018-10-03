@@ -6,7 +6,8 @@
 \usage{
 getCompartments(obj, type = c("atac", "wgbs", "array"), res = 1e+06,
   parallel = FALSE, chrs = "chr1", shrink.targets = NULL,
-  regions = NULL, genome = "hg19", preprocess = TRUE, gmean = TRUE, ...)
+  regions = NULL, genome = "hg19", preprocess = FALSE, gmean = TRUE,
+  ...)
 }
 \arguments{
 \item{obj}{The object with which to perform compartment inference}
@@ -38,7 +39,7 @@ A p x n matrix (samples as columns and compartments as rows) to pass to embed_co
 \code{getCompartments} returns estimated A/B compartments from ATAC-seq, whole genome bisulfite sequencing, and methylation array data
 }
 \details{
-This is a wrapper function to perform A/B compartment inference. Compartmentalizer implements a James-Stein estimator to shrink per-sample compartment estimates towards a global mean. The expected input for this function can be generated using packages like minfi, biscuiteer, and ATACseeker.
+This is a wrapper function to perform A/B compartment inference. Compartmentalizer implements a Stein estimator to shrink per-sample compartment estimates towards a global mean. The expected input for this function can be generated using packages like minfi, biscuiteer, and ATACseeker.
 }
 \examples{
 
