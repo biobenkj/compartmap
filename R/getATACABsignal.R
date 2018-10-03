@@ -1,7 +1,7 @@
 #' @title Estimate A/B compartments from ATAC-seq data
 #'
 #' @description 
-#' \code{getArrayABsignal} returns estimated A/B compartments from methylation array data.
+#' \code{getATACABsignal} returns estimated A/B compartments from methylation array data.
 #'
 #' @details This function estimates A/B compartments shrinking towards a global mean of targets or across samples
 #' 
