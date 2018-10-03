@@ -324,7 +324,7 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, ...) {
 .getPaired <- function(column, grSet, globalMeanSet=NULL, res=1e6, ...) {
   message("Computing shrunken compartment eigenscores for ", column, "...") 
   if(is.null(globalMeanSet)) globalMeanSet <- getMeanGrSet(grSet)
-  .compartments(cbind(grSet[,column], globalMeanSet), keep=F, res=res, ...)$pc
+  .compartments(cbind(grSet[,column], globalMeanSet), keep=F, resolution=res, ...)$pc
 }
 
 .getPairedAllChrs <- function(column, grSet, globalMeanSet=NULL, res=1e6, ...) {
@@ -333,7 +333,7 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, ...) {
   names(chrs) <- chrs
   getPairedChr <- function(chr) { 
     message("Computing shrunken eigenscores for ", column, " on ", chr, "...") 
-    .compartments(cbind(grSet[,column],globalMeanSet),keep=F,res=res,chr=chr)$pc
+    .compartments(cbind(grSet[,column],globalMeanSet),keep=F,resolution=res,chr=chr)$pc
   }
   unlist(lapply(chrs, getPairedChr))
 }

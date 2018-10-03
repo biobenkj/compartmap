@@ -1,6 +1,6 @@
 #' @title Filter and impute missing values prior to A/B compartment inference with k-nearest neighbor
 #' 
-#' #' @description 
+#' @description 
 #' \code{filterAndImputeWGBS} returns filtered and smoothed signal from whole genome bisulfite sequencing data
 #'
 #' @details 

@@ -2,10 +2,7 @@
 % Please edit documentation in R/filterAndImputeWGBS.R
 \name{filterAndImputeWGBS}
 \alias{filterAndImputeWGBS}
-\title{Filter and impute missing values prior to A/B compartment inference with k-nearest neighbor
-
-#' @description
-\code{filterAndImputeWGBS} returns filtered and smoothed signal from whole genome bisulfite sequencing data}
+\title{Filter and impute missing values prior to A/B compartment inference with k-nearest neighbor}
 \usage{
 filterAndImputeWGBS(obj, k = 0.5, minCov = 3, minSamp = 2, rowmax = 0.5,
   colmax = 0.8, openseafilt = FALSE, genome = "hg19")
@@ -29,6 +26,9 @@ filterAndImputeWGBS(obj, k = 0.5, minCov = 3, minSamp = 2, rowmax = 0.5,
 }
 \value{
 Filtered and imputed matrix
+}
+\description{
+\code{filterAndImputeWGBS} returns filtered and smoothed signal from whole genome bisulfite sequencing data
 }
 \details{
 This function filters and performs Dirichlet smoothing of WGBS signal prior to A/B compartment inference
