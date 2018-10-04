@@ -30,7 +30,23 @@
 #' @export
 #'
 #' @examples
+#' #' #ATAC-seq data
+#' data("bulkATAC_raw_filtered.rda", package = "compartmap")
+#' atac_compartments <- getCompartments(filtered.data, type = "atac", parallel = FALSE, chrs = "all")
 #' 
+#' \dontrun{
+#' #ATAC-seq data
+#' data("bulkATAC_raw_filtered.rda")
+#' atac_compartments <- getCompartments(filtered.data, type = "atac", parallel = TRUE, chrs = "all")
+#' 
+#' #WGBS data
+#' data("cell_cycle_hansen.rda")
+#' wgbs_compartments <- getCompartments(data, type = "wgbs", parallel = TRUE, chrs = "all")
+#' 
+#' #Methylation array - 450k data
+#' data("methylation_array_450k.rda")
+#' array_compartments <- getCompartments(data, type = "array", parallel = FALSE, chrs = "all")
+#' }
 
 getCompartments <- function(obj, type = c("atac", "wgbs", "array"), res = 1e6, parallel = FALSE,
                              chrs = "chr1", shrink.targets = NULL, regions = NULL, genome = "hg19",

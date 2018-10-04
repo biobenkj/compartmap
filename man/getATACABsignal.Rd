@@ -4,7 +4,7 @@
 \alias{getATACABsignal}
 \title{Estimate A/B compartments from ATAC-seq data}
 \usage{
-getATACABsignal(obj, res = 1e+06, parallel = FALSE, allchrs = F, ...)
+getATACABsignal(obj, res = 1e+06, parallel = FALSE, allchrs = FALSE, ...)
 }
 \arguments{
 \item{obj}{Input GenomicRatioSet object}
@@ -25,7 +25,4 @@ A p x n matrix (samples as columns and compartments as rows) of compartments
 }
 \details{
 This function estimates A/B compartments shrinking towards a global mean of targets or across samples
-}
-\examples{
-
 }

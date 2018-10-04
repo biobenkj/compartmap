@@ -26,6 +26,3 @@ A p x n matrix (samples as columns and compartments as rows) of compartments
 \details{
 This function is modified from the minfi::compartments to infer A/B compartments from array data
 }
-\examples{
-
-}

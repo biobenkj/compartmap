@@ -10,19 +10,19 @@ filterAndImputeWGBS(obj, k = 0.5, minCov = 3, minSamp = 2, rowmax = 0.5,
 \arguments{
 \item{obj}{Input BSseq object}
 
-\item{k}{The pseudocount to be added for smoothing (default uses Jeffery's prior)}
+\item{k}{The pseudocount to be added for smoothing - default uses Jeffery's prior}
 
 \item{minCov}{Minimum coverage of a locus to be smoothed}
 
 \item{minSamp}{Minimum samples that have sufficient coverage to be smoothed}
 
-\item{rowmax}{The maximum percent missing data allowed per loci (default = 50%)}
+\item{rowmax}{The maximum percent missing data allowed per loci - default = 0.5}
 
-\item{colmax}{The maximum percent missing data allowed per sample (default = 80%)}
+\item{colmax}{The maximum percent missing data allowed per sample - default = 0.8}
 
-\item{openseafilt}{Whether to filter loci to just "open sea" CpG loci}
+\item{openseafilt}{Whether to filter loci to just open sea CpG loci}
 
-\item{genome}{The genome (currently only supports hg19)}
+\item{genome}{The genome to analyze - currently only supports hg19}
 }
 \value{
 Filtered and imputed matrix
@@ -32,7 +32,4 @@ Filtered and imputed matrix
 }
 \details{
 This function filters and performs Dirichlet smoothing of WGBS signal prior to A/B compartment inference
-}
-\examples{
-
 }
