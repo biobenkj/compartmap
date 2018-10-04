@@ -46,7 +46,7 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, ...) {
     chr = chr,
     method = method)
   gr <- .extractAB(gr, keep = keep)
-  gr$compartment <- .extractOpenClosed(gr)
+  gr$compartment <- .extractOpenClosedArray(gr)
   gr
 }
 
@@ -134,13 +134,13 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, ...) {
 }
 
 #Helper function to extract whether the compartment is open or closed
-.extractOpenClosed <- function(gr, cutoff = 0){
+.extractOpenClosedArray <- function(gr, cutoff = 0){
     pc <- gr$pc
     ifelse(pc < cutoff, "open", "closed")
 }
 
 #Helper function to get the first principal component
-.getFirstPC <- function(matrix, method){
+.getFirstPCarray <- function(matrix, method){
     # Centre the matrix
     center <- rowMeans2(matrix, na.rm = TRUE)
     matrix <- sweep(matrix, 1L, center, check.margin = FALSE)
@@ -148,7 +148,7 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, ...) {
 }
 
 #Helper function to use a moving average smooth
-.meanSmoother <- function(x, k = 1L, iter = 2L, na.rm = TRUE) {
+.meanSmootherArray <- function(x, k = 1L, iter = 2L, na.rm = TRUE) {
     meanSmoother.internal <- function(x, k = 1L, na.rm = TRUE) {
         n <- length(x)
         y <- rep(NA_real_, n)
@@ -296,8 +296,8 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, ...) {
     if (!(is(gr, "GRanges") && "cor.matrix" %in% names(mcols(gr)))) {
         stop("'gr' must be an object created by createCorMatrix")
     }
-    pc <- .getFirstPC(gr$cor.matrix, method = svdMethod)
-    pc <- .meanSmoother(pc)
+    pc <- .getFirstPCarray(gr$cor.matrix, method = svdMethod)
+    pc <- .meanSmootherArray(pc)
     pc <- .unitarize(pc)
     # Fix sign of eigenvector
     if (cor(colSums2(gr$cor.matrix), pc) < 0 ) {
