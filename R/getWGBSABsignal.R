@@ -21,10 +21,6 @@
 #'
 #' @return compartment estimates
 #' @export
-#'
-#' @examples
-#' 
-#' 
 
 getWGBSABsignal <- function(obj, res=1e6, globalMeanSet = NULL, noMean = FALSE, targets = NULL, parallel=FALSE, allchrs=FALSE, chr = NULL, regions = NULL, genome = "hg19", preprocess = TRUE, ...) {
   

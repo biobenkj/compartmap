@@ -7,21 +7,17 @@
 #' This function filters and performs Dirichlet smoothing of WGBS signal prior to A/B compartment inference
 #'
 #' @param obj Input BSseq object
-#' @param k The pseudocount to be added for smoothing (default uses Jeffery's prior)
+#' @param k The pseudocount to be added for smoothing - default uses Jeffery's prior
 #' @param minCov Minimum coverage of a locus to be smoothed
 #' @param minSamp Minimum samples that have sufficient coverage to be smoothed
-#' @param rowmax The maximum percent missing data allowed per loci (default = 50%)
-#' @param colmax The maximum percent missing data allowed per sample (default = 80%)
-#' @param openseafilt Whether to filter loci to just "open sea" CpG loci
-#' @param genome The genome (currently only supports hg19)
+#' @param rowmax The maximum percent missing data allowed per loci - default = 0.5
+#' @param colmax The maximum percent missing data allowed per sample - default = 0.8
+#' @param openseafilt Whether to filter loci to just open sea CpG loci
+#' @param genome The genome to analyze - currently only supports hg19
 #'
 #' @return Filtered and imputed matrix 
-#' @export
-#' 
 #' @import biscuiteer
-#'
-#' @examples
-#' 
+#' @export
 
 #Filter and impute missing values prior to binning
 filterAndImputeWGBS <- function(obj, k = 0.5, minCov = 3, minSamp = 2, rowmax = 0.5, colmax = 0.8, openseafilt = FALSE, genome = "hg19") {

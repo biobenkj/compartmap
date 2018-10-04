@@ -14,9 +14,6 @@
 #'
 #' @return A p x n matrix (samples as columns and compartments as rows) of compartments
 #' @export
-#'
-#' @examples
-#' 
 
 getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, ...) {
   globalMeanSet <- .getMeanGrSet(obj)
@@ -37,7 +34,7 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, ...) {
 }
 
 #Helper function to get compartments as in minfi::compartments
-.compartments <- function(obj, resolution = 1e6, what="OpenSea",
+.arraycompartments <- function(obj, resolution = 1e6, what="OpenSea",
                          chr = "chr22", method = c("pearson", "spearman"),
                          keep = FALSE) {
   stopifnot(length(chr) == 1 && chr %in% seqlevels(obj))
@@ -324,7 +321,7 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, ...) {
 .getPaired <- function(column, grSet, globalMeanSet=NULL, res=1e6, ...) {
   message("Computing shrunken compartment eigenscores for ", column, "...") 
   if(is.null(globalMeanSet)) globalMeanSet <- getMeanGrSet(grSet)
-  .compartments(cbind(grSet[,column], globalMeanSet), keep=F, resolution=res, ...)$pc
+  .arraycompartments(cbind(grSet[,column], globalMeanSet), keep=FALSE, resolution=res, ...)$pc
 }
 
 .getPairedAllChrs <- function(column, grSet, globalMeanSet=NULL, res=1e6, ...) {
@@ -333,7 +330,7 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, ...) {
   names(chrs) <- chrs
   getPairedChr <- function(chr) { 
     message("Computing shrunken eigenscores for ", column, " on ", chr, "...") 
-    .compartments(cbind(grSet[,column],globalMeanSet),keep=F,resolution=res,chr=chr)$pc
+    .arraycompartments(cbind(grSet[,column],globalMeanSet),keep=FALSE,resolution=res,chr=chr)$pc
   }
   unlist(lapply(chrs, getPairedChr))
 }

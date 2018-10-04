@@ -42,7 +42,3 @@ compartment estimates
 \details{
 This function estimates A/B compartments with some Dirichlet smoothing and shrinking towards a global mean of targets or across samples
 }
-\examples{
-
-
-}

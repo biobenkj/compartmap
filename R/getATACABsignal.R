@@ -14,11 +14,8 @@
 #'
 #' @return A p x n matrix (samples as columns and compartments as rows) of compartments
 #' @export
-#'
-#' @examples
-#' 
 
-getATACABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=F, ...) {
+getATACABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, ...) {
   globalMeanSet <- .getGlobalMeans(obj)
   columns <- colnames(obj)
   names(columns) <- columns 
