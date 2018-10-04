@@ -26,6 +26,7 @@
 #' @import parallel
 #' @import Homo.sapiens
 #' @import Mus.musculus
+#' @import bsseq
 #' 
 #' @export
 #'
