@@ -14,6 +14,10 @@
 #'
 #' @return A p x n matrix (samples as columns and compartments as rows) of compartments
 #' @export
+#' 
+#' @examples 
+#' data(bulkATAC_raw_filtered, package = "compartmap")
+#' atac_compartments <- getATACABsignal(filtered.data, allchrs = TRUE)
 
 getATACABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, ...) {
   globalMeanSet <- .getGlobalMeans(obj)

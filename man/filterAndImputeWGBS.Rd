@@ -33,3 +33,11 @@ Filtered and imputed matrix
 \details{
 This function filters and performs Dirichlet smoothing of WGBS signal prior to A/B compartment inference
 }
+\examples{
+
+#Load in some example data
+data(cell_cycle_hansen_chr14.rda, package = "compartmap")
+
+#Filter and impute missing data
+filt.imputed.chr14 <- filterAndImputeWGBS(data.chr14)
+}

@@ -26,3 +26,7 @@ A p x n matrix (samples as columns and compartments as rows) of compartments
 \details{
 This function estimates A/B compartments shrinking towards a global mean of targets or across samples
 }
+\examples{
+data(bulkATAC_raw_filtered, package = "compartmap")
+atac_compartments <- getATACABsignal(filtered.data, allchrs = TRUE)
+}
