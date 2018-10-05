@@ -2,7 +2,7 @@ Package: compartmap
 Type: Package
 Title: A/B compartment inference from ATAC-seq, WGBS, and methylation array data
 Description: A longer statement about what this does.
-Version: 0.99.0
+Version: 0.99.1
 Date: 2018-09-12
 Author: Benjamin K Johnson [aut, cre], Tim Triche, Jr. [aut, cre], Kasper Hansen [aut, cre], Jean-Philippe Fortin [aut, cre] 
 Maintainer: Benjamin K Johnson <ben.johnson@vai.org>
@@ -11,19 +11,17 @@ BugReports: https://github.com/biobenkj/compartmap/issues
 Encoding: UTF-8
 License: MIT + file LICENSE
 biocViews: Genetics, Epigenetics, ATACSeq, MethylSeq, MethylationArray
-Depends:
-    R (>= 3.5.0)
-Imports:
-    biscuiteer,
-    GenomicRanges,
-    gtools,
-    mixOmics,
-    impute,
-    parallel,
-    Homo.sapiens,
-    Mus.musculus
-Suggests:
-    covr,
-    testthat
+Depends: R (>= 3.5.0)
+Imports: biscuiteer,
+         bsseq,
+         GenomicRanges,
+         gtools,
+         mixOmics,
+         impute,
+         parallel,
+         Homo.sapiens,
+         Mus.musculus
+Suggests: covr,
+          testthat
 RoxygenNote: 6.0.1
 Roxygen: list(markdown = TRUE)

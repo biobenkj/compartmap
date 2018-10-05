@@ -31,23 +31,16 @@
 #' @export
 #'
 #' @examples
-#' #' #ATAC-seq data
-#' data("bulkATAC_raw_filtered.rda", package = "compartmap")
+#' #ATAC-seq data
+#' data(bulkATAC_raw_filtered, package = "compartmap")
 #' atac_compartments <- getCompartments(filtered.data, type = "atac", parallel = FALSE, chrs = "all")
 #' 
-#' \dontrun{
-#' #ATAC-seq data
-#' data("bulkATAC_raw_filtered.rda")
-#' atac_compartments <- getCompartments(filtered.data, type = "atac", parallel = TRUE, chrs = "all")
-#' 
 #' #WGBS data
-#' data("cell_cycle_hansen.rda")
-#' wgbs_compartments <- getCompartments(data, type = "wgbs", parallel = TRUE, chrs = "all")
+#' data(cell_cycle_hansen_chr14, package = "compartmap")
+#' wgbs_compartments <- getCompartments(data.chr14, type = "wgbs", parallel = FALSE, chrs = "chr14")
 #' 
-#' #Methylation array - 450k data
-#' data("methylation_array_450k.rda")
-#' array_compartments <- getCompartments(data, type = "array", parallel = FALSE, chrs = "all")
-#' }
+#' #450k data
+#' 
 
 getCompartments <- function(obj, type = c("atac", "wgbs", "array"), res = 1e6, parallel = FALSE,
                              chrs = "chr1", shrink.targets = NULL, regions = NULL, genome = "hg19",
@@ -121,6 +114,6 @@ getCompartments <- function(obj, type = c("atac", "wgbs", "array"), res = 1e6, p
       }
     return(compartments)
   } else {
-    stop("obj needs to be an GenomicRatioSet object. Can be generated using the minfi package.")
+    stop("obj needs to be an GenomicRatioSet object. Can be generated using the sesame package.")
   }
 }

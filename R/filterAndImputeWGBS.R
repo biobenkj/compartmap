@@ -17,7 +17,17 @@
 #'
 #' @return Filtered and imputed matrix 
 #' @import biscuiteer
+#' @import bsseq
+#'
 #' @export
+#' 
+#' @examples 
+#' 
+#' #Load in some example data
+#' data(cell_cycle_hansen_chr14.rda, package = "compartmap")
+#' 
+#' #Filter and impute missing data
+#' filt.imputed.chr14 <- filterAndImputeWGBS(data.chr14)
 
 #Filter and impute missing values prior to binning
 filterAndImputeWGBS <- function(obj, k = 0.5, minCov = 3, minSamp = 2, rowmax = 0.5, colmax = 0.8, openseafilt = FALSE, genome = "hg19") {
