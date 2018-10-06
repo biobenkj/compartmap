@@ -2,6 +2,15 @@
 
 [![Build Status](https://travis-ci.org/biobenkj/compartmentalizer.png?branch=master)](https://travis-ci.org/biobenkj/compartmap)  [![codecov](https://codecov.io/gh/biobenkj/compartmentalizer/branch/master/graph/badge.svg)](https://codecov.io/gh/biobenkj/compartmap)
 
+## How to install
+
+```
+devtools::install_github("trichelab/compartmap")
+# or:
+install.packages("BiocManager")
+BiocManager::install("trichelab/compartmap")
+```
+
 Compartmap extends methods to perform A/B compartment inference from (sc)ATAC-seq and methylation arrays originally proposed by Fortin and Hansen 2015, Genome Biology (https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0741-y). Originally, Fortin and Hansen demonstrated that chromatin conformation could be inferred from (sc)ATAC-seq, bisulfite sequencing, DNase-seq and methylation arrays, similar to the results provided by HiC. Thus, in addition to the base information provided by the aforementioned assays, chromatin state could also be inferred. However, these data were restricted to group level A/B compartment inference.
 
 Here, we propose a method to infer sample-level chromatin state, thus enabling (un)supervised clustering of samples/cells based on A/B compartments. To accomplish this, we employ a shrinkage estimator towards a global or targeted mean, using either chromsome or genome-wide information from ATAC-seq and methylation arrays (e.g. Illumina 450k or EPIC arrays). The output from compartmap can then be embedded and visualized using your favorite clustering approach, such as UMAP/tSNE.
