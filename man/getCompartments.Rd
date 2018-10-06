@@ -4,14 +4,13 @@
 \alias{getCompartments}
 \title{Estimate A/B compartments}
 \usage{
-getCompartments(obj, type = c("atac", "wgbs", "array"), res = 1e+06,
-  parallel = FALSE, chrs = "chr1", shrink.targets = NULL,
-  regions = NULL, genome = "hg19", preprocess = TRUE, gmean = TRUE, ...)
+getCompartments(obj, type = c("atac", "array"), res = 1e+06,
+  parallel = FALSE, chrs = "chr1", genome = "hg19", ...)
 }
 \arguments{
 \item{obj}{The object with which to perform compartment inference}
 
-\item{type}{The type of data that obj represents (e.g. atac, wgbs, or array)}
+\item{type}{The type of data that obj represents (e.g. atac or array)}
 
 \item{res}{Resolution of compartments in base pairs (default is 1e6)}
 
@@ -19,15 +18,7 @@ getCompartments(obj, type = c("atac", "wgbs", "array"), res = 1e+06,
 
 \item{chrs}{Chromosomes to operate on (can be individual chromosomes, a list of chromosomes, or all)}
 
-\item{shrink.targets}{Target samples to shrink towards (e.g. normal/control samples - default is the global mean)}
-
-\item{regions}{GRanges object that contains corresponding genomic locations of the loci}
-
 \item{genome}{Genome to use (default is hg19)}
-
-\item{preprocess}{Should the data be preprocessed (currently only supports WGBS data)}
-
-\item{gmean}{Squeeze towards a global mean? (default is TRUE)}
 
 \item{...}{Other parameters to pass to internal functions}
 }
@@ -35,11 +26,22 @@ getCompartments(obj, type = c("atac", "wgbs", "array"), res = 1e+06,
 A p x n matrix (samples as columns and compartments as rows) to pass to embed_compartments
 }
 \description{
-\code{getCompartments} returns estimated A/B compartments from ATAC-seq, whole genome bisulfite sequencing, and methylation array data
+\code{getCompartments} returns estimated A/B compartments from ATAC-seq and methylation array data
 }
 \details{
-This is a wrapper function to perform A/B compartment inference. Compartmentalizer implements a James-Stein estimator to shrink per-sample compartment estimates towards a global mean. The expected input for this function can be generated using packages like minfi, biscuiteer, and ATACseeker.
+This is a wrapper function to perform A/B compartment inference. Compartmentalizer implements a Stein estimator to shrink per-sample compartment estimates towards a global mean. The expected input for this function can be generated using packages like SeSAMe and ATACseeker.
 }
 \examples{
 
+library(GenomicRanges)
+library(SummarizedExperiment)
+library(Homo.sapiens)
+
+#ATAC-seq data
+data(bulkATAC_raw_filtered_chr14, package = "compartmap")
+atac_compartments <- getCompartments(filtered.data.chr14, type = "atac", parallel = FALSE, chrs = "chr14")
+
+#450k data
+data(meth_array_450k_chr14, package = "compartmap")
+array_compartments <- getCompartments(array.data.chr14, type = "array", parallel = FALSE, chrs = "chr14")
 }
