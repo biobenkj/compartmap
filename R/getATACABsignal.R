@@ -14,13 +14,18 @@
 #' @param ... Additional arguments
 #'
 #' @return A p x n matrix (samples as columns and compartments as rows) of compartments
+#' @import GenomicRanges
+#' @import SummarizedExperiment
+#' @import Homo.sapiens
+#' @import Mus.musculus
 #' @export
 #' 
 #' @examples 
-#' library(biscuiteer)
+#' library(GenomicRanges)
+#' library(SummarizedExperiment)
 #' library(Homo.sapiens)
 #' 
-#' data(bulkATC_raw_filtered_chr14, package = "compartmap")
+#' data(bulkATAC_raw_filtered_chr14, package = "compartmap")
 #' atac_compartments <- getATACABsignal(filtered.data.chr14, chr = "chr14", genome = "hg19")
 
 getATACABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = NULL, ...) {
