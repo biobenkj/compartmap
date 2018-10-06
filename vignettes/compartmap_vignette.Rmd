@@ -1,6 +1,20 @@
-# Compartmap: Shrunken A/B compartment inference from ATAC-seq and methylation arrays
+---
+title: "A/B compartment inference from ATAC-seq and methylation arrays with compartmap"
+author: "Ben Johnson"
+date: "`r BiocStyle::doc_date()`"
+package: "`r BiocStyle::pkg_ver('compartmap')`" 
+output:
+  BiocStyle::html_document:
+    highlight: pygments
+    toc_float: true
+    fig_width: 5
+vignette: >
+  %\VignetteIndexEntry{A/B compartment inference with compartmap}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding[utf8]{inputenc}
+---
 
-[![Build Status](https://travis-ci.org/biobenkj/compartmentalizer.png?branch=master)](https://travis-ci.org/biobenkj/compartmap)  [![codecov](https://codecov.io/gh/biobenkj/compartmentalizer/branch/master/graph/badge.svg)](https://codecov.io/gh/biobenkj/compartmap)
+# Compartmap: Shrunken A/B compartment inference from ATAC-seq and methylation arrays
 
 Compartmap extends methods to perform A/B compartment inference from (sc)ATAC-seq and methylation arrays originally proposed by Fortin and Hansen 2015, Genome Biology (https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0741-y). Originally, Fortin and Hansen demonstrated that chromatin conformation could be inferred from (sc)ATAC-seq, bisulfite sequencing, DNase-seq and methylation arrays, similar to the results provided by HiC. Thus, in addition to the base information provided by the aforementioned assays, chromatin state could also be inferred. However, these data were restricted to group level A/B compartment inference.
 
@@ -11,7 +25,7 @@ Here, we propose a method to infer sample-level chromatin state, thus enabling (
 ### Input
 The expected input for compartmap is either a RangedSummarizedExperiment object or GenomicRatioSet object. These can be built using packages like [ATACseeker](https://github.com/biobenkj/ATACseeker) or [SeSAMe](https://www.bioconductor.org/packages/devel/bioc/html/sesame.html). 
 
-```
+```{r loadData}
 
 library(compartmap)
 
@@ -25,7 +39,7 @@ data(meth_array_450k_chr14, package = "compartmap")
 
 To process the data (filter and perform compartment inference) a wrapper function is used for all data types.
 
-```
+```{r processData}
 
 #Process chr14 of the example data
 #Note: running this in parallel is memory hungry!
@@ -38,7 +52,7 @@ array_compartments <- getCompartments(array.data.chr14, type = "array", parallel
 
 Once the data have been processed, the object returned is a matrix of sample-level A/B compartments (samples as columns and compartments as rows). These are normalized to chromosome length and each compartment corresponds to a non-empty bin (based on the desired resolution - 1 Mb is the default). From here, the data can be visualized using something like plotAB for individual samples or your favorite clustering method. Additionally, these can be overlaid in something like IGV to see where compartments are changing between samples/conditions. 
 
-```
+```{r clustering, eval = FALSE}
 
 #Plotting individual samples
 #For 7 samples
@@ -63,11 +77,3 @@ library(plotly)
 embed_plotly(embed_compartments, tooltip = colnames(embed_compartments), show_legend = FALSE)
 
 ```
-
-### Example of individual sample compartment visualization
-
-![sample plotAB](inst/docs/chr1_AB_compartments.png)
-
-### Example of UMAP'd ATAC-seq data from HDAC inhibitor treated Sezary syndrome patient samples
-
-![sample umap](inst/docs/ATAC_supervised_UMAP.png)
