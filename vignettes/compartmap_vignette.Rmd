@@ -28,6 +28,7 @@ The expected input for compartmap is either a RangedSummarizedExperiment object 
 ```{r loadData}
 
 library(compartmap)
+library(GenomicRanges)
 
 #Load in some example methylation array data
 #This data is derived from https://f1000research.com/articles/5-1281/v3
