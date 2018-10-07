@@ -75,8 +75,8 @@ embed_plotly(embed_compartments, tooltip = colnames(embed_compartments), show_le
 
 ### Example of individual sample compartment visualization
 
-![sample plotAB](inst/docs/chr1_AB_compartments.png)
+![sample plotAB](inst/doc/chr1_AB_compartments.png)
 
 ### Example of UMAP'd ATAC-seq data from HDAC inhibitor treated Sezary syndrome patient samples
 
-![sample umap](inst/docs/ATAC_supervised_UMAP.png)
+![sample umap](inst/doc/ATAC_supervised_UMAP.png)
