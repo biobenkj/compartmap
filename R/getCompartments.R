@@ -12,6 +12,7 @@
 #' @param parallel Should the estimates be done in parallel (default is FALSE)
 #' @param chrs Chromosomes to operate on (can be individual chromosomes, a list of chromosomes, or all)
 #' @param genome Genome to use (default is hg19)
+#' @param targets Specify samples to use as shrinkage targets
 #' @param ... Other parameters to pass to internal functions
 #'
 #' @return A p x n matrix (samples as columns and compartments as rows) to pass to embed_compartments
@@ -40,7 +41,7 @@
 #' array_compartments <- getCompartments(array.data.chr14, type = "array", parallel = FALSE, chrs = "chr14")
 
 getCompartments <- function(obj, type = c("atac", "array"), res = 1e6, parallel = FALSE,
-                             chrs = "chr1", genome = "hg19", ...) {
+                             chrs = "chr1", genome = "hg19", targets = NULL, ...) {
   
   # Perform initial check the input data type
   if (type %in% c("atac", "array")) {
@@ -75,9 +76,9 @@ getCompartments <- function(obj, type = c("atac", "array"), res = 1e6, parallel 
   # Check whether the input object is a RSE object for ATACseq data
   if (is(obj, "RangedSummarizedExperiment") & type == "atac") {
     if (allchrs == TRUE) {
-      compartments <- getATACABsignal(obj = obj, res = res, parallel = parallel, allchrs = allchrs, chr = chrs, ...)
+      compartments <- getATACABsignal(obj = obj, res = res, parallel = parallel, allchrs = allchrs, chr = chrs, targets = targets, ...)
     } else {
-      compartments <- getATACABsignal(obj = obj, res = res, parallel = parallel, allchrs = FALSE, chr = chrs, ...)
+      compartments <- getATACABsignal(obj = obj, res = res, parallel = parallel, allchrs = FALSE, chr = chrs, targets = targets, ...)
     }
     return(compartments)
   }
@@ -86,9 +87,9 @@ getCompartments <- function(obj, type = c("atac", "array"), res = 1e6, parallel 
   # Check whether the input object is an GRset object for array data
   if (is(obj, "GenomicRatioSet") & type == "array") {
     if (allchrs == TRUE) {
-      compartments <- getArrayABsignal(obj = obj, res = res, parallel = parallel, allchrs = allchrs, chr = chrs, ...)
+      compartments <- getArrayABsignal(obj = obj, res = res, parallel = parallel, allchrs = allchrs, chr = chrs, targets = targets, ...)
       } else {
-      compartments <- getArrayABsignal(obj = obj, res = res, parallel = parallel, allchrs = FALSE, chr = chrs, ...)
+      compartments <- getArrayABsignal(obj = obj, res = res, parallel = parallel, allchrs = FALSE, chr = chrs, targets = targets, ...)
       }
     return(compartments)
   }

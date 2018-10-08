@@ -11,6 +11,7 @@
 #' @param parallel Should the inference be done in parallel?
 #' @param allchrs Whether all autosomes should be used for A/B inference
 #' @param chr Specify a chromosome to analyze
+#' @param targets Specify samples as shrinkage targets
 #' @param ... Additional arguments
 #'
 #' @return A p x n matrix (samples as columns and compartments as rows) of compartments
@@ -28,8 +29,8 @@
 #' data(bulkATAC_raw_filtered_chr14, package = "compartmap")
 #' atac_compartments <- getATACABsignal(filtered.data.chr14, chr = "chr14", genome = "hg19")
 
-getATACABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = NULL, ...) {
-  globalMeanSet <- .getGlobalMeansATAC(obj)
+getATACABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = NULL, targets = NULL, ...) {
+  globalMeanSet <- .getGlobalMeansATAC(obj, targets)
   columns <- colnames(obj)
   names(columns) <- columns 
   
@@ -39,19 +40,28 @@ getATACABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = N
   if (parallel) {
     options(mc.cores=detectCores()/2) # RAM blows up otherwise 
     do.call(cbind, 
-            mclapply(columns,getComp,obj=obj,globalMeanSet=globalMeanSet,chr=chr,...))
+            mclapply(columns,getComp,obj=obj,globalMeanSet=globalMeanSet,chr=chr,targets=targets,...))
   } else { 
     do.call(cbind, 
-            lapply(columns,getComp,obj=obj,globalMeanSet=globalMeanSet,chr=chr,...))
+            lapply(columns,getComp,obj=obj,globalMeanSet=globalMeanSet,chr=chr,targets=targets,...))
   } 
 }
 
-.getGlobalMeansATAC <- function(obj) { 
-  meanBeta <- matrix(rowMeans(assay(obj), na.rm=TRUE), ncol=1) 
-  sub_rse <- obj[,1]
-  assays(sub_rse)$counts <- meanBeta
-  colnames(sub_rse) <- "globalMean"
-  return(sub_rse) 
+.getGlobalMeansATAC <- function(obj, targets = NULL) {
+  if (!is.null(targets)){
+    stargets <- .getShrinkageTargets(obj, targets)
+    message(paste0("Using ", paste(shQuote(targets), collapse = ", "), " as shrinkage targets..."))
+    meanBeta <- matrix(rowMeans(assay(stargets), na.rm=TRUE), ncol=1)
+  }
+  else (meanBeta <- matrix(rowMeans(assay(obj), na.rm=TRUE), ncol=1))
+  colnames(meanBeta) <- "globalMean"
+  return(meanBeta) 
+}
+
+.getShrinkageTargets <- function(obj, group) {
+  if (all(group %in% colnames(obj))) stargets.obj <- obj[,group]
+  else (stop(paste0("Could not find ", group, " in the colnames of the input matrix...")))
+  return(stargets.obj)
 }
 
 .getPaired <- function(column, obj, globalMeanSet=NULL, res=1e6, chr=NULL, ...) {
