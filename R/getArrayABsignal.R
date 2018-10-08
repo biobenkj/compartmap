@@ -11,14 +11,15 @@
 #' @param parallel Should the inference be done in parallel?
 #' @param allchrs Whether all autosomes should be used for A/B inference
 #' @param chr Specific chromosomes to analyze
+#' @param targets Specify samples to use as shrinkage targets
 #' @param ... Additional arguments
 #'
 #' @return A p x n matrix (samples as columns and compartments as rows) of compartments
 #' @import minfi
 #' @export
 
-getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = NULL, ...) {
-  globalMeanSet <- .getMeanGrSet(obj)
+getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = NULL, targets = NULL, ...) {
+  globalMeanSet <- .getMeanGrSet(obj, targets)
   columns <- colnames(obj)
   names(columns) <- columns 
   
@@ -28,10 +29,10 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = 
   if (parallel) {
     options(mc.cores=detectCores()/2) # RAM blows up otherwise 
     do.call(cbind, 
-            mclapply(columns,getComp,grSet=obj,globalMeanSet=globalMeanSet,chr=chr))
+            mclapply(columns,getComp,grSet=obj,globalMeanSet=globalMeanSet,chr=chr,targets=targets))
   } else { 
     do.call(cbind, 
-            lapply(columns,getComp,grSet=obj,globalMeanSet=globalMeanSet,chr=chr))
+            lapply(columns,getComp,grSet=obj,globalMeanSet=globalMeanSet,chr=chr,targets=targets))
   } 
 }
 
@@ -290,6 +291,8 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = 
     gr.unbinnedCor$cor.matrix <- cor(t(getM(obj)), method = method)
     gr.cor <- .returnBinnedMatrix(gr.unbinnedCor, resolution = resolution)
     gr.cor <- .removeBadBins(gr.cor)
+    #Fisher's Z to ensure MVN
+    gr.cor$cor.matrix <- fisherZ(gr.cor$cor.matrix)
     gr.cor
 }
 
@@ -298,7 +301,7 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = 
     if (!(is(gr, "GRanges") && "cor.matrix" %in% names(mcols(gr)))) {
         stop("'gr' must be an object created by createCorMatrix")
     }
-    pc <- .getFirstPCarray(gr$cor.matrix, method = svdMethod)
+    pc <- ifisherZ(.getFirstPCarray(gr$cor.matrix, method = svdMethod))
     pc <- .meanSmootherArray(pc)
     pc <- .unitarize(pc)
     # Fix sign of eigenvector
@@ -312,22 +315,27 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = 
     gr
 }
 
-.getMeanGrSet <- function(grSet) { 
-  meanBeta <- matrix(rowMeans(getBeta(grSet), na.rm=TRUE), ncol=1) 
+.getMeanGrSet <- function(grSet, targets = NULL) { 
+  if (!is.null(targets)) {
+    stargets <- .getShrinkageTargets(grSet, targets)
+    message(paste0("Using ", paste(shQuote(targets), collapse = ", "), " as shrinkage targets..."))
+    meanBeta <- matrix(rowMeans(getBeta(stargets), na.rm=TRUE), ncol=1)
+  }
+  else meanBeta <- matrix(rowMeans(getBeta(grSet), na.rm=TRUE), ncol=1) 
   subGrSet <- grSet[,1]
   assays(subGrSet)$Beta <- meanBeta
   sampleNames(subGrSet) <- "globalMean"
   return(subGrSet) 
 }
 
-.getPairedArray <- function(column, grSet, globalMeanSet=NULL, res=1e6, ...) {
+.getPairedArray <- function(column, grSet, globalMeanSet=NULL, res=1e6, targets = NULL, ...) {
   message("Computing shrunken compartment eigenscores for ", column, "...") 
-  if(is.null(globalMeanSet)) globalMeanSet <- getMeanGrSet(grSet)
+  if(is.null(globalMeanSet)) globalMeanSet <- .getMeanGrSet(grSet, targets)
   .arraycompartments(cbind(grSet[,column], globalMeanSet), keep=FALSE, resolution=res, ...)$pc
 }
 
-.getPairedAllChrsArray <- function(column, grSet, globalMeanSet=NULL, res=1e6, ...) {
-  if (is.null(globalMeanSet)) globalMeanSet <- getMeanGrSet(grSet)
+.getPairedAllChrsArray <- function(column, grSet, globalMeanSet=NULL, res=1e6, targets = NULL, ...) {
+  if (is.null(globalMeanSet)) globalMeanSet <- .getMeanGrSet(grSet, targets)
   chrs <- intersect(paste0("chr", 1:22), seqlevels(grSet))
   names(chrs) <- chrs
   getPairedChr <- function(chr) { 
