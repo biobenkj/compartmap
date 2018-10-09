@@ -24,7 +24,6 @@ r_packages:
 bioc_packages:
   - minfi
   - Homo.sapiens
-  - Mus.musculus
   - GenomicRanges
   - GenomicAlignments
   - SummarizedExperiment

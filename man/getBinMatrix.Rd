@@ -5,7 +5,7 @@
 \title{Generate bins for A/B compartment estimation}
 \usage{
 getBinMatrix(x, genloc, chr = "chr1", chr.start = 0, chr.end = NULL,
-  res = 1e+05, FUN = sum, genome = c("hg19", "mm10"))
+  res = 1e+05, FUN = sum, genome = "hg19")
 }
 \arguments{
 \item{x}{A p x n matrix where p (rows) = loci and n (columns) = samples/cells}

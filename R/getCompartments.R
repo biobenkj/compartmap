@@ -13,6 +13,7 @@
 #' @param chrs Chromosomes to operate on (can be individual chromosomes, a list of chromosomes, or all)
 #' @param genome Genome to use (default is hg19)
 #' @param targets Specify samples to use as shrinkage targets
+#' @param run_examples Whether to run ATAC-seq and 450k example analysis
 #' @param ... Other parameters to pass to internal functions
 #'
 #' @return A p x n matrix (samples as columns and compartments as rows) to pass to embed_compartments
@@ -20,7 +21,6 @@
 #' @import gtools 
 #' @import parallel
 #' @import Homo.sapiens
-#' @import Mus.musculus
 #' @import minfi
 #' @import GenomicRanges
 #' 
@@ -41,7 +41,7 @@
 #' array_compartments <- getCompartments(array.data.chr14, type = "array", parallel = FALSE, chrs = "chr14")
 
 getCompartments <- function(obj, type = c("atac", "array"), res = 1e6, parallel = FALSE,
-                             chrs = "chr1", genome = "hg19", targets = NULL, ...) {
+                             chrs = "chr1", genome = "hg19", targets = NULL, run_examples = FALSE, ...) {
   
   # Perform initial check the input data type
   if (type %in% c("atac", "array")) {
@@ -92,6 +92,19 @@ getCompartments <- function(obj, type = c("atac", "array"), res = 1e6, parallel 
       compartments <- getArrayABsignal(obj = obj, res = res, parallel = parallel, allchrs = FALSE, chr = chrs, targets = targets, ...)
       }
     return(compartments)
+  }
+  
+  #Run examples
+  if (run_examples) {
+    message("Running ATAC-seq example data...")
+    data(bulkATAC_raw_filtered_chr14, package = "compartmap")
+    atac_compartments <- getCompartments(filtered.data.chr14, type = "atac", parallel = FALSE, chrs = "chr14")
+    message("Done!")
+    message("Running 450k example data...")
+    data(meth_array_450k_chr14, package = "compartmap")
+    array_compartments <- getCompartments(array.data.chr14, type = "array", parallel = FALSE, chrs = "chr14")
+    message("Done!")
+    return(list(atac = atac_compartments, array = array_compartments))
   }
 }
 
