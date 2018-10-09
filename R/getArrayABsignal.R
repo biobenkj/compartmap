@@ -305,7 +305,8 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = 
     pc <- .meanSmootherArray(pc)
     pc <- .unitarize(pc)
     # Fix sign of eigenvector
-    if (cor(colSums2(gr$cor.matrix), pc) < 0 ) {
+    # Also check for NA
+    if (!is.na(cor(colSums2(gr$cor.matrix), pc)) & cor(colSums2(gr$cor.matrix), pc) < 0 ) {
         pc <- -pc
     }
     pc <- pc * sqrt(length(pc))
