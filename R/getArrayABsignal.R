@@ -301,7 +301,7 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = 
     if (!(is(gr, "GRanges") && "cor.matrix" %in% names(mcols(gr)))) {
         stop("'gr' must be an object created by createCorMatrix")
     }
-    pc <- ifisherZ(.getFirstPCarray(gr$cor.matrix, method = svdMethod))
+    pc <- .getFirstPCarray(gr$cor.matrix, method = svdMethod)
     pc <- .meanSmootherArray(pc)
     pc <- .unitarize(pc)
     # Fix sign of eigenvector

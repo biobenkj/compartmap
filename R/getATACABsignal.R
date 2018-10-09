@@ -74,7 +74,7 @@ getATACABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = N
     absig <- matrix(rep(NA, nrow(cormat$binmat.cor)))
   }
   else {
-    absig <- getABSignal(cormat, squeeze = TRUE)$pc
+    absig <- getABSignal(cormat, squeeze = FALSE)$pc
   }
   return(absig)
 }
@@ -92,7 +92,7 @@ getATACABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = N
       absig <- matrix(rep(NA, nrow(cormat$binmat.cor)))
     }
     else {
-      absig <- getABSignal(cormat, squeeze = TRUE)$pc
+      absig <- getABSignal(cormat, squeeze = FALSE)$pc
     }
     
     return(absig)
