@@ -35,7 +35,7 @@
 #' #ATAC-seq data
 #' data(bulkATAC_raw_filtered_chr14, package = "compartmap")
 #' atac_compartments <- getCompartments(filtered.data.chr14, type = "atac", parallel = FALSE, chrs = "chr14")
-#' /dontrun{
+#' \dontrun{
 #' #450k data
 #' data(meth_array_450k_chr14, package = "compartmap")
 #' array_compartments <- getCompartments(array.data.chr14, type = "array", parallel = FALSE, chrs = "chr14")}
