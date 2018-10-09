@@ -29,10 +29,14 @@ The expected input for compartmap is either a RangedSummarizedExperiment object 
 
 library(compartmap)
 library(GenomicRanges)
+library(Homo.sapiens)
 
 #Load in some example methylation array data
 #This data is derived from https://f1000research.com/articles/5-1281/v3
-data(meth_array_450k_chr14, package = "compartmap")
+#data(meth_array_450k_chr14, package = "compartmap")
+
+#Load in some example ATAC-seq data
+data(bulkATAC_raw_filtered_chr14, package = "compartmap")
 
 ```
 
@@ -42,10 +46,13 @@ To process the data (filter and perform compartment inference) a wrapper functio
 
 ```{r processData}
 
-#Process chr14 of the example data
+#Process chr14 of the example array data
 #Note: running this in parallel is memory hungry!
 
-array_compartments <- getCompartments(array.data.chr14, type = "array", parallel = FALSE, chrs = "chr14")
+#array_compartments <- getCompartments(array.data.chr14, type = "array", parallel = FALSE, chrs = "chr14")
+
+#Process chr14 of the example ATAC-seq data
+atac_compartments <- getCompartments(filtered.data.chr14, type = "atac", parallel = FALSE, chrs = "chr14")
 
 ```
 
