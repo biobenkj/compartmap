@@ -5,7 +5,7 @@
 \alias{filtered.data.chr14}
 \title{Example ATAC-seq data for compartmap}
 \usage{
-data(filtered.data.chr14, package = "compartmap")
+data(bulkATAC_raw_filtered_chr14, package = "compartmap")
 }
 \description{
 This data was generated using the data from the reference via bwa mem

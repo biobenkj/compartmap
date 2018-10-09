@@ -35,10 +35,10 @@
 #' #ATAC-seq data
 #' data(bulkATAC_raw_filtered_chr14, package = "compartmap")
 #' atac_compartments <- getCompartments(filtered.data.chr14, type = "atac", parallel = FALSE, chrs = "chr14")
-#'
+#' \dontrun{
 #' #450k data
 #' data(meth_array_450k_chr14, package = "compartmap")
-#' array_compartments <- getCompartments(array.data.chr14, type = "array", parallel = FALSE, chrs = "chr14")
+#' array_compartments <- getCompartments(array.data.chr14, type = "array", parallel = FALSE, chrs = "chr14")}
 
 getCompartments <- function(obj, type = c("atac", "array"), res = 1e6, parallel = FALSE,
                              chrs = "chr1", genome = "hg19", targets = NULL, run_examples = FALSE, ...) {
@@ -118,7 +118,7 @@ getCompartments <- function(obj, type = c("atac", "array"), res = 1e6, parallel 
 #' @author Benjamin K Johnson \email{ben.johnson@vai.org}
 #' @references \url{https://trace.ncbi.nlm.nih.gov/Traces/sra/?study=SRP082417}
 #' @keywords data
-#' @usage data(filtered.data.chr14, package = "compartmap")
+#' @usage data(bulkATAC_raw_filtered_chr14, package = "compartmap")
 NULL
 
 #' Example Illumina 450k methylation array data for compartmap
@@ -131,5 +131,5 @@ NULL
 #' @author Benjamin K Johnson \email{ben.johnson@vai.org}
 #' @references \url{https://f1000research.com/articles/5-1281/v3}
 #' @keywords data
-#' @usage data(array.data.chr14, package = "compartmap")
+#' @usage data(meth_array_450k_chr14, package = "compartmap")
 NULL
