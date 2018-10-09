@@ -66,8 +66,8 @@ getATACABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = N
 
 .getPaired <- function(column, obj, globalMeanSet=NULL, res=1e6, chr=NULL, ...) {
   message("Computing shrunken compartment eigenscores for ", column, "...") 
-  if(is.null(globalMeanSet)) globalMeanSet <- getGlobalMeans(obj)
-  binmat <- getBinMatrix(as.matrix(cbind(assay(obj)[,column], assay(globalMeanSet))), rowRanges(obj), chr = chr, res = res)
+  if(is.null(globalMeanSet)) globalMeanSet <- .getGlobalMeansATAC(obj)
+  binmat <- getBinMatrix(as.matrix(cbind(assay(obj)[,column], globalMeanSet)), rowRanges(obj), chr = chr, res = res)
   cormat <- getCorMatrix(binmat, squeeze = TRUE)
   #Stupid check for perfect correlation with global mean
   if (any(is.na(cormat$binmat.cor))) {
@@ -80,12 +80,12 @@ getATACABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = N
 }
 
 .getPairedAllChrs <- function(column, obj, globalMeanSet=NULL, res=1e6, chr = NULL, ...) {
-  if (is.null(globalMeanSet)) globalMeanSet <- getGlobalMeans(obj)
+  if (is.null(globalMeanSet)) globalMeanSet <- .getGlobalMeansATAC(obj)
   chrs <- paste0("chr", c(seq(1,22)))
   names(chrs) <- chrs
   getPairedChr <- function(chr) { 
     message("Computing shrunken eigenscores for ", column, " on ", chr, "...") 
-    binmat <- getBinMatrix(cbind(assay(obj)[,column], assay(globalMeanSet)), rowRanges(obj), chr = chr, res = res)
+    binmat <- getBinMatrix(cbind(assay(obj)[,column], globalMeanSet), rowRanges(obj), chr = chr, res = res)
     cormat <- getCorMatrix(binmat, squeeze = TRUE)
     #Stupid check for perfect correlation with global mean
     if (any(is.na(cormat$binmat.cor))) {
