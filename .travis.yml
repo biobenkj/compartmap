@@ -13,17 +13,15 @@ script:
 r_github_packages:
   - r-lib/covr
 
-bioc_packages: 
-  - gmapR
-  - IRanges
-  - S4Vectors
-  - Rsamtools
-  - Biostrings
-  - rtracklayer
-  - BiocGenerics
+r_packages:
+  - gtools
+  - mixOmics
+  - parallel
+
+bioc_packages:
+  - minfi
   - Homo.sapiens
-  - VariantTools
+  - Mus.musculus
   - GenomicRanges
-  - GenomicAlignments 
-  - VariantAnnotation
+  - GenomicAlignments
   - SummarizedExperiment
