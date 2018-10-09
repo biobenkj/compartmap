@@ -19,6 +19,7 @@ r_packages:
   - parallel
   - roxygen2
   - testthat
+  - knitr
 
 bioc_packages:
   - minfi
