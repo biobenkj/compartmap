@@ -18,7 +18,6 @@
 #' @import GenomicRanges
 #' @import SummarizedExperiment
 #' @import Homo.sapiens
-#' @import Mus.musculus
 #' @export
 #' 
 #' @examples 
