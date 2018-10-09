@@ -17,6 +17,9 @@ r_packages:
   - gtools
   - mixOmics
   - parallel
+  - roxygen2
+  - testthat
+  - knitr
 
 bioc_packages:
   - minfi
@@ -25,3 +28,4 @@ bioc_packages:
   - GenomicRanges
   - GenomicAlignments
   - SummarizedExperiment
+  - BiocStyle
