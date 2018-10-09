@@ -35,10 +35,10 @@
 #' #ATAC-seq data
 #' data(bulkATAC_raw_filtered_chr14, package = "compartmap")
 #' atac_compartments <- getCompartments(filtered.data.chr14, type = "atac", parallel = FALSE, chrs = "chr14")
-#'
+#' /dontrun{
 #' #450k data
 #' data(meth_array_450k_chr14, package = "compartmap")
-#' array_compartments <- getCompartments(array.data.chr14, type = "array", parallel = FALSE, chrs = "chr14")
+#' array_compartments <- getCompartments(array.data.chr14, type = "array", parallel = FALSE, chrs = "chr14")}
 
 getCompartments <- function(obj, type = c("atac", "array"), res = 1e6, parallel = FALSE,
                              chrs = "chr1", genome = "hg19", targets = NULL, run_examples = FALSE, ...) {

@@ -1,6 +1,6 @@
 # Compartmap: Shrunken A/B compartment inference from ATAC-seq and methylation arrays
 
-[![Build Status](https://travis-ci.org/biobenkj/compartmentalizer.png?branch=master)](https://travis-ci.org/biobenkj/compartmap)  [![codecov](https://codecov.io/gh/biobenkj/compartmentalizer/branch/master/graph/badge.svg)](https://codecov.io/gh/biobenkj/compartmap)
+[![Build Status](https://travis-ci.org/biobenkj/compartmap.svg?branch=master)](https://travis-ci.org/biobenkj/compartmap)  [![codecov](https://codecov.io/gh/biobenkj/compartmentalizer/branch/master/graph/badge.svg)](https://codecov.io/gh/biobenkj/compartmap)
 
 ## How to install
 
