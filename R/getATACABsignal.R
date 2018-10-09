@@ -40,10 +40,10 @@ getATACABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = N
   if (parallel) {
     options(mc.cores=detectCores()/2) # RAM blows up otherwise 
     do.call(cbind, 
-            mclapply(columns,getComp,obj=obj,globalMeanSet=globalMeanSet,chr=chr,targets=targets,...))
+            mclapply(columns,getComp,obj=obj,globalMeanSet=globalMeanSet,chr=chr,targets=targets,res=res,...))
   } else { 
     do.call(cbind, 
-            lapply(columns,getComp,obj=obj,globalMeanSet=globalMeanSet,chr=chr,targets=targets,...))
+            lapply(columns,getComp,obj=obj,globalMeanSet=globalMeanSet,chr=chr,targets=targets,res=res,...))
   } 
 }
 
