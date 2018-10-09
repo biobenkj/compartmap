@@ -5,7 +5,7 @@
 \title{Estimate A/B compartments from ATAC-seq data}
 \usage{
 getATACABsignal(obj, res = 1e+06, parallel = FALSE, allchrs = FALSE,
-  chr = NULL, ...)
+  chr = NULL, targets = NULL, ...)
 }
 \arguments{
 \item{obj}{Input GenomicRatioSet object}
@@ -17,6 +17,8 @@ getATACABsignal(obj, res = 1e+06, parallel = FALSE, allchrs = FALSE,
 \item{allchrs}{Whether all autosomes should be used for A/B inference}
 
 \item{chr}{Specify a chromosome to analyze}
+
+\item{targets}{Specify samples as shrinkage targets}
 
 \item{...}{Additional arguments}
 }
