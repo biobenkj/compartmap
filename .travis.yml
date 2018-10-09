@@ -17,6 +17,8 @@ r_packages:
   - gtools
   - mixOmics
   - parallel
+  - roxygen2
+  - testthat
 
 bioc_packages:
   - minfi
