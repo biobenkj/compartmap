@@ -27,3 +27,4 @@ bioc_packages:
   - GenomicRanges
   - GenomicAlignments
   - SummarizedExperiment
+  - BiocStyle
