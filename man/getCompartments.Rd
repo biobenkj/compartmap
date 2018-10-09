@@ -5,7 +5,8 @@
 \title{Estimate A/B compartments}
 \usage{
 getCompartments(obj, type = c("atac", "array"), res = 1e+06,
-  parallel = FALSE, chrs = "chr1", genome = "hg19", targets = NULL, ...)
+  parallel = FALSE, chrs = "chr1", genome = "hg19", targets = NULL,
+  run_examples = FALSE, ...)
 }
 \arguments{
 \item{obj}{The object with which to perform compartment inference}
@@ -21,6 +22,8 @@ getCompartments(obj, type = c("atac", "array"), res = 1e+06,
 \item{genome}{Genome to use (default is hg19)}
 
 \item{targets}{Specify samples to use as shrinkage targets}
+
+\item{run_examples}{Whether to run ATAC-seq and 450k example analysis}
 
 \item{...}{Other parameters to pass to internal functions}
 }
