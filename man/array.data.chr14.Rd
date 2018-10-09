@@ -5,7 +5,7 @@
 \alias{array.data.chr14}
 \title{Example Illumina 450k methylation array data for compartmap}
 \usage{
-data(array.data.chr14, package = "compartmap")
+data(meth_array_450k_chr14, package = "compartmap")
 }
 \description{
 This data was generated using the data from the reference via the
