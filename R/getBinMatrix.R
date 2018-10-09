@@ -18,7 +18,6 @@
 #' 
 #' @import    GenomicRanges
 #' @import    Homo.sapiens
-#' @import    Mus.musculus
 #' 
 #' @export 
 #' 
@@ -44,7 +43,7 @@
 #' #Bin counts
 #' bin.counts <- getBinMatrix(count.mat, makeGRangesFromDataFrame(random_genomic_int), chr = "chr14", genome = "hg19")
 
-getBinMatrix <- function(x, genloc, chr = "chr1", chr.start = 0, chr.end = NULL, res = 100000, FUN=sum, genome = c("hg19", "mm10")){
+getBinMatrix <- function(x, genloc, chr = "chr1", chr.start = 0, chr.end = NULL, res = 100000, FUN=sum, genome = "hg19"){
   
   if (any(is.na(x))){
     stop("Matrix must not contain NAs")
@@ -54,11 +53,12 @@ getBinMatrix <- function(x, genloc, chr = "chr1", chr.start = 0, chr.end = NULL,
   }
   
   if (is.null(chr.end)) {
-    if (genome %in% c("hg19", "mm10")) {
-      genome <- match.arg(genome)
-      chr.end <- switch(genome,
-                        hg19 = seqlengths(Homo.sapiens)[chr],
-                        mm10 = seqlengths(Mus.musculus)[chr])
+    if (genome == "hg19") {
+      #genome <- match.arg(genome)
+      #chr.end <- switch(genome,
+      #                  hg19 = seqlengths(Homo.sapiens)[chr],
+      #                  mm10 = seqlengths(Mus.musculus)[chr])
+      chr.end <- seqlengths(Homo.sapiens)[chr]
     }
     else {
       message(paste0("Don't know what to do with ", genome))
