@@ -39,7 +39,7 @@
 getCorMatrix <- function(binmat, squeeze = FALSE) {
   #Calculate correlations
   message("Calculating correlations...")
-  binmat.cor <- cor(t(binmat$x))
+  binmat.cor <- suppressWarnings(cor(t(binmat$x)))
   gr.cor  <- binmat$gr
   if (squeeze) {
     fisherZ(binmat.cor)
