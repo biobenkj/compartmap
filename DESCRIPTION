@@ -16,14 +16,14 @@ BugReports: https://github.com/biobenkj/compartmap/issues
 Encoding: UTF-8
 License: GPL-3 + file LICENSE
 biocViews: Genetics, Epigenetics, ATACSeq, MethylSeq, MethylationArray
-Depends: R (>= 3.5.0)
+Depends: R (>= 3.5.0),
+         minfi,
+         Homo.sapiens,
+         mixOmics
 Imports: SummarizedExperiment,
          GenomicRanges,
          gtools,
-         mixOmics,
-         parallel,
-         Homo.sapiens,
-         minfi
+         parallel
 Suggests: covr,
           testthat,
           knitr

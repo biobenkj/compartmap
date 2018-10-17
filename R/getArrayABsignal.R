@@ -21,18 +21,17 @@
 getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = NULL, targets = NULL, ...) {
   globalMeanSet <- .getMeanGrSet(obj, targets)
   columns <- colnames(obj)
-  names(columns) <- columns 
-  
+  names(columns) <- columns
   getComp <- .getPairedArray
   if (allchrs == TRUE) getComp <- .getPairedAllChrsArray
   
   if (parallel) {
     options(mc.cores=detectCores()/2) # RAM blows up otherwise 
     do.call(cbind, 
-            mclapply(columns,getComp,grSet=obj,globalMeanSet=globalMeanSet,chr=chr,targets=targets))
+            mclapply(columns,getComp,grSet=obj,globalMeanSet=globalMeanSet,chr=chr,targets=targets,res=res))
   } else { 
     do.call(cbind, 
-            lapply(columns,getComp,grSet=obj,globalMeanSet=globalMeanSet,chr=chr,targets=targets))
+            lapply(columns,getComp,grSet=obj,globalMeanSet=globalMeanSet,chr=chr,targets=targets,res=res))
   } 
 }
 
@@ -288,7 +287,7 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = 
     obj <- dropLociWithSnps(obj, snps = c("CpG", "SBE"), maf = 0.01)
 
     gr.unbinnedCor <- granges(obj)
-    gr.unbinnedCor$cor.matrix <- cor(t(getM(obj)), method = method)
+    gr.unbinnedCor$cor.matrix <- suppressWarnings(cor(t(getM(obj)), method = method))
     gr.cor <- .returnBinnedMatrix(gr.unbinnedCor, resolution = resolution)
     gr.cor <- .removeBadBins(gr.cor)
     #Fisher's Z to ensure MVN
@@ -305,7 +304,12 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = 
     pc <- .meanSmootherArray(pc)
     pc <- .unitarize(pc)
     # Fix sign of eigenvector
-    if (cor(colSums2(gr$cor.matrix), pc) < 0 ) {
+    # Also check for NA correlation between colsums and the PC
+    # Not sure if we should just dump all of these to NAs if the correlation fails
+    # Explicitly implies that many of the eigenvalues are [close to] zero
+    # This check ensures positive values are associated with the closed compartment
+    # Currently we leave it as is...
+    if (!is.na(cor(colSums2(gr$cor.matrix), pc)) & cor(colSums2(gr$cor.matrix), pc) < 0 ) {
         pc <- -pc
     }
     pc <- pc * sqrt(length(pc))
