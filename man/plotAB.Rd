@@ -8,13 +8,13 @@ plotAB(x, main = "", ylim = c(-1, 1), unitarize = FALSE,
   reverse = FALSE, top.col = "deeppink4", bot.col = "grey50")
 }
 \arguments{
-\item{x}{The GRanges object returned from getABSignal}
+\item{x}{The matrix obejct returned from getCompartments}
 
 \item{main}{Title for the plot}
 
 \item{ylim}{Y-axis limits (default is -1 to 1)}
 
-\item{unitarize}{Should the data be unitarized?}
+\item{unitarize}{Should the data be unitarized? (not explicitly necessary for arrays)}
 
 \item{reverse}{Reverse the sign of the PC values?}
 

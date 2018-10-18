@@ -94,6 +94,9 @@ getBinMatrix <- function(x, genloc, chr = "chr1", chr.start = 0, chr.end = NULL,
   #Subset the non-empty bins
   x.bin <- x.bin[wh,]
   gr.bin  <- gr.bin[wh]
+
+  #Add a check to make sure there are at least 2 bins
+  if (nrow(x.bin) < 2) stop("There are not enough non-empty bins to continue...")
   
   return(list(gr=gr.bin, x=x.bin))
 }

@@ -2,10 +2,10 @@
 #'
 #' Plot A/B compartments bins
 #'
-#' @param x      The GRanges object returned from getABSignal
+#' @param x      The matrix obejct returned from getCompartments
 #' @param main    Title for the plot
 #' @param ylim      Y-axis limits (default is -1 to 1)
-#' @param unitarize   Should the data be unitarized?
+#' @param unitarize   Should the data be unitarized? (not explicitly necessary for arrays)
 #' @param reverse    Reverse the sign of the PC values?
 #' @param top.col    Top (pos. PC values) chromatin color to be plotted
 #' @param bot.col    Bottom (neg. PC values) chromatin color to be plotted
