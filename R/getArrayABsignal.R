@@ -16,6 +16,7 @@
 #'
 #' @return A p x n matrix (samples as columns and compartments as rows) of compartments
 #' @import minfi
+#' @import Homo.sapiens
 #' @export
 
 getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = NULL, targets = NULL, ...) {
@@ -98,16 +99,17 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = 
 
     # TODO: Use Bioconductor infrastructure to get chromosome lengths and
     #       don't directly call structure() to create object
-    chr.lengths <- structure(
-        c(249250621L, 243199373L, 198022430L, 191154276L, 180915260L,
-          171115067L, 159138663L, 146364022L, 141213431L, 135534747L,
-          135006516L, 133851895L, 115169878L, 107349540L, 102531392L,
-          90354753L, 81195210L, 78077248L, 59128983L, 63025520L, 48129895L,
-          51304566L, 155270560L, 59373566L),
-        .Names = c("chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7",
-                   "chr8", "chr9", "chr10", "chr11", "chr12", "chr13", "chr14",
-                   "chr15", "chr16", "chr17", "chr18", "chr19", "chr20",
-                   "chr21", "chr22", "chrX", "chrY"))
+    # chr.lengths <- structure(
+    #     c(249250621L, 243199373L, 198022430L, 191154276L, 180915260L,
+    #       171115067L, 159138663L, 146364022L, 141213431L, 135534747L,
+    #       135006516L, 133851895L, 115169878L, 107349540L, 102531392L,
+    #       90354753L, 81195210L, 78077248L, 59128983L, 63025520L, 48129895L,
+    #       51304566L, 155270560L, 59373566L),
+    #     .Names = c("chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7",
+    #                "chr8", "chr9", "chr10", "chr11", "chr12", "chr13", "chr14",
+    #                "chr15", "chr16", "chr17", "chr18", "chr19", "chr20",
+    #                "chr21", "chr22", "chrX", "chrY"))
+    chr.lengths <- seqlengths(Homo.sapiens)[standardChromosomes(Homo.sapiens)]
     seqlengths(gr.unbinnedCor) <- chr.lengths[seqlevels(gr.unbinnedCor)]
 
     stopifnot(length(seqlevels(gr.unbinnedCor)) == 1 &&
