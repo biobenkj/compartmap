@@ -132,7 +132,7 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = 
 
 #Helper function to remove empty bins
 .removeBadBins <- function(gr) {
-    good.bins <- which(!colAlls(gr$cor.matrix, value = 0))
+    good.bins <- !colAlls(gr$cor.matrix, value = 0)
     if (length(good.bins) < nrow(gr$cor.matrix)) {
         gr <- gr[good.bins]
         gr$cor.matrix <- gr$cor.matrix[, good.bins]
