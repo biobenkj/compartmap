@@ -26,9 +26,9 @@ setMethod("as.matrix", "GRanges", function(x, ...) as(x, "matrix"))
 # a test:
 if (FALSE) { 
 
-  testMat <- matrix(rnorm(4), nrow=2, ncol=2, 
-                    dimnames=list(c("chr1:1-1000","chr2:2-2000"), c("A","B")))
-  show(testMat)
+  x <- matrix(rnorm(4), nrow=2, ncol=2, 
+              dimnames=list(c("chr1:1-1000","chr2:2-2000"), c("A","B")))
+  show(x)
   #                        A            B
   # chr1:1-1000 -0.974000464 -0.705903477
   # chr2:2-2000 -0.251981621  1.421097044
@@ -36,7 +36,7 @@ if (FALSE) {
   identical(as(as(x, "GRanges"), "matrix"), x)
   # [1] TRUE 
 
-  testGr <- as(testMat, "GRanges") 
+  testGr <- as(x, "GRanges") 
   show(testGr) 
   # 
   # GRanges object with 2 ranges and 2 metadata columns:
@@ -47,7 +47,6 @@ if (FALSE) {
   # -------
   # seqinfo: 2 sequences from an unspecified genome; no seqlengths
   # 
-  identical(as.matrix(testGr), testMat)
+  identical(as.matrix(testGr), x)
   # [1] TRUE 
 }
-
