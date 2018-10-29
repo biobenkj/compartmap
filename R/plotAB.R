@@ -71,13 +71,11 @@
 
 plotAB <- function(x, main="",ylim=c(-1, 1), unitarize=FALSE, reverse=FALSE,
                       top.col = "deeppink4", bot.col = "grey50"){
-  if (unitarize){
-    x <- .unitarize(x)
-  }
+
+  if (is(x, "GRanges")) x <- as(x, "matrix") # coerce
+  if (unitarize) x <- .unitarize(x)
   x <- as.numeric(x)
-  if (reverse){
-    x <- -x
-  }
+  if (reverse) x <- -x
   
   n <- length(x)
   col <- rep(top.col, n)

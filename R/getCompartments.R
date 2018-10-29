@@ -42,71 +42,39 @@
 
 getCompartments <- function(obj, type = c("atac", "array"), res = 1e6, parallel = FALSE,
                              chrs = "chr1", genome = "hg19", targets = NULL, run_examples = FALSE, ...) {
-  
+
+  # short circuit type checking if just testing
+  if (run_examples) return(.run_examples())
+
   # Perform initial check the input data type
-  if (type %in% c("atac", "array")) {
-    type <- match.arg(type)
-  } else {
-    stop("Don't know what to do with the supplied type argument. Can be 'atac' or 'array'.")
-  }
-  
-  # Check object class for a given type
-  if (type == "atac") {
-    if (!is(obj, "RangedSummarizedExperiment")) {
-      stop("obj needs to be a RangedSummarizedExperiment object. Can be generated using the ATACseeker package.")
-    }
-  }
-  if (type == "array") {
-    if (!is(obj, "GenomicRatioSet")) {
-      stop("obj needs to be an GenomicRatioSet object. Can be generated using the sesame package.")
-    }
+  type <- match.arg(type)
+  typeclass <- c(atac="RangedSummarizedExperiment", array="GenomicRatioSet")
+  typepackage <- c(atac="ATACseeker", array="minfi (and/or sesame)")
+  if (!is(obj, typeclass[type])) {
+    message(type, " data must be supplied as a ", typeclass[type], " object.")
+    stop(paste("You can generate one with the", typepackage[type], "package."))
   }
   
   #Pre-check the chromosomes to be analyzed
-  if (chrs == "all") {
-    allchrs <- TRUE
-    chrs <- NULL
-    message("Proceeding with all chromosomes...")
+  allchrs <- (length(chrs) == 1 & chrs == "all") 
+  if (allchrs) {
+    chrs <- seqlevels(obj)
+    message("Mapping all chromosomes...")
   } else {
-    allchrs <- FALSE
-    message(paste0("Proceeding with chromosome(s): ", paste(shQuote(chrs), collapse = ", ")))
+    message("Mapping chromosome", ifelse(length(chrs) > 1, "s ", " "), 
+            paste(shQuote(chrs), collapse=", "))
   }
+
+
+  # call the appropriate function
+  switch(type,
+         atac=getATACABsignal(obj=obj, res=res, parallel=parallel, 
+                              allchrs=allchrs, chr=chrs, targets=targets, ...),
+         array=getArrayABsignal(obj=obj, res=res, parallel=parallel, 
+                                allchrs=allchrs, chr=chrs, targets=targets,...))
   
-  # ATACseq
-  # Check whether the input object is a RSE object for ATACseq data
-  if (is(obj, "RangedSummarizedExperiment") & type == "atac") {
-    if (allchrs == TRUE) {
-      compartments <- getATACABsignal(obj = obj, res = res, parallel = parallel, allchrs = allchrs, chr = chrs, targets = targets, ...)
-    } else {
-      compartments <- getATACABsignal(obj = obj, res = res, parallel = parallel, allchrs = FALSE, chr = chrs, targets = targets, ...)
-    }
-    return(compartments)
-  }
-  
-  # Methylation array (e.g. 450k or EPIC)
-  # Check whether the input object is an GRset object for array data
-  if (is(obj, "GenomicRatioSet") & type == "array") {
-    if (allchrs == TRUE) {
-      compartments <- getArrayABsignal(obj = obj, res = res, parallel = parallel, allchrs = allchrs, chr = chrs, targets = targets, ...)
-      } else {
-      compartments <- getArrayABsignal(obj = obj, res = res, parallel = parallel, allchrs = FALSE, chr = chrs, targets = targets, ...)
-      }
-    return(compartments)
-  }
-  
-  #Run examples
-  if (run_examples) {
-    message("Running ATAC-seq example data...")
-    data(bulkATAC_raw_filtered_chr14, package = "compartmap")
-    atac_compartments <- getCompartments(filtered.data.chr14, type = "atac", parallel = FALSE, chrs = "chr14")
-    message("Done!")
-    message("Running 450k example data...")
-    data(meth_array_450k_chr14, package = "compartmap")
-    array_compartments <- getCompartments(array.data.chr14, type = "array", parallel = FALSE, chrs = "chr14")
-    message("Done!")
-    return(list(atac = atac_compartments, array = array_compartments))
-  }
 }
+
 
 #' Example ATAC-seq data for compartmap
 #' 
@@ -133,3 +101,16 @@ NULL
 #' @keywords data
 #' @usage data(meth_array_450k_chr14, package = "compartmap")
 NULL
+
+# helper fn
+.run_examples <- function() { 
+    message("Running ATAC-seq example data...")
+    data(bulkATAC_raw_filtered_chr14, package = "compartmap")
+    atac_compartments <- getCompartments(filtered.data.chr14, type = "atac", parallel = FALSE, chrs = "chr14")
+    message("Done!")
+    message("Running 450k example data...")
+    data(meth_array_450k_chr14, package = "compartmap")
+    array_compartments <- getCompartments(array.data.chr14, type = "array", parallel = FALSE, chrs = "chr14")
+    message("Done!")
+    return(list(atac = atac_compartments, array = array_compartments))
+}
