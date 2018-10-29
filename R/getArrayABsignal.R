@@ -40,7 +40,8 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = 
 .arraycompartments <- function(obj, resolution = 1e6, what="OpenSea",
                          chr = "chr22", method = c("pearson", "spearman"),
                          keep = FALSE) {
-  stopifnot(length(chr) == 1 && chr %in% seqlevels(obj))
+  if (length(chr) > 1) stop("Expected a single chromosome internally and got more than one...")
+  if (!(chr %in% seqlevels(obj))) stop("The supplied chromosome is not found in the seqlevels of the object...")
   method <- match.arg(method)
   gr <- .createCorMatrix(
     obj = obj,
@@ -111,10 +112,11 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = 
     #                "chr21", "chr22", "chrX", "chrY"))
     chr.lengths <- seqlengths(Homo.sapiens)[standardChromosomes(Homo.sapiens)]
     seqlengths(gr.unbinnedCor) <- chr.lengths[seqlevels(gr.unbinnedCor)]
-
-    stopifnot(length(seqlevels(gr.unbinnedCor)) == 1 &&
-                  !is.na(seqlengths(gr.unbinnedCor)))
-    stopifnot("cor.matrix" %in% names(mcols(gr.unbinnedCor)))
+    
+    #Split this out and return a more informative error...
+    if (length(seqlevels(gr.unbinnedCor)) > 1) stop("The number of seqlevels returned greater than one...")
+    if (is.na(seqlengths(gr.unbinnedCor))) stop("The seqlengths returned are NA... is this human data?")
+    if (!("cor.matrix" %in% names(mcols(gr.unbinnedCor)))) stop("The correlation matrix was not found in the GRanges object...")
 
     gr.binnedCor <- tileGenome(
         seqlengths = seqlengths(gr.unbinnedCor),
@@ -198,6 +200,8 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = 
 }
 
 #Helper function to perform fsvd instead of the nipals method from mixOmics package
+#This needs to be resolved since nipals is required for ATAC but not here
+#We are already supporting nipals so why do we need fsvd too - or the inverse?
 .fsvd <- function(A, k, i = 1, p = 2, method = c("qr", "svd", "exact")) {
     method <- match.arg(method)
     l <- k + p
@@ -276,7 +280,8 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = 
 #Helper function to create a correlation matrix
 .createCorMatrix <- function(obj, resolution = 100 * 1000, what = "OpenSea",
                             chr = "chr22", method = c("pearson", "spearman")) {
-    stopifnot(length(chr) == 1 && chr %in% seqlevels(obj))
+    if (length(chr) > 1) stop("Expected a single chromosome internally and got more than one...")
+    if (!(chr %in% seqlevels(obj))) stop("The supplied chromosome is not found in the seqlevels of the object...")
     method <- match.arg(method)
 
     if (is(obj, "GenomicMethylSet")) {
@@ -346,7 +351,7 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = 
 
 .getPairedAllChrsArray <- function(column, grSet, globalMeanSet=NULL, res=1e6, targets = NULL, ...) {
   if (is.null(globalMeanSet)) globalMeanSet <- .getMeanGrSet(grSet, targets)
-  chrs <- intersect(paste0("chr", 1:22), seqlevels(grSet))
+  chrs <- intersect(paste0("chr", seq_along(1:22)), seqlevels(grSet))
   names(chrs) <- chrs
   getPairedChr <- function(chr) { 
     message("Computing shrunken eigenscores for ", column, " on ", chr, "...") 
