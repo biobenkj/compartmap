@@ -74,6 +74,7 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = 
 }
 
 #Helper function to return binned M-values
+#this cannot possibly be optimal (two nested loops?!)
 .returnBinnedMatrix <- function(gr.unbinnedCor, resolution){
 
     bin2D <- function(matrix, ids, n) {
@@ -335,7 +336,10 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = 
 .getPairedArray <- function(column, grSet, globalMeanSet=NULL, res=1e6, targets = NULL, ...) {
   message("Computing shrunken compartment eigenscores for ", column, "...") 
   if(is.null(globalMeanSet)) globalMeanSet <- .getMeanGrSet(grSet, targets)
-  .arraycompartments(cbind(grSet[,column], globalMeanSet), keep=FALSE, resolution=res, ...)$pc
+  res <- .arraycompartments(cbind(grSet[,column], globalMeanSet), keep=FALSE, resolution=res, ...)
+  pc <- res$pc
+  names(pc) <- as.character(res)
+  return(pc)
 }
 
 .getPairedAllChrsArray <- function(column, grSet, globalMeanSet=NULL, res=1e6, targets = NULL, ...) {
@@ -344,7 +348,10 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = 
   names(chrs) <- chrs
   getPairedChr <- function(chr) { 
     message("Computing shrunken eigenscores for ", column, " on ", chr, "...") 
-    .arraycompartments(cbind(grSet[,column],globalMeanSet),keep=FALSE,resolution=res,chr=chr)$pc
+    res <- .arraycompartments(cbind(grSet[,column],globalMeanSet),keep=FALSE,resolution=res,chr=chr)
+    pc <- res$pc
+    names(pc) <- as.character(res)
+    return(pc)
   }
   unlist(lapply(chrs, getPairedChr))
 }
