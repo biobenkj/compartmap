@@ -156,34 +156,37 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = 
 
 #Helper function to use a moving average smooth
 .meanSmootherArray <- function(x, k = 1L, iter = 2L, na.rm = TRUE) {
-    meanSmoother.internal <- function(x, k = 1L, na.rm = TRUE) {
-        n <- length(x)
-        y <- rep(NA_real_, n)
-
-        window.mean <- function(x, j, k, na.rm = na.rm){
-            if (k >= 1) {
-                return(mean(x[seq(j - (k + 1L), j + k)], na.rm = na.rm))
-            } else {
-                x[j]
-            }
-        }
-
-        for (i in (seq(k + 1L, n - k))) {
-            y[i] <- window.mean(x, i, k, na.rm)
-        }
-        for (i in seq_len(k)) {
-            y[i] <- window.mean(x, i, i - 1L, na.rm)
-        }
-        for (i in seq(n - k + 1L, n)) {
-            y[i] <- window.mean(x, i, n - i, na.rm)
-        }
-        y
+  meanSmoother.internal <- function(x, k=1, na.rm=TRUE){
+    if (k < 1) stop("k needs to be greater than or equal to 1...")
+    if (length(x) < k) stop("Cannot smooth. Too few bins...")
+    n <- length(x)
+    y <- rep(NA,n)
+    
+    
+    window.mean <- function(x, j, k, na.rm=na.rm){
+      if (k>=1){
+        return(mean(x[(j-(k+1)):(j+k)], na.rm=na.rm))
+      } else {
+        return(x[j])
+      }    
     }
-
-    for (i in seq_len(iter)) {
-        x <- meanSmoother.internal(x, k = k, na.rm = na.rm)
+    
+    for (i in (k+1):(n-k)){
+      y[i] <- window.mean(x,i,k, na.rm)
     }
-    x
+    for (i in 1:k){
+      y[i] <- window.mean(x,i,i-1, na.rm)
+    }
+    for (i in (n-k+1):n){
+      y[i] <- window.mean(x,i,n-i,na.rm)
+    }
+    y
+  }
+  
+  for (i in 1:iter){
+    x <- meanSmoother.internal(x, k=k, na.rm=na.rm)
+  }
+  x
 }
 
 #Helper function to unitarize the A/B estimates
