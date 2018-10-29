@@ -48,7 +48,7 @@ getABSignal <- function(x, k = 5, iter = 2, squeeze = FALSE){
   message("Calculating eigenvectors...")
   pc <- .getFirstPC(x$binmat.cor)
   if (squeeze) pc <- ifisherZ(pc)
-  message(paste0("Smoothing with a k of ", k, " for ", iter, " iterations..."))
+  message("Smoothing with a k of ", k, " for ", iter, " iterations...")
   pc <- .meanSmoother(pc, k=k, iter=iter)
   message("Done smoothing...")
   gr <- x$gr
