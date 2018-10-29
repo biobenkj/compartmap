@@ -61,7 +61,7 @@ getBinMatrix <- function(x, genloc, chr = "chr1", chr.start = 0, chr.end = NULL,
       chr.end <- seqlengths(Homo.sapiens)[chr]
     }
     else {
-      message(paste0("Don't know what to do with ", genome))
+      message("Don't know what to do with ", genome)
       stop("If you'd like to use an unsupported genome, specify chr.end to an appropriate value...")
     }
   }
@@ -77,7 +77,7 @@ getBinMatrix <- function(x, genloc, chr = "chr1", chr.start = 0, chr.end = NULL,
   
   #Get the number of bins overlapping loci
   n <- length(gr.bin)
-  message(paste0(n, " bins created..."))
+  message(n, " bins created...")
   
   #User defined function to summarize data in the bins
   #TODO: allow for bin matrices to be generated for all chrs
