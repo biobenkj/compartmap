@@ -49,7 +49,7 @@ getATACABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = N
 .getGlobalMeansATAC <- function(obj, targets = NULL) {
   if (!is.null(targets)){
     stargets <- .getShrinkageTargets(obj, targets)
-    message(paste0("Using ", paste(shQuote(targets), collapse = ", "), " as shrinkage targets..."))
+    message("Using ", paste(shQuote(targets), collapse = ", "), " as shrinkage targets...")
     meanBeta <- matrix(rowMeans(assay(stargets), na.rm=TRUE), ncol=1)
   }
   else (meanBeta <- matrix(rowMeans(assay(obj), na.rm=TRUE), ncol=1))
@@ -59,7 +59,7 @@ getATACABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = N
 
 .getShrinkageTargets <- function(obj, group) {
   if (all(group %in% colnames(obj))) stargets.obj <- obj[,group]
-  else (stop(paste0("Could not find ", group, " in the colnames of the input matrix...")))
+  else (stop("Could not find ", group, " in the colnames of the input matrix..."))
   return(stargets.obj)
 }
 

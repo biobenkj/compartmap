@@ -44,11 +44,11 @@
 #' #Get A/B signal
 #' absignal <- getABSignal(bin.cor.counts)
 
-getABSignal <- function(x, k = 2, iter = 2, squeeze = FALSE){
+getABSignal <- function(x, k = 5, iter = 2, squeeze = FALSE){
   message("Calculating eigenvectors...")
   pc <- .getFirstPC(x$binmat.cor)
   if (squeeze) pc <- ifisherZ(pc)
-  message(paste0("Smoothing with a k of ", k, " for ", iter, " iterations..."))
+  message("Smoothing with a k of ", k, " for ", iter, " iterations...")
   pc <- .meanSmoother(pc, k=k, iter=iter)
   message("Done smoothing...")
   gr <- x$gr
@@ -82,8 +82,11 @@ getABSignal <- function(x, k = 2, iter = 2, squeeze = FALSE){
 
 .meanSmoother <- function(x, k=1, iter=2, na.rm=TRUE){
   meanSmoother.internal <- function(x, k=1, na.rm=TRUE){
+    if (k < 1) stop("k needs to be greater than or equal to 1...")
+    if (length(x) < k) stop("Cannot smooth. Too few bins...")
     n <- length(x)
     y <- rep(NA,n)
+    
     
     window.mean <- function(x, j, k, na.rm=na.rm){
       if (k>=1){

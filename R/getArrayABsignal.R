@@ -16,6 +16,7 @@
 #'
 #' @return A p x n matrix (samples as columns and compartments as rows) of compartments
 #' @import minfi
+#' @import Homo.sapiens
 #' @export
 
 getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = NULL, targets = NULL, ...) {
@@ -39,7 +40,8 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = 
 .arraycompartments <- function(obj, resolution = 1e6, what="OpenSea",
                          chr = "chr22", method = c("pearson", "spearman"),
                          keep = FALSE) {
-  stopifnot(length(chr) == 1 && chr %in% seqlevels(obj))
+  if (length(chr) > 1) stop("Expected a single chromosome internally and got more than one...")
+  if (!(chr %in% seqlevels(obj))) stop("The supplied chromosome is not found in the seqlevels of the object...")
   method <- match.arg(method)
   gr <- .createCorMatrix(
     obj = obj,
@@ -98,21 +100,23 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = 
 
     # TODO: Use Bioconductor infrastructure to get chromosome lengths and
     #       don't directly call structure() to create object
-    chr.lengths <- structure(
-        c(249250621L, 243199373L, 198022430L, 191154276L, 180915260L,
-          171115067L, 159138663L, 146364022L, 141213431L, 135534747L,
-          135006516L, 133851895L, 115169878L, 107349540L, 102531392L,
-          90354753L, 81195210L, 78077248L, 59128983L, 63025520L, 48129895L,
-          51304566L, 155270560L, 59373566L),
-        .Names = c("chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7",
-                   "chr8", "chr9", "chr10", "chr11", "chr12", "chr13", "chr14",
-                   "chr15", "chr16", "chr17", "chr18", "chr19", "chr20",
-                   "chr21", "chr22", "chrX", "chrY"))
+    # chr.lengths <- structure(
+    #     c(249250621L, 243199373L, 198022430L, 191154276L, 180915260L,
+    #       171115067L, 159138663L, 146364022L, 141213431L, 135534747L,
+    #       135006516L, 133851895L, 115169878L, 107349540L, 102531392L,
+    #       90354753L, 81195210L, 78077248L, 59128983L, 63025520L, 48129895L,
+    #       51304566L, 155270560L, 59373566L),
+    #     .Names = c("chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7",
+    #                "chr8", "chr9", "chr10", "chr11", "chr12", "chr13", "chr14",
+    #                "chr15", "chr16", "chr17", "chr18", "chr19", "chr20",
+    #                "chr21", "chr22", "chrX", "chrY"))
+    chr.lengths <- seqlengths(Homo.sapiens)[standardChromosomes(Homo.sapiens)]
     seqlengths(gr.unbinnedCor) <- chr.lengths[seqlevels(gr.unbinnedCor)]
-
-    stopifnot(length(seqlevels(gr.unbinnedCor)) == 1 &&
-                  !is.na(seqlengths(gr.unbinnedCor)))
-    stopifnot("cor.matrix" %in% names(mcols(gr.unbinnedCor)))
+    
+    #Split this out and return a more informative error...
+    if (length(seqlevels(gr.unbinnedCor)) > 1) stop("The number of seqlevels returned greater than one...")
+    if (is.na(seqlengths(gr.unbinnedCor))) stop("The seqlengths returned are NA... is this human data?")
+    if (!("cor.matrix" %in% names(mcols(gr.unbinnedCor)))) stop("The correlation matrix was not found in the GRanges object...")
 
     gr.binnedCor <- tileGenome(
         seqlengths = seqlengths(gr.unbinnedCor),
@@ -128,7 +132,7 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = 
 
 #Helper function to remove empty bins
 .removeBadBins <- function(gr) {
-    good.bins <- which(!colAlls(gr$cor.matrix, value = 0))
+    good.bins <- !colAlls(gr$cor.matrix, value = 0)
     if (length(good.bins) < nrow(gr$cor.matrix)) {
         gr <- gr[good.bins]
         gr$cor.matrix <- gr$cor.matrix[, good.bins]
@@ -152,34 +156,37 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = 
 
 #Helper function to use a moving average smooth
 .meanSmootherArray <- function(x, k = 1L, iter = 2L, na.rm = TRUE) {
-    meanSmoother.internal <- function(x, k = 1L, na.rm = TRUE) {
-        n <- length(x)
-        y <- rep(NA_real_, n)
-
-        window.mean <- function(x, j, k, na.rm = na.rm){
-            if (k >= 1) {
-                return(mean(x[seq(j - (k + 1L), j + k)], na.rm = na.rm))
-            } else {
-                x[j]
-            }
-        }
-
-        for (i in (seq(k + 1L, n - k))) {
-            y[i] <- window.mean(x, i, k, na.rm)
-        }
-        for (i in seq_len(k)) {
-            y[i] <- window.mean(x, i, i - 1L, na.rm)
-        }
-        for (i in seq(n - k + 1L, n)) {
-            y[i] <- window.mean(x, i, n - i, na.rm)
-        }
-        y
+  meanSmoother.internal <- function(x, k=1, na.rm=TRUE){
+    if (k < 1) stop("k needs to be greater than or equal to 1...")
+    if (length(x) < k) stop("Cannot smooth. Too few bins...")
+    n <- length(x)
+    y <- rep(NA,n)
+    
+    
+    window.mean <- function(x, j, k, na.rm=na.rm){
+      if (k>=1){
+        return(mean(x[(j-(k+1)):(j+k)], na.rm=na.rm))
+      } else {
+        return(x[j])
+      }    
     }
-
-    for (i in seq_len(iter)) {
-        x <- meanSmoother.internal(x, k = k, na.rm = na.rm)
+    
+    for (i in (k+1):(n-k)){
+      y[i] <- window.mean(x,i,k, na.rm)
     }
-    x
+    for (i in 1:k){
+      y[i] <- window.mean(x,i,i-1, na.rm)
+    }
+    for (i in (n-k+1):n){
+      y[i] <- window.mean(x,i,n-i,na.rm)
+    }
+    y
+  }
+  
+  for (i in 1:iter){
+    x <- meanSmoother.internal(x, k=k, na.rm=na.rm)
+  }
+  x
 }
 
 #Helper function to unitarize the A/B estimates
@@ -196,6 +203,8 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = 
 }
 
 #Helper function to perform fsvd instead of the nipals method from mixOmics package
+#This needs to be resolved since nipals is required for ATAC but not here
+#We are already supporting nipals so why do we need fsvd too - or the inverse?
 .fsvd <- function(A, k, i = 1, p = 2, method = c("qr", "svd", "exact")) {
     method <- match.arg(method)
     l <- k + p
@@ -274,7 +283,8 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = 
 #Helper function to create a correlation matrix
 .createCorMatrix <- function(obj, resolution = 100 * 1000, what = "OpenSea",
                             chr = "chr22", method = c("pearson", "spearman")) {
-    stopifnot(length(chr) == 1 && chr %in% seqlevels(obj))
+    if (length(chr) > 1) stop("Expected a single chromosome internally and got more than one...")
+    if (!(chr %in% seqlevels(obj))) stop("The supplied chromosome is not found in the seqlevels of the object...")
     method <- match.arg(method)
 
     if (is(obj, "GenomicMethylSet")) {
@@ -323,7 +333,7 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = 
 .getMeanGrSet <- function(grSet, targets = NULL) { 
   if (!is.null(targets)) {
     stargets <- .getShrinkageTargets(grSet, targets)
-    message(paste0("Using ", paste(shQuote(targets), collapse = ", "), " as shrinkage targets..."))
+    message("Using ", paste(shQuote(targets), collapse = ", "), " as shrinkage targets...")
     meanBeta <- matrix(rowMeans(getBeta(stargets), na.rm=TRUE), ncol=1)
   }
   else meanBeta <- matrix(rowMeans(getBeta(grSet), na.rm=TRUE), ncol=1) 
@@ -344,7 +354,7 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = 
 
 .getPairedAllChrsArray <- function(column, grSet, globalMeanSet=NULL, res=1e6, targets = NULL, ...) {
   if (is.null(globalMeanSet)) globalMeanSet <- .getMeanGrSet(grSet, targets)
-  chrs <- intersect(paste0("chr", 1:22), seqlevels(grSet))
+  chrs <- intersect(paste0("chr", seq_along(1:22)), seqlevels(grSet))
   names(chrs) <- chrs
   getPairedChr <- function(chr) { 
     message("Computing shrunken eigenscores for ", column, " on ", chr, "...") 
