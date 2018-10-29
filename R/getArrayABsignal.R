@@ -333,7 +333,7 @@ getArrayABsignal <- function(obj, res=1e6, parallel=FALSE, allchrs=FALSE, chr = 
 .getMeanGrSet <- function(grSet, targets = NULL) { 
   if (!is.null(targets)) {
     stargets <- .getShrinkageTargets(grSet, targets)
-    message(paste0("Using ", paste(shQuote(targets), collapse = ", "), " as shrinkage targets..."))
+    message("Using ", paste(shQuote(targets), collapse = ", "), " as shrinkage targets...")
     meanBeta <- matrix(rowMeans(getBeta(stargets), na.rm=TRUE), ncol=1)
   }
   else meanBeta <- matrix(rowMeans(getBeta(grSet), na.rm=TRUE), ncol=1) 
