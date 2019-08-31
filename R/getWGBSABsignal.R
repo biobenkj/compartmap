@@ -1,20 +1,19 @@
-#' @title Estimate A/B compartments from methylation array data
+#' @title Estimate A/B compartments from BS-seq data
 #'
 #' @description 
-#' \code{getArrayABsignal} returns estimated A/B compartments from methylation array data.
+#' \code{getWGBSABsignal} returns estimated A/B compartments from BS-seq data.
 #'
 #' @param obj Input SummarizedExperiment object
 #' @param res Compartment resolution in bp
 #' @param parallel Whether to run samples in parallel
 #' @param chr What chromosome to work on (leave as NULL to run on all chromosomes)
 #' @param targets Samples/cells to shrink towards
-#' @param preprocess Whether to preprocess the arrays prior to compartment inference
+#' @param preprocess Whether to preprocess the bs-seq data prior to compartment inference
 #' @param cores How many cores to use when running samples in parallel
 #' @param bootstrap Whether we should perform bootstrapping of inferred compartments
 #' @param num.bootstraps How many bootstraps to run
 #' @param genome What genome to work on ("hg19", "hg38", "mm9", "mm10")
 #' @param other Another arbitrary genome to compute compartments on
-#' @param array.type What type of array is this ("hm450", "EPIC")
 #' @param bulk Whether to treat this as a bulk set of samples
 #' @param boot.parallel Whether to run the bootstrapping in parallel
 #' @param boot.cores How many cores to use for the bootstrapping
@@ -29,21 +28,20 @@
 #' @import BSgenome.Mmusculus.UCSC.mm9
 #' @export
 #' @examples
-#' data("meth_array_450k_chr14", package = "compartmap")
-#' array_compartments <- getArrayABsignal(array.data.chr14, parallel=F, chr="chr14", bootstrap=F, genome="hg19", array.type="hm450")
+#' data("meth_wgbs_450k_chr14", package = "compartmap")
+#' wgbs_compartments <- getWGBSABsignal(wgbs.data.chr14, parallel=F, chr="chr14", bootstrap=F, genome="hg19", wgbs.type="hm450")
 
-getArrayABsignal <- function(obj, res = 1e6, parallel = TRUE, chr = NULL,
+getWGBSABsignal <- function(obj, res = 1e6, parallel = TRUE, chr = NULL,
                              targets = NULL, preprocess = TRUE, cores = 2,
                              bootstrap = TRUE, num.bootstraps = 1000,
                              genome = c("hg19", "hg38", "mm9", "mm10"),
-                             other = NULL, array.type = c("hm450", "EPIC"),
+                             other = NULL,
                              bulk = FALSE, boot.parallel = TRUE, boot.cores = 2) {
   
-  #preprocess the arrays
+  #preprocess the wgbss
   if (preprocess) {
-    obj <- preprocessArrays(obj = obj, res = res,
-                            genome = genome, other = other,
-                            array.type = array.type)
+    obj <- preprocessWGBS(obj = obj, res = res,
+                            genome = genome, other = other)
   }
   
   #gather the chromosomes we are working on
@@ -52,22 +50,22 @@ getArrayABsignal <- function(obj, res = 1e6, parallel = TRUE, chr = NULL,
     #get what chromosomes we want
     chr <- getChrs(obj)
   }
-
+  
   #get the column names
   if (is.null(colnames(obj))) stop("colnames needs to be sample names.")
   columns <- colnames(obj)
   names(columns) <- columns
   
   #worker function
-  arrayCompartments <- function(obj, original.obj, res = 1e6, chr = NULL, targets = NULL,
+  wgbsCompartments <- function(obj, original.obj, res = 1e6, chr = NULL, targets = NULL,
                                 genome = c("hg19", "hg38", "mm9", "mm10"),
                                 prior.means = NULL, bootstrap = TRUE,
                                 num.bootstraps = 1000, parallel = FALSE,
                                 cores = 2) {
-    #this is the main analysis function for computing compartments from arrays
+    #this is the main analysis function for computing compartments from wgbss
     #make sure the input is sane
     if (!checkAssayType(obj)) stop("Input needs to be a SummarizedExperiment")
-
+    
     #what genome do we have
     genome <- match.arg(genome)
     
@@ -81,7 +79,7 @@ getArrayABsignal <- function(obj, res = 1e6, parallel = TRUE, chr = NULL,
     
     #get the shrunken bins
     obj.bins <- shrinkBins(obj, original.obj, prior.means = prior.means, chr = chr,
-                           res = res, targets = targets, assay = "array",
+                           res = res, targets = targets, assay = "bisulfite",
                            genome = genome)
     #compute correlations
     obj.cor <- getCorMatrix(obj.bins, squeeze = TRUE)
@@ -90,15 +88,15 @@ getArrayABsignal <- function(obj, res = 1e6, parallel = TRUE, chr = NULL,
       obj.svd <- obj.cor$gr
     } else {
       #compute SVD of correlation matrix
-      obj.svd <- getABSignal(obj.cor, assay = "array")
+      obj.svd <- getABSignal(obj.cor, assay = "bisulfite")
     }
-
+    
     if (isFALSE(bootstrap)) return(obj.svd)
     
     #bootstrap the estimates
     #always compute confidence intervals too
     obj.bootstrap <- bootstrapCompartments(obj, original.obj, bootstrap.samples = num.bootstraps,
-                                           chr = chr, assay = "array", parallel = parallel, cores = cores,
+                                           chr = chr, assay = "bisulfite", parallel = parallel, cores = cores,
                                            targets = targets, res = res, genome = genome, q = 0.95, svd = obj.svd)
     
     #combine and return
@@ -106,13 +104,13 @@ getArrayABsignal <- function(obj, res = 1e6, parallel = TRUE, chr = NULL,
   }
   
   #initialize global means
-  #gmeans <- getGlobalMeans(obj, targets = targets, assay = "array")
+  #gmeans <- getGlobalMeans(obj, targets = targets, assay = "bisulfite")
   
   if (parallel & isFALSE(bulk)) {
-    array.compartments <- mclapply(columns, function(s) {
+    wgbs.compartments <- mclapply(columns, function(s) {
       obj.sub <- obj[,s]
       message("Working on ", s)
-      sort(unlist(as(lapply(chr, function(c) arrayCompartments(obj.sub, obj, res = res,
+      sort(unlist(as(lapply(chr, function(c) wgbsCompartments(obj.sub, obj, res = res,
                                                                chr = c, targets = targets, genome = genome,
                                                                bootstrap = bootstrap,
                                                                num.bootstraps = num.bootstraps, parallel = boot.parallel,
@@ -121,10 +119,10 @@ getArrayABsignal <- function(obj, res = 1e6, parallel = TRUE, chr = NULL,
   }
   
   if (isFALSE(bulk)) {
-    array.compartments <- lapply(columns, function(s) {
+    wgbs.compartments <- lapply(columns, function(s) {
       obj.sub <- obj[,s]
       message("Working on ", s)
-      sort(unlist(as(lapply(chr, function(c) arrayCompartments(obj.sub, obj, res = res,
+      sort(unlist(as(lapply(chr, function(c) wgbsCompartments(obj.sub, obj, res = res,
                                                                chr = c, targets = targets, genome = genome,
                                                                bootstrap = bootstrap,
                                                                num.bootstraps = num.bootstraps, parallel = boot.parallel,
@@ -133,20 +131,19 @@ getArrayABsignal <- function(obj, res = 1e6, parallel = TRUE, chr = NULL,
   }
   
   #convert to GRangesList
-  array.compartments <- as(array.compartments, "GRangesList")
+  wgbs.compartments <- as(wgbs.compartments, "GRangesList")
   #return as a RaggedExperiment
-  return(RaggedExperiment(array.compartments, colData = colData(obj)))
+  return(RaggedExperiment(wgbs.compartments, colData = colData(obj)))
 }
 
-#' Preprocess arrays for compartment inference
+#' Preprocess BS-seq for compartment inference
 #'
-#' @name preprocessArrays
+#' @name preprocessWGBS
 #'
 #' @param obj Input SummarizedExperiment
 #' @param res Compartment resolution in bp
 #' @param genome What genome are we working on ("hg19", "hg38", "mm9", "mm10")
 #' @param other Another arbitrary genome to compute compartments on
-#' @param array.type What type of array is this ("hm450", "EPIC")
 #'
 #' @return A preprocessed SummarizedExperiment to compute compartments
 #' @import SummarizedExperiment
@@ -156,35 +153,25 @@ getArrayABsignal <- function(obj, res = 1e6, parallel = TRUE, chr = NULL,
 #' 
 preprocessArrays <- function(obj, res = 1e6,
                              genome = c("hg19", "hg38", "mm9", "mm10"),
-                             other = NULL, array.type = c("hm450", "EPIC")) {
+                             other = NULL) {
   #make sure the input is sane
   if (!checkAssayType(obj)) stop("Input needs to be a SummarizedExperiment")
   
   #what genome do we have
   genome <- match.arg(genome)
   
-  #subset the array to open sea CpGs
+  #subset the wgbs to open sea CpGs
   obj.opensea <- filterOpenSea(obj, genome = genome, other = other)
-  #mask off bad probes for human arrays
-  #this is for making sure these probes are gone if not
-  #analyzed by SeSAMe which will do it natively
-  if (genome %in% c("hg19", "hg38")) {
-    message("Masking off bad probes.")
-    obj.badprobe.filt <- maskArrays(obj.opensea, genome = genome, array.type = array.type)
-    obj.opensea <- obj.badprobe.filt
-  }
   
   #convert things to M-values
   #check the names of the assays
-  if (!any(getAssayNames(obj.opensea) %in% c("Beta"))) {
-    stop("The assays slot should contain 'Beta' for arrays.")
+  if (!any(getAssayNames(obj.opensea) %in% c("counts"))) {
+    stop("The assays slot should contain 'counts' for bisulfite data.")
   }
-  message("Converting to squeezed M-values.")
-  assays(obj.opensea)$Beta <- flogit(assays(obj.opensea)$Beta)
   
   #impute missing values and drop samples that are too sparse
   message("Imputing missing values.")
-  obj.opensea.imputed <- imputeKNN(obj.opensea, assay = "array")
+  obj.opensea.imputed <- imputeKNN(obj.opensea, assay = "bisulfite")
   
   return(obj.opensea.imputed)
 }
