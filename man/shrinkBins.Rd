@@ -9,9 +9,9 @@ shrinkBins(
   original.x,
   prior.means = NULL,
   chr = NULL,
-  res = 1000000,
+  res = 1e+06,
   targets = NULL,
-  jse = FALSE,
+  jse = TRUE,
   assay = c("array", "atac", "bisulfite", "rna"),
   genome = c("hg19", "hg38", "mm9", "mm10")
 )
@@ -29,7 +29,7 @@ shrinkBins(
 
 \item{targets}{The column/sample/cell names to shrink towards}
 
-\item{jse}{Whether to use a James-Stein estimator instead}
+\item{jse}{Whether to use a James-Stein estimator (default is TRUE)}
 
 \item{assay}{What assay type this is ("array", "atac", "bisulfite", "rna")}
 

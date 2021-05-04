@@ -6,7 +6,7 @@
 \usage{
 getATACABsignal(
   obj,
-  res = 1000000,
+  res = 1e+06,
   parallel = FALSE,
   chr = NULL,
   targets = NULL,
@@ -54,6 +54,6 @@ A RaggedExperiment of inferred compartments
 \code{getATACABsignal} returns estimated A/B compartments from ATAC-seq data.
 }
 \examples{
-data("groupATAC_raw_filtered_chr14", package = "compartmap")
-atac_compartments <- getATACABsignal(filtered.data.chr14, parallel=F, chr="chr14", bootstrap=F, genome="hg19")
+data("k562_scatac_chr14", package = "compartmap")
+atac_compartments <- getATACABsignal(k562_scatac_chr14, parallel=FALSE, chr="chr14", bootstrap=FALSE, genome="hg19", group = TRUE)
 }

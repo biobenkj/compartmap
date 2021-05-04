@@ -1,12 +1,13 @@
 Package: compartmap
 Type: Package
-Title: A/B compartment inference from ATAC-seq and methylation array data
-Description: Compartmap performs shrunken A/B compartment inference from ATAC-seq, BS-seq, and methylation arrays.
-Version: 1.11.28
-Date: 2020-11-28
+Title: A/B compartment inference from scRNA-seq, scATAC-seq and methylation array data
+Description: Compartmap performs shrunken A/B compartment inference from scRNA-seq, scATAC-seq, scBS-seq, and methylation arrays.
+Version: 2.0
+Date: 2021-05-03
 Authors@R: c(person("Benjamin", "Johnson", role = c("aut", "cre"),
                     email = "ben.johnson@vai.org",),
              person("Tim", "Triche", role = c("aut")),
+	     person("Hui", "Shen", role = c("aut")),
              person("Kasper", "Hansen", role = c("aut")),
              person("Jean-Philippe", "Fortin", role = c("aut")))
 URL: https://github.com/biobenkj/compartmap
@@ -17,31 +18,30 @@ biocViews: Genetics, Epigenetics, ATACSeq, MethylSeq, MethylationArray, RNASeq
 Depends: 
    R (>= 4.0.0),
    SummarizedExperiment,
-	 RaggedExperiment,
-	 BiocSingular,
-	 bsseq,
-	 HDF5Array,
-   BSgenome.Hsapiens.UCSC.hg38,
-   BSgenome.Mmusculus.UCSC.mm9
+   RaggedExperiment,
+   BiocSingular,
+   bsseq,
+   HDF5Array
 Imports: 
    GenomicRanges,
    gtools,
    parallel,
    grid,
-	 viridis,
-	 ggplot2,
+   viridis,
+   ggplot2,
+   reshape2,
    DelayedArray,
-   Homo.sapiens,
-   Mus.musculus,
    RColorBrewer,
-   rtracklayer, 
-	 DelayedMatrixStats,
-	 impute,
-	 Matrix
-Suggests: covr,
-          testthat,
-          knitr,
-          Rcpp
+   rtracklayer,
+   DelayedMatrixStats,
+   impute,
+   Matrix,
+   covmat
+Suggests:
+   covr,
+   testthat,
+   knitr,
+   Rcpp
 RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr

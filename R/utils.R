@@ -393,3 +393,64 @@ sparseToDenseMatrix <- function(mat, blockwise = TRUE,
   })))
   
 }  
+
+#' Import and optionally summarize a bigwig at a given resolution
+#' 
+#' @name importBigWig
+#'
+#' @param bw Path a bigwig file
+#' @param bins Optional set of bins as a GRanges to summarize the bigwig to
+#' @param summarize Whether to perform mean summarization
+#' @param genome Which genome is the bigwig from ("hg19", "hg38", "mm9", "mm10")
+#'
+#' @return SummerizedExperiment object with rowRanges corresponding to summarized features
+#' 
+#' @import SummarizedExperiment
+#' @import GenomicRanges
+#' 
+#' @export
+#'
+#' @examples
+#' library(GenomicRanges)
+#' data("hg19.gr")
+#' tiles <- tileGenome(seqlengths(hg19.gr), tilewidth = 1e3, cut.last.tile.in.chrom = TRUE)
+#' se <- importBigWig(system.file("inst/extdata/k562_scrna_chr14.bw", package = "compartmap"), bins=tiles, summarize=TRUE, genome="hg19")
+
+importBigWig <- function(bw, bins = NULL, summarize = FALSE,
+                         genome = c("hg19", "hg38", "mm9", "mm10")) {
+  #read in the bigwig
+  bw.raw <- rtracklayer::import(bw)
+  #coerce to UCSC style seqlevels
+  seqlevelsStyle(bw.raw) <- "UCSC"
+  if (!is.null(bins)) {
+    seqlevelsStyle(bins) <- "UCSC"
+  }
+  #it is now a GRanges object
+  if (any(is.na(seqlengths(bw.raw)))) stop("Imported bigwig does not have seqlengths")
+  ## only supporting human and mouse for now
+  if (genome %in% c("hg19", "hg38")) {
+    species <- "Homo_sapiens"
+  } else {
+    species <- "Mus_musculus"
+  }
+  bw.sub <- keepStandardChromosomes(bw.raw, species = species, pruning.mode = "coarse")
+  if (!is.null(bins)) {
+    bins <- keepSeqlevels(bins, value = seqlevels(bw.sub), pruning.mode = "coarse")
+  }
+  if (summarize) {
+    #make sure it's sorted
+    bw.sub <- sort(bw.sub)
+    #this assumes seqlengths exist...
+    #this also assumes some bins exist
+    if (is.null(bins)) stop("Specify bins as GRanges with tileGenome")
+    bw.score <- GenomicRanges::coverage(bw.sub, weight = "score")
+    bw.bin <- GenomicRanges::binnedAverage(bins, bw.score, "ave_score")
+    #cast to a SummarizedExperiment to bin them
+    bw.se <- SummarizedExperiment(assays = SimpleList(counts = as.matrix(mcols(bw.bin)$ave_score)),
+                                  rowRanges = granges(bw.bin))
+    colnames(bw.se) <- as.character(bw)
+    return(bw.se)
+  }
+  return(bw.sub)
+}
+

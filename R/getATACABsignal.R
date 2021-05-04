@@ -23,8 +23,8 @@
 #' @import RaggedExperiment
 #' @export
 #' @examples
-#' data("groupATAC_raw_filtered_chr14", package = "compartmap")
-#' atac_compartments <- getATACABsignal(filtered.data.chr14, parallel=F, chr="chr14", bootstrap=F, genome="hg19")
+#' data("k562_scatac_chr14", package = "compartmap")
+#' atac_compartments <- getATACABsignal(k562_scatac_chr14, parallel=FALSE, chr="chr14", bootstrap=FALSE, genome="hg19", group = TRUE)
 
 getATACABsignal <- function(obj, res = 1e6, parallel = FALSE, chr = NULL,
                              targets = NULL, cores = 2,
@@ -35,9 +35,8 @@ getATACABsignal <- function(obj, res = 1e6, parallel = FALSE, chr = NULL,
 
   if (length(seqinfo(rowRanges(obj))) == 0) {
     message("The SummarizedExperiment you have provided has no coordinates.")
-    message("Compartment extraction will almost certainly fail.")
-    message("Please provide rowRanges with genomic coordinates for the object.")
-    # FIXME: probably should stop() instead.
+    message("Compartment extraction will fail.")
+    stop("Please provide rowRanges with genomic coordinates for the object.")
   }
 
   #gather the chromosomes we are working on

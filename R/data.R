@@ -1,14 +1,26 @@
-#' Example ATAC-seq data for compartmap
+#' Example scRNA-seq data for compartmap
 #' 
-#' This data was generated using the data from the reference via bwa mem
-#' and pre-processing the data using the ATACseeker package.
+#' This object was generated using the K562 data from the STORM-seq paper
+#' and pre-processed using the scran and scater packages
 #' 
-#' @name filtered.data.chr14
+#' @name k562_scrna_chr14
 #' @docType data
 #' @author Benjamin K Johnson \email{ben.johnson@vai.org}
-#' @references \url{https://trace.ncbi.nlm.nih.gov/Traces/sra/?study=SRP082417}
 #' @keywords data
-#' @usage data(bulkATAC_raw_filtered_chr14, package = "compartmap")
+#' @usage data(k562_scrna_chr14, package = "compartmap")
+NULL
+
+#' Example scATAC-seq data for compartmap
+#' 
+#' This data was generated using the data from the reference via bwa mem
+#' and pre-processing the data using the csaw package.
+#' 
+#' @name k562_scatac_chr14
+#' @docType data
+#' @author Benjamin K Johnson \email{ben.johnson@vai.org}
+#' @references \url{https://www.ncbi.nlm.nih.gov//geo/query/acc.cgi?acc=GSE99172}
+#' @keywords data
+#' @usage data(k562_scatac_chr14, package = "compartmap")
 NULL
 
 #' Example Illumina 450k methylation array data for compartmap

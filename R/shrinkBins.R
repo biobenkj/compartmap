@@ -11,7 +11,7 @@
 #' @param chr The chromosome to operate on
 #' @param res Resolution to perform the binning
 #' @param targets The column/sample/cell names to shrink towards
-#' @param jse Whether to use a James-Stein estimator instead
+#' @param jse Whether to use a James-Stein estimator (default is TRUE)
 #' @param assay What assay type this is ("array", "atac", "bisulfite", "rna")
 #' @param genome What genome are we working with ("hg19", "hg38", "mm9", "mm10")
 #'
@@ -31,7 +31,7 @@
 #' 
 
 shrinkBins <- function(x, original.x, prior.means = NULL, chr = NULL,
-                       res = 1e6, targets = NULL, jse = FALSE,
+                       res = 1e6, targets = NULL, jse = TRUE,
                        assay = c("array", "atac", "bisulfite", "rna"),
                        genome = c("hg19", "hg38", "mm9", "mm10")) {
   #match the assay args
@@ -49,6 +49,7 @@ shrinkBins <- function(x, original.x, prior.means = NULL, chr = NULL,
   }
   
   #helper function for summary
+  #not used if JSE is set to TRUE
   atac_fun <- function(x) {
     return(sqrt(mean(x)) * length(x))
   }

@@ -20,7 +20,6 @@ This function is used to generate a list object to be passed to getABSignal
 \examples{
 
 library(GenomicRanges)
-library(Homo.sapiens)
 
 #Generate random genomic intervals of 1-1000 bp on chr1-22
 #Modified from https://www.biostars.org/p/225520/
