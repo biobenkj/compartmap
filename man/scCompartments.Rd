@@ -15,7 +15,7 @@ scCompartments(
   num.bootstraps = 100,
   genome = c("hg19", "hg38", "mm9", "mm10"),
   group = FALSE,
-  assay = c("atac", "bisulfite", "rna")
+  assay = c("atac", "rna")
 )
 }
 \arguments{

@@ -13,7 +13,7 @@ getBSABsignal(
   preprocess = TRUE,
   cores = 2,
   bootstrap = TRUE,
-  num.bootstraps = 1000,
+  num.bootstraps = 100,
   genome = c("hg19", "hg38", "mm9", "mm10"),
   other = NULL,
   group = FALSE,
@@ -58,5 +58,5 @@ A RaggedExperiment of inferred compartments
 }
 \examples{
 data("meth_wgbs_450k_chr14", package = "compartmap")
-wgbs_compartments <- getWGBSABsignal(wgbs.data.chr14, parallel=F, chr="chr14", bootstrap=F, genome="hg19", wgbs.type="hm450")
+wgbs_compartments <- getBSABsignal(wgbs.data.chr14, parallel=F, chr="chr14", bootstrap=F, genome="hg19")
 }

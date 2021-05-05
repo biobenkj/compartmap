@@ -17,10 +17,6 @@
 #' @return    A list object to pass to getCorMatrix
 #' 
 #' @import    SummarizedExperiment
-#' @import    Homo.sapiens
-#' @import    Mus.musculus
-#' @import    BSgenome.Hsapiens.UCSC.hg38
-#' @import    BSgenome.Mmusculus.UCSC.mm9
 #' 
 #' @export 
 #' 

@@ -11,8 +11,7 @@
 #' @examples
 #' data("meth_array_450k_chr14", package = "compartmap")
 #' opensea <- filterOpenSea(array.data.chr14, genome = "hg19")
-#' 
-#' @export
+
 filterOpenSea <- function(obj, genome = c("hg19", "hg38", "mm10", "mm9"), other = NULL) {
   #get the desired open sea loci given the genome
   genome <- match.arg(genome)
@@ -45,7 +44,6 @@ filterOpenSea <- function(obj, genome = c("hg19", "hg38", "mm10", "mm9"), other 
 #' @return GRanges object that can be used with filterOpenSea()
 #' @import rtracklayer
 #' @import GenomicRanges
-#' @export
 #'
 #' @examples
 #' cpgi <- rtracklayer::import(system.file("inst/extdata/mm10_cpgi.bed", package = "compartmap"))

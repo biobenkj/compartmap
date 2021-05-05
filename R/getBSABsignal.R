@@ -22,18 +22,13 @@
 #' @import SummarizedExperiment
 #' @import parallel
 #' @import RaggedExperiment
-#' @import Homo.sapiens
-#' @import Mus.musculus
-#' @import BSgenome.Hsapiens.UCSC.hg38
-#' @import BSgenome.Mmusculus.UCSC.mm9
-#' @export
 #' @examples
 #' data("meth_wgbs_450k_chr14", package = "compartmap")
-#' wgbs_compartments <- getWGBSABsignal(wgbs.data.chr14, parallel=F, chr="chr14", bootstrap=F, genome="hg19", wgbs.type="hm450")
+#' wgbs_compartments <- getBSABsignal(wgbs.data.chr14, parallel=F, chr="chr14", bootstrap=F, genome="hg19")
 
 getBSABsignal <- function(obj, res = 1e6, parallel = TRUE, chr = NULL,
                              targets = NULL, preprocess = TRUE, cores = 2,
-                             bootstrap = TRUE, num.bootstraps = 1000,
+                             bootstrap = TRUE, num.bootstraps = 100,
                              genome = c("hg19", "hg38", "mm9", "mm10"),
                              other = NULL,
                              group = FALSE, boot.parallel = TRUE, boot.cores = 2) {
@@ -168,7 +163,6 @@ getBSABsignal <- function(obj, res = 1e6, parallel = TRUE, chr = NULL,
 #'
 #' @return A preprocessed SummarizedExperiment to compute compartments
 #' @import SummarizedExperiment
-#' @export
 #'
 #' @examples
 #' 

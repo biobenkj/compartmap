@@ -2,9 +2,26 @@
 % Please edit documentation in R/getATACABsignal.R
 \name{getATACABsignal}
 \alias{getATACABsignal}
+\alias{getRNAABsignal}
 \title{Estimate A/B compartments from ATAC-seq data}
 \usage{
 getATACABsignal(
+  obj,
+  res = 1e+06,
+  parallel = FALSE,
+  chr = NULL,
+  targets = NULL,
+  cores = 2,
+  bootstrap = TRUE,
+  num.bootstraps = 100,
+  genome = c("hg19", "hg38", "mm9", "mm10"),
+  other = NULL,
+  group = FALSE,
+  boot.parallel = FALSE,
+  boot.cores = 2
+)
+
+getRNAABsignal(
   obj,
   res = 1e+06,
   parallel = FALSE,
@@ -53,6 +70,11 @@ A RaggedExperiment of inferred compartments
 \description{
 \code{getATACABsignal} returns estimated A/B compartments from ATAC-seq data.
 }
+\section{Functions}{
+\itemize{
+\item \code{getRNAABsignal}: Alias for getATACABsignal
+}}
+
 \examples{
 data("k562_scatac_chr14", package = "compartmap")
 atac_compartments <- getATACABsignal(k562_scatac_chr14, parallel=FALSE, chr="chr14", bootstrap=FALSE, genome="hg19", group = TRUE)

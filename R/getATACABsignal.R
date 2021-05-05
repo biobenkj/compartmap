@@ -22,6 +22,9 @@
 #' @import parallel
 #' @import RaggedExperiment
 #' @export
+#' 
+#' @aliases getRNAABsignal
+#' 
 #' @examples
 #' data("k562_scatac_chr14", package = "compartmap")
 #' atac_compartments <- getATACABsignal(k562_scatac_chr14, parallel=FALSE, chr="chr14", bootstrap=FALSE, genome="hg19", group = TRUE)
@@ -94,7 +97,7 @@ getATACABsignal <- function(obj, res = 1e6, parallel = FALSE, chr = NULL,
     #get the shrunken bins
     obj.bins <- shrinkBins(obj, original.obj, prior.means = prior.means, chr = chr,
                            res = res, targets = targets, assay = "atac",
-                           genome = genome)
+                           genome = genome, jse = TRUE)
     #compute correlations
     if (group) obj.cor <- getCorMatrix(obj.bins, squeeze = FALSE)
     if (isFALSE(group)) obj.cor <- getCorMatrix(obj.bins, squeeze = TRUE)
@@ -183,3 +186,7 @@ getATACABsignal <- function(obj, res = 1e6, parallel = FALSE, chr = NULL,
   #return as a RaggedExperiment
   return(RaggedExperiment(atac.compartments, colData = colData(obj)))
 }
+
+#' @describeIn getATACABsignal Alias for getATACABsignal
+#'
+getRNAABsignal <- getATACABsignal

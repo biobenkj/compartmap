@@ -63,5 +63,4 @@ A RaggedExperiment of inferred compartments
 
 data("meth_array_450k_chr14", package = "compartmap")
 array_compartments <- getArrayABsignal(array.data.chr14, parallel=FALSE, chr="chr14", bootstrap=FALSE, genome="hg19", array.type="hm450")
-
 }

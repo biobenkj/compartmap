@@ -31,5 +31,4 @@ if (require(minfiData)) {
   grSet <- mapToGenome(ratioConvert(preprocessNoob(RGsetEx.sub)))
   preprocessArrays(grSet)
 } 
-
 }
