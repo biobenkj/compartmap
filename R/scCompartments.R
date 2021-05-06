@@ -21,8 +21,8 @@
 #' @import RaggedExperiment
 #' @export
 #' @examples
-#' data("groupATAC_raw_filtered_chr14", package = "compartmap")
-#' sc_compartments <- scCompartments(filtered.data.chr14, parallel=F, chr="chr14", bootstrap=F, genome="hg19")
+#' data("k562_scrna_chr14", package = "compartmap")
+#' sc_compartments <- scCompartments(k562_scrna_chr14, parallel=F, chr="chr14", bootstrap=F, genome="hg19")
 
 scCompartments <- function(obj, res = 1e6, parallel = FALSE, chr = NULL,
                            targets = NULL, cores = 2,

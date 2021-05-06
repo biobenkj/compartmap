@@ -13,7 +13,6 @@
 #' @examples
 #' 
 #' dummy <- matrix(rnorm(10000), ncol=25)
-#' set.seed(1000)
 #' sing_vec <- getSVD(dummy, k = 1, sing.vec = "left")
 #' 
 
@@ -21,8 +20,6 @@ getSVD <- function (matrix, k = 1, sing.vec = c("left", "right")) {
   #center the matrix
   matrix <- t(scale(t(matrix), center = TRUE, scale = FALSE))
   #run SVD
-  #set a random seed
-  set.seed(1000)
   sing.vec <- match.arg(sing.vec)
   p.mat <- switch(sing.vec,
                   left=runSVD(matrix, k=k, BSPARAM=IrlbaParam())$u,

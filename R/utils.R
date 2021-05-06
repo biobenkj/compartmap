@@ -69,7 +69,6 @@ getOpenSeas <- function(gr) {
 #' @examples
 #' 
 #' dummy <- matrix(rnorm(10000), ncol=25)
-#' set.seed(1000)
 #' sing_vec <- getSVD(dummy, k = 1, sing.vec = "left")
 #' 
 extractOpenClosed <- function(gr, cutoff = 0,
@@ -166,7 +165,6 @@ cleanAssayCols <- function(se, colmax = 0.8,
 #'
 #' @examples
 #'
-#'   set.seed(1234)
 #'   p <- runif(n=1000)
 #'   summary(p) 
 #' 
@@ -197,7 +195,6 @@ flogit <- function(p, sqz=0.000001) {
 #'
 #' @examples
 #'
-#'   set.seed(1234)
 #'   x <- rnorm(n=1000)
 #'   summary(x) 
 #'
