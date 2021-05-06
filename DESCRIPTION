@@ -37,7 +37,7 @@ Imports:
    impute,
    Matrix,
    covmat,
-   doParallel
+   foreach
 Suggests:
    covr,
    testthat,
