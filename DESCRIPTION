@@ -21,7 +21,8 @@ Depends:
    RaggedExperiment,
    BiocSingular,
    bsseq,
-   HDF5Array
+   HDF5Array,
+   foreach
 Imports: 
    GenomicRanges,
    gtools,
@@ -36,8 +37,7 @@ Imports:
    DelayedMatrixStats,
    impute,
    Matrix,
-   covmat,
-   foreach
+   covmat
 Suggests:
    covr,
    testthat,
