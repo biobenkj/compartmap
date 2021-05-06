@@ -14,6 +14,7 @@
 #' @return A denoised correlation matrix object for plotting with plotCorMatrix
 #' 
 #' @import covmat
+#' @import doParallel
 #' @import SummarizedExperiment
 #' @import GenomicRanges
 #' 

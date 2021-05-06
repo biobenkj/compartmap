@@ -36,7 +36,8 @@ Imports:
    DelayedMatrixStats,
    impute,
    Matrix,
-   covmat
+   covmat,
+   doParallel
 Suggests:
    covr,
    testthat,
