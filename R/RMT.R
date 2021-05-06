@@ -56,10 +56,6 @@ getDenoisedCorMatrix <- function(obj, res = 1e6, chr = "chr14",
                         jse = TRUE, assay = assay, genome = genome)
   #get the raw correlation matrix
   cor.mat <- getCorMatrix(binmat = bin.mat, squeeze = FALSE)
-  #see if the noisy version is wanted back...
-  if (noisy) {
-    return(cor.mat$binmat.cor)
-  }
   #denoise with RMT
   message("Denoising the correlation matrix using RMT.")
   cor.mat.denoise <- covmat::estRMT(cor.mat$binmat.cor,
