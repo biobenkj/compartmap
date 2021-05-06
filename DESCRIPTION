@@ -2,7 +2,7 @@ Package: compartmap
 Type: Package
 Title: A/B compartment inference from scRNA-seq, scATAC-seq and methylation array data
 Description: Compartmap performs shrunken A/B compartment inference from scRNA-seq, scATAC-seq, scBS-seq, and methylation arrays.
-Version: 1.91.0
+Version: 2.0.0
 Date: 2021-05-03
 Authors@R: c(person("Benjamin", "Johnson", role = c("aut", "cre"),
                     email = "ben.johnson@vai.org",),
