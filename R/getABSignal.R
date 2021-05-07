@@ -15,7 +15,6 @@
 #' @examples 
 #' 
 #' library(SummarizedExperiment)
-#' library(Homo.sapiens)
 #' library(BiocSingular)
 #' 
 #' #Generate random genomic intervals of 1-1000 bp on chr1-22

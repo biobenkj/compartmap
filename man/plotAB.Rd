@@ -56,7 +56,6 @@ Plot A/B compartments bins
 \examples{
 
 library(GenomicRanges)
-library(Homo.sapiens)
 
 #Generate random genomic intervals of 1-1000 bp on chr1-22
 #Modified from https://www.biostars.org/p/225520/
@@ -85,22 +84,4 @@ absignal <- getABSignal(bin.cor.counts)
 par(mar=c(1,1,1,1))
 par(mfrow=c(1,1))
 plotAB(absignal$pc, ylim = c(-0.2, 0.2), unitarize = TRUE)
-
-\donttest{
-#If plotting individual A/B signals using output from getCompartments
-#Note: this function currently only supports plotting individual chromosomes from single samples
-bin.chr1.ab <- getCompartments(data, "array", chrs = "chr1", genome = "hg19")
-
-#For 7 samples
-#Adjust ylim as necessary
-par(mar=c(1,1,1,1))
-par(mfrow=c(7,1))
-plotAB(bin.chr1.ab[,1], ylim = c(-0.2, 0.2), unitarize = TRUE)
-plotAB(bin.chr1.ab[,2], ylim = c(-0.2, 0.2), unitarize = TRUE, top.col = "goldenrod")
-plotAB(bin.chr1.ab[,3], ylim = c(-0.2, 0.2), unitarize = TRUE, top.col = "darkblue")
-plotAB(bin.chr1.ab[,4], ylim = c(-0.2, 0.2), unitarize = TRUE, top.col = "red")
-plotAB(bin.chr1.ab[,5], ylim = c(-0.2, 0.2), unitarize = TRUE, top.col = "black")
-plotAB(bin.chr1.ab[,6], ylim = c(-0.2, 0.2), unitarize = TRUE, top.col = "cyan")
-plotAB(bin.chr1.ab[,7], ylim = c(-0.2, 0.2), unitarize = TRUE, top.col = "seagreen")
-}
 }

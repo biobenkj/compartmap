@@ -14,7 +14,7 @@
 #' @examples
 #' 
 #' dummy <- matrix(rnorm(10000), ncol=25)
-#' sing_vec <- getSVD(dummy, k = 1, sing.vec = "left")
+#' sing_vec <- getSVD(dummy, k = 1, sing.vec = "right")
 #' 
 
 getSVD <- function (matrix, k = 1, sing.vec = c("left", "right")) {  
