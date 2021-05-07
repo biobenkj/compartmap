@@ -41,7 +41,9 @@ Suggests:
    covr,
    testthat,
    knitr,
-   Rcpp
+   Rcpp,
+   rmarkdown,
+   markdown
 LazyData: true
 RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
