@@ -20,7 +20,6 @@ Helper function: squeezed logit
 }
 \examples{
 
-  set.seed(1234)
   p <- runif(n=1000)
   summary(p) 
 

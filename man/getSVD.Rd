@@ -20,7 +20,6 @@ Compute the SVD of a matrix using irlba
 \examples{
 
 dummy <- matrix(rnorm(10000), ncol=25)
-set.seed(1000)
 sing_vec <- getSVD(dummy, k = 1, sing.vec = "left")
 
 }

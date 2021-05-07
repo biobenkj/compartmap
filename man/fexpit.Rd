@@ -20,7 +20,6 @@ Helper function: expanded expit
 }
 \examples{
 
-  set.seed(1234)
   x <- rnorm(n=1000)
   summary(x) 
 

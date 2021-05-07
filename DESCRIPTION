@@ -22,15 +22,12 @@ Depends:
    BiocSingular,
    bsseq,
    HDF5Array,
-   foreach,
    rmarkdown,
    markdown
 Imports: 
    GenomicRanges,
-   gtools,
    parallel,
    grid,
-   viridis,
    ggplot2,
    reshape2,
    DelayedArray,
@@ -39,7 +36,7 @@ Imports:
    DelayedMatrixStats,
    impute,
    Matrix,
-   covmat
+   RMTstat
 Suggests:
    covr,
    testthat,

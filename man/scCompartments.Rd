@@ -48,6 +48,6 @@ A RaggedExperiment of inferred compartments
 \code{scCompartments} returns estimated A/B compartments from sc-seq data.
 }
 \examples{
-data("groupATAC_raw_filtered_chr14", package = "compartmap")
-sc_compartments <- scCompartments(filtered.data.chr14, parallel=F, chr="chr14", bootstrap=F, genome="hg19")
+data("k562_scrna_chr14", package = "compartmap")
+sc_compartments <- scCompartments(k562_scrna_chr14, parallel=F, chr="chr14", bootstrap=F, genome="hg19")
 }

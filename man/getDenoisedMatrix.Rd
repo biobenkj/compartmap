@@ -3,7 +3,7 @@
 \name{getDenoisedMatrix}
 \alias{getDenoisedMatrix}
 \alias{getDenoisedCorMatrix}
-\title{Denoise a correlation matrix using a Random Matrix Theory approach}
+\title{Wrapper to denoise a correlation matrix using a Random Matrix Theory approach}
 \usage{
 getDenoisedCorMatrix(
   obj,
@@ -37,7 +37,7 @@ getDenoisedCorMatrix(
 A denoised correlation matrix object for plotting with plotCorMatrix
 }
 \description{
-Denoise a correlation matrix using a Random Matrix Theory approach
+Wrapper to denoise a correlation matrix using a Random Matrix Theory approach
 }
 \examples{
 data("k562_scrna_chr14", package = "compartmap")
