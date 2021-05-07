@@ -47,6 +47,9 @@ plotAB(
 
 \item{filter.lower.bound}{Minimum absolute eigenvalue to include in the plot}
 }
+\value{
+A plot of inferred A/B compartments
+}
 \description{
 Plot A/B compartments bins
 }

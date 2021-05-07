@@ -18,7 +18,6 @@
 #' 
 #' @return            smoothed logit(M/Cov) matrix with coordinates as row names
 #' 
-#' @import            gtools
 #' @import            bsseq
 #'
 #' @export

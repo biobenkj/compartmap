@@ -117,7 +117,7 @@ getArrayABsignal <- function(obj, res = 1e6, parallel = TRUE, chr = NULL,
                                                                num.bootstraps = num.bootstraps, parallel = boot.parallel,
                                                                cores = boot.cores, group = group)), "GRangesList"))), 
               file = paste0(s, "compartment_checkpoint.rds"))
-    }, mc.cores = cores, mc.preschedule = F)
+    }, mc.cores = cores, mc.preschedule = FALSE)
   }
   
   if (!parallel & isFALSE(group)) {

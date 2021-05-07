@@ -16,7 +16,7 @@ Encoding: UTF-8
 License: GPL-3 + file LICENSE
 biocViews: Genetics, Epigenetics, ATACSeq, MethylSeq, MethylationArray, RNASeq
 Depends: 
-   R (>= 4.0.0),
+   R (>= 4.1.0),
    SummarizedExperiment,
    RaggedExperiment,
    BiocSingular,
@@ -31,7 +31,6 @@ Imports:
    ggplot2,
    reshape2,
    DelayedArray,
-   RColorBrewer,
    rtracklayer,
    DelayedMatrixStats,
    impute,

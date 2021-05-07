@@ -27,7 +27,8 @@
 #'        correlation matrix are replaced with 1 to make the matrix psd.
 #' @param numEig number of eigenvalues that are known for variance calculation.
 #'        Default is set to 1. If numEig = 0 then variance is assumed to be 1.
-#'
+#' @return A denoised RMT object
+#' 
 #' @examples 
 #' rand_cor_mat <- cor(matrix(rnorm(100), nrow = 10))
 #' denoised_rand_cor_mat <- estRMT(rand_cor_mat)$cov
@@ -146,8 +147,6 @@ estRMT <- function(R, Q = NA, cutoff = c("max", "each"),
 #'
 #' @return A denoised correlation matrix object for plotting with plotCorMatrix
 #' 
-#' @import covmat
-#' @import foreach
 #' @import SummarizedExperiment
 #' @import GenomicRanges
 #' 

@@ -30,6 +30,9 @@ correlation matrix are replaced with 1 to make the matrix psd.}
 \item{numEig}{number of eigenvalues that are known for variance calculation.
 Default is set to 1. If numEig = 0 then variance is assumed to be 1.}
 }
+\value{
+A denoised RMT object
+}
 \description{
 Denoising of Covariance matrix using Random Matrix Theory
 }

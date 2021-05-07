@@ -19,6 +19,8 @@
 #' @import    GenomicRanges
 #' 
 #' @export 
+#'
+#' @return    A plot of inferred A/B compartments
 #' 
 #' @examples 
 #' 

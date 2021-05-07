@@ -58,5 +58,5 @@ A RaggedExperiment of inferred compartments
 }
 \examples{
 data("meth_wgbs_450k_chr14", package = "compartmap")
-wgbs_compartments <- getBSABsignal(wgbs.data.chr14, parallel=F, chr="chr14", bootstrap=F, genome="hg19")
+wgbs_compartments <- getBSABsignal(wgbs.data.chr14, parallel=FALSE, chr="chr14", bootstrap=FALSE, genome="hg19")
 }

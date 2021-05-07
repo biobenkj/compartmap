@@ -24,7 +24,7 @@
 #' @import RaggedExperiment
 #' @examples
 #' data("meth_wgbs_450k_chr14", package = "compartmap")
-#' wgbs_compartments <- getBSABsignal(wgbs.data.chr14, parallel=F, chr="chr14", bootstrap=F, genome="hg19")
+#' wgbs_compartments <- getBSABsignal(wgbs.data.chr14, parallel=FALSE, chr="chr14", bootstrap=FALSE, genome="hg19")
 
 getBSABsignal <- function(obj, res = 1e6, parallel = TRUE, chr = NULL,
                              targets = NULL, preprocess = TRUE, cores = 2,
