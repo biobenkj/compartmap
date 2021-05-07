@@ -4,11 +4,7 @@
 \alias{getGlobalMeans}
 \title{Get the global means of a matrix}
 \usage{
-getGlobalMeans(
-  obj,
-  targets = NULL,
-  assay = c("array", "atac", "bisulfite", "rna")
-)
+getGlobalMeans(obj, targets = NULL, assay = c("atac", "rna"))
 }
 \arguments{
 \item{obj}{Input SummarizedExperiment object}
@@ -24,7 +20,7 @@ A vector of global or targeted means
 Get the global means of a matrix
 }
 \examples{
-data("meth_array_450k_chr14", package = "compartmap")
-array.global.means <- getGlobalMeans(array.data.chr14, assay = "array")
+data("k562_scrna_chr14", package = "compartmap")
+scrna.global.means <- getGlobalMeans(k562_scrna_chr14, assay = "rna")
 
 }

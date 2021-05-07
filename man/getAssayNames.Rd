@@ -16,6 +16,6 @@ The names of the assays
 Get the assay names from a SummarizedExperiment object
 }
 \examples{
-data("meth_array_450k_chr14", package = "compartmap")
-getAssayNames(array.data.chr14)
+data("k562_scrna_chr14", package = "compartmap")
+getAssayNames(k562_scrna_chr14)
 }

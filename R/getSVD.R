@@ -4,6 +4,7 @@
 #'
 #' @param matrix A p x n input matrix
 #' @param k Number of singular vectors to return
+#' @param sing.vec Whether to return the right or left singular vector
 #'
 #' @return A singular vector or matrix with sign corresponding to positive values
 #' 

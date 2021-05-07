@@ -12,7 +12,7 @@ shrinkBins(
   res = 1e+06,
   targets = NULL,
   jse = TRUE,
-  assay = c("array", "atac", "bisulfite", "rna"),
+  assay = c("rna", "atac"),
   genome = c("hg19", "hg38", "mm9", "mm10")
 )
 }
@@ -31,7 +31,7 @@ shrinkBins(
 
 \item{jse}{Whether to use a James-Stein estimator (default is TRUE)}
 
-\item{assay}{What assay type this is ("array", "atac", "bisulfite", "rna")}
+\item{assay}{What assay type this is ("rna", "atac")}
 
 \item{genome}{What genome are we working with ("hg19", "hg38", "mm9", "mm10")}
 }
@@ -45,10 +45,7 @@ A list object to pass to getCorMatrix
 This function computes shrunken bin-level estimates using a James-Stein estimator, reformulated as an eBayes procedure
 }
 \examples{
-data("meth_array_450k_chr14", package = "compartmap")
-#impute to remove NAs
-imputed.array <- imputeKNN(array.data.chr14, assay = "array")
-#get the shrunken binned M-values
-shrunken.bin.array <- shrinkBins(imputed.array, chr = "chr14", assay = "array")
+data("k562_scrna_chr14", package = "compartmap")
+shrunken.bin.scrna <- shrinkBins(k562_scrna_chr14, chr = "chr14", assay = "rna")
 
 }

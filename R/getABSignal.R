@@ -42,15 +42,14 @@
 #' absignal <- getABSignal(bin.cor.counts)
 
 getABSignal <- function(x, squeeze = FALSE,
-                        assay = c("array", "atac", "bisulfite")){
+                        assay = c("rna", "atac")){
   message("Calculating eigenvectors.")
   pc <- getSVD(x$binmat.cor, sing.vec = "right")
   if (squeeze) pc <- ifisherZ(pc)
   message("Smoothing eigenvector.")
   pc <- switch(assay,
-               array = meanSmoother(pc, k=1, iter=2),
-               atac = meanSmoother(pc, k=1, iter=2),
-               bisulfite = meanSmoother(pc, k=1, iter=2))
+               rna = meanSmoother(pc, k=1, iter=2),
+               atac = meanSmoother(pc, k=1, iter=2))
   message("Done smoothing.")
   gr <- x$gr
   gr$pc <- pc

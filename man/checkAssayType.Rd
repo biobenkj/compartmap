@@ -16,6 +16,6 @@ Boolean
 Check if the assay is a SummarizedExperiment
 }
 \examples{
-data("meth_array_450k_chr14", package = "compartmap")
-checkAssayType(array.data.chr14)
+data("k562_scrna_chr14", package = "compartmap")
+checkAssayType(k562_scrna_chr14)
 }

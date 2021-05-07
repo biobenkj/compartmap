@@ -43,7 +43,7 @@ condenseRE <- function(obj) {
 #' x <- RaggedExperiment(grl)
 #' condense.x <- condenseSE(x, sample.name = "A")
 condenseSE <- function(obj, sample.name = NULL) {
-  if (is.null(sample.name)) stop("Need a sample/cell to extract via sample.name.")
+  if (is.null(sample.name)) sample.name <- colnames(obj)
   #condense the input to something that can be plotted with plotAB
   if (is(obj, "RaggedExperiment")) obj <- condenseRE(obj)
   #make sure there are some assays to work with

@@ -4,12 +4,7 @@
 \alias{summarizeBootstraps}
 \title{Summarize the bootstrap compartment estimates and compute Agresti-Coull confidence intervals}
 \usage{
-summarizeBootstraps(
-  boot.list,
-  est.ab,
-  q = 0.95,
-  assay = c("array", "atac", "bisulfite")
-)
+summarizeBootstraps(boot.list, est.ab, q = 0.95, assay = c("rna", "atac"))
 }
 \arguments{
 \item{boot.list}{List of bootstraps as GRanges objects}

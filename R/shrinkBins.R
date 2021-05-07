@@ -12,7 +12,7 @@
 #' @param res Resolution to perform the binning
 #' @param targets The column/sample/cell names to shrink towards
 #' @param jse Whether to use a James-Stein estimator (default is TRUE)
-#' @param assay What assay type this is ("array", "atac", "bisulfite", "rna")
+#' @param assay What assay type this is ("rna", "atac")
 #' @param genome What genome are we working with ("hg19", "hg38", "mm9", "mm10")
 #'
 #' @return A list object to pass to getCorMatrix
@@ -23,16 +23,13 @@
 #' @export
 #'
 #' @examples
-#' data("meth_array_450k_chr14", package = "compartmap")
-#' #impute to remove NAs
-#' imputed.array <- imputeKNN(array.data.chr14, assay = "array")
-#' #get the shrunken binned M-values
-#' shrunken.bin.array <- shrinkBins(imputed.array, chr = "chr14", assay = "array")
+#' data("k562_scrna_chr14", package = "compartmap")
+#' shrunken.bin.scrna <- shrinkBins(k562_scrna_chr14, chr = "chr14", assay = "rna")
 #' 
 
 shrinkBins <- function(x, original.x, prior.means = NULL, chr = NULL,
                        res = 1e6, targets = NULL, jse = TRUE,
-                       assay = c("array", "atac", "bisulfite", "rna"),
+                       assay = c("rna", "atac"),
                        genome = c("hg19", "hg38", "mm9", "mm10")) {
   #match the assay args
   assay <- match.arg(assay)
@@ -60,12 +57,6 @@ shrinkBins <- function(x, original.x, prior.means = NULL, chr = NULL,
                                        atac = getBinMatrix(x=as.matrix(cbind(assays(original.x)$counts, prior.means)),
                                                            genloc=rowRanges(x), chr=chr, res=res, FUN=mean,
                                                            genome = genome),
-                                       array = getBinMatrix(x=as.matrix(cbind(flogit(assays(original.x)$Beta), prior.means)),
-                                                            genloc=rowRanges(x), chr=chr, res=res, FUN=median,
-                                                            genome = genome),
-                                       bisulfite = getBinMatrix(x=as.matrix(cbind(assays(original.x)$counts, prior.means)),
-                                                                genloc=rowRanges(x), chr=chr, res=res, FUN=mean,
-                                                                genome = genome),
                                        rna = getBinMatrix(x=as.matrix(cbind(assays(original.x)$counts, prior.means)),
                                                           genloc=rowRanges(x), chr=chr, res=res, FUN=mean,
                                                           genome = genome)))
@@ -74,12 +65,6 @@ shrinkBins <- function(x, original.x, prior.means = NULL, chr = NULL,
                                        atac = getBinMatrix(x=as.matrix(cbind(assays(original.x)$counts, prior.means)),
                                                            genloc=rowRanges(x), chr=chr, res=res, FUN=atac_fun,
                                                            genome = genome),
-                                       array = getBinMatrix(x=as.matrix(cbind(flogit(assays(original.x)$Beta), prior.means)),
-                                                            genloc=rowRanges(x), chr=chr, res=res, FUN=median,
-                                                            genome = genome),
-                                       bisulfite = getBinMatrix(x=as.matrix(cbind(assays(original.x)$counts, prior.means)),
-                                                                genloc=rowRanges(x), chr=chr, res=res, FUN=mean,
-                                                                genome = genome),
                                        rna = getBinMatrix(x=as.matrix(cbind(assays(original.x)$counts, prior.means)),
                                                           genloc=rowRanges(x), chr=chr, res=res, FUN=atac_fun,
                                                           genome = genome)))
@@ -96,14 +81,10 @@ shrinkBins <- function(x, original.x, prior.means = NULL, chr = NULL,
     if (jse) {
       switch(assay,
              atac = .jse(x=r.samps, grand.mean=r.prior.m, targets=targets),
-             array = .jse(x=r.samps, grand.mean=r.prior.m, targets=targets),
-             bisulfite = .jse(x=r.samps, grand.mean=r.prior.m, targets=targets),
              rna = .jse(x=r.samps, grand.mean=r.prior.m, targets=targets))
     } else {
       switch(assay,
              atac = .ebayes(x=r.samps, prior=r.prior.m, targets=targets),
-             array = .ebayes(x=r.samps, prior=r.prior.m, targets=targets),
-             bisulfite = .ebayes(x=r.samps, prior=r.prior.m, targets=targets),
              rna = .ebayes(x=r.samps, prior=r.prior.m, targets=targets))
       }
     }))

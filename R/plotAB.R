@@ -55,7 +55,7 @@
 #' par(mfrow=c(1,1))
 #' plotAB(absignal$pc, ylim = c(-0.2, 0.2), unitarize = TRUE)
 #' 
-#' \dontrun{
+#' \donttest{
 #' #If plotting individual A/B signals using output from getCompartments
 #' #Note: this function currently only supports plotting individual chromosomes from single samples
 #' bin.chr1.ab <- getCompartments(data, "array", chrs = "chr1", genome = "hg19")

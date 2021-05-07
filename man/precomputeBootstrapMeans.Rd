@@ -8,7 +8,7 @@ precomputeBootstrapMeans(
   obj,
   targets = NULL,
   num.bootstraps = 100,
-  assay = c("array", "atac", "bisulfite", "rna"),
+  assay = c("atac", "rna"),
   parallel = FALSE,
   num.cores = 1
 )
@@ -33,7 +33,7 @@ A matrix of bootstrapped global means
 Pre-compute the global means for bootstrapping compartments
 }
 \examples{
-data("meth_array_450k_chr14", package = "compartmap")
-array.bootstrap.global.means <- precomputeBootstrapMeans(array.data.chr14, assay = "array", num.bootstraps = 2)
+data("k562_scrna_chr14", package = "compartmap")
+scrna.bootstrap.global.means <- precomputeBootstrapMeans(k562_scrna_chr14, assay = "rna", num.bootstraps = 2)
 
 }

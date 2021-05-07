@@ -16,7 +16,7 @@ A character vector of chromosomes present in an object
 Get the chromosomes from an object
 }
 \examples{
-data("meth_array_450k_chr14", package = "compartmap")
-getChrs(array.data.chr14)
+data("k562_scrna_chr14", package = "compartmap")
+getChrs(k562_scrna_chr14)
 
 }

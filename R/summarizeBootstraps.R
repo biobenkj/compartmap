@@ -15,7 +15,7 @@
 #' 
 
 summarizeBootstraps <- function(boot.list, est.ab, q = 0.95,
-                                assay = c("array", "atac", "bisulfite")) {
+                                assay = c("rna", "atac")) {
   #go through the estimated A/B compartments and compute proportions from the boot.list
   est.ab$score <- est.ab$pc
   message("Summarizing bootstraps.")
@@ -40,7 +40,7 @@ summarizeBootstraps <- function(boot.list, est.ab, q = 0.95,
     #the logic is flipped for ATAC
     #open = eigen > 0
     #closed = eigen < 0
-    if (assay == "atac") {
+    if (assay %in% c("atac", "rna")) {
       b$open <- ifelse(b$score > 0, 1, 0)
       b$closed <- ifelse(b$score < 0, 1, 0)
     } else {
@@ -67,13 +67,13 @@ summarizeBootstraps <- function(boot.list, est.ab, q = 0.95,
   conf.int <- lapply(1:length(est.ab), function(e) {
     #compute intervals
     if (est.ab[e,]$score > 0) {
-      if (assay == "atac") {
-        #assumes open for ATAC
+      if (assay %in% c("atac", "rna")) {
+        #assumes open for ATAC and RNA
         est <- agrestiCoullCI(est.ab[e,]$boot.open,
                               est.ab[e,]$boot.closed,
                               q = 0.95)
       } else {
-        #assumes closed for arrays
+        #assumes closed otherwise
         est <- agrestiCoullCI(est.ab[e,]$boot.closed,
                               est.ab[e,]$boot.open,
                               q = 0.95)
@@ -89,13 +89,13 @@ summarizeBootstraps <- function(boot.list, est.ab, q = 0.95,
       #est.ab[e,]$conf.est.upperCI <<- est[3]
     }
     if (est.ab[e,]$score < 0) {
-      if (assay == "atac") {
+      if (assay %in% c("atac", "rna")) {
         #assumes closed for ATAC
         est <- agrestiCoullCI(est.ab[e,]$boot.closed,
                               est.ab[e,]$boot.open,
                               q = 0.95)
       } else {
-        #assumes open for arrays
+        #assumes open otherwise
         est <- agrestiCoullCI(est.ab[e,]$boot.open,
                               est.ab[e,]$boot.closed,
                               q = 0.95)

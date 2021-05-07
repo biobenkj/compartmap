@@ -10,6 +10,8 @@ getSVD(matrix, k = 1, sing.vec = c("left", "right"))
 \item{matrix}{A p x n input matrix}
 
 \item{k}{Number of singular vectors to return}
+
+\item{sing.vec}{Whether to return the right or left singular vector}
 }
 \value{
 A singular vector or matrix with sign corresponding to positive values
