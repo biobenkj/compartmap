@@ -7,13 +7,13 @@
 #' @param what   Which metadata column to plot
 #' @param main    Title for the plot
 #' @param ylim      Y-axis limits (default is -1 to 1)
-#' @param unitarize   Should the data be unitarized? (not necessary for arrays)
+#' @param unitarize   Should the data be unitarized?
 #' @param reverse    Reverse the sign of the PC values?
 #' @param top.col    Top (pos. PC values) chromatin color to be plotted
 #' @param bot.col    Bottom (neg. PC values) chromatin color to be plotted
 #' @param with.ci    Whether to plot confidence intervals
 #' @param filter    Whether to filter eigenvalues close to zero (default: TRUE)
-#' @param filter.lower.bound  Minimum absolute eigenvalue to include in the plot
+#' @param filter.min.eigen  Minimum absolute eigenvalue to include in the plot
 #' @param median.conf Plot the median confidence estimate across the chromosome?
 #' 
 #' @import    GenomicRanges
@@ -52,7 +52,7 @@
 #' #Plot the A/B signal
 #' par(mar=c(1,1,1,1))
 #' par(mfrow=c(1,1))
-#' plotAB(absignal$pc, ylim = c(-0.2, 0.2), unitarize = TRUE)
+#' plotAB(absignal, what = "pc")
 
 plotAB <- function(x, chr = NULL, what = "score", main="",ylim=c(-1, 1),
                    unitarize=FALSE, reverse=FALSE, top.col = "deeppink4", 

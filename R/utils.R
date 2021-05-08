@@ -11,7 +11,7 @@
 #' @examples
 #' 
 #' dummy <- matrix(rnorm(10000), ncol=25)
-#' sing_vec <- getSVD(dummy, k = 1, sing.vec = "left")
+#' sing_vec <- getSVD(dummy, k = 1, sing.vec = "right")
 #' 
 extractOpenClosed <- function(gr, cutoff = 0,
                               assay = c("rna", "atac")){
@@ -302,12 +302,6 @@ sparseToDenseMatrix <- function(mat, blockwise = TRUE,
 #' @import GenomicRanges
 #' 
 #' @export
-#'
-#' @examples
-#' library(GenomicRanges)
-#' data("hg19.gr")
-#' tiles <- tileGenome(seqlengths(hg19.gr), tilewidth = 1e3, cut.last.tile.in.chrom = TRUE)
-#' se <- importBigWig(system.file("inst/extdata/k562_scrna_chr14.bw", package = "compartmap"), bins=tiles, summarize=TRUE, genome="hg19")
 
 importBigWig <- function(bw, bins = NULL, summarize = FALSE,
                          genome = c("hg19", "hg38", "mm9", "mm10")) {

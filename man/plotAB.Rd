@@ -31,7 +31,7 @@ plotAB(
 
 \item{ylim}{Y-axis limits (default is -1 to 1)}
 
-\item{unitarize}{Should the data be unitarized? (not necessary for arrays)}
+\item{unitarize}{Should the data be unitarized?}
 
 \item{reverse}{Reverse the sign of the PC values?}
 
@@ -43,9 +43,9 @@ plotAB(
 
 \item{filter}{Whether to filter eigenvalues close to zero (default: TRUE)}
 
-\item{median.conf}{Plot the median confidence estimate across the chromosome?}
+\item{filter.min.eigen}{Minimum absolute eigenvalue to include in the plot}
 
-\item{filter.lower.bound}{Minimum absolute eigenvalue to include in the plot}
+\item{median.conf}{Plot the median confidence estimate across the chromosome?}
 }
 \value{
 A plot of inferred A/B compartments
@@ -83,5 +83,5 @@ absignal <- getABSignal(bin.cor.counts)
 #Plot the A/B signal
 par(mar=c(1,1,1,1))
 par(mfrow=c(1,1))
-plotAB(absignal$pc, ylim = c(-0.2, 0.2), unitarize = TRUE)
+plotAB(absignal, what = "pc")
 }

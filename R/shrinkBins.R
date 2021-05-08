@@ -24,7 +24,9 @@
 #'
 #' @examples
 #' data("k562_scrna_chr14", package = "compartmap")
-#' shrunken.bin.scrna <- shrinkBins(k562_scrna_chr14, chr = "chr14", assay = "rna")
+#' shrunken.bin.scrna <- shrinkBins(x = k562_scrna_chr14,
+#'                                  original.x = k562_scrna_chr14,
+#'                                  chr = "chr14", assay = "rna")
 #' 
 
 shrinkBins <- function(x, original.x, prior.means = NULL, chr = NULL,

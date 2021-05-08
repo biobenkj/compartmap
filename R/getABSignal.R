@@ -43,6 +43,7 @@
 getABSignal <- function(x, squeeze = FALSE,
                         assay = c("rna", "atac")){
   message("Calculating eigenvectors.")
+  assay <- match.arg(assay)
   pc <- getSVD(x$binmat.cor, sing.vec = "right")
   if (squeeze) pc <- ifisherZ(pc)
   message("Smoothing eigenvector.")

@@ -192,14 +192,12 @@ getDenoisedCorMatrix <- function(obj, res = 1e6, chr = "chr14",
   cor.mat <- getCorMatrix(binmat = bin.mat, squeeze = FALSE)
   #denoise with RMT
   message("Denoising the correlation matrix using RMT.")
-  cor.mat.denoise <- compartmap::estRMT(cor.mat$binmat.cor,
-                                    parallel = FALSE)$cov
+  cor.mat.denoise <- compartmap::estRMT(cor.mat$binmat.cor)$cov
   #iterate?
   if (iter >= 2) {
     for (i in 2:iter) {
       message("Iterative denoising. Iteration: ", i)
-      cor.mat.denoise <- compartmap::estRMT(cor.mat.denoise,
-                                        parallel = FALSE)$cov
+      cor.mat.denoise <- compartmap::estRMT(cor.mat.denoise)$cov
     }
   }
   

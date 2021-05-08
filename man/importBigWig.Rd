@@ -26,9 +26,3 @@ SummerizedExperiment object with rowRanges corresponding to summarized features
 \description{
 Import and optionally summarize a bigwig at a given resolution
 }
-\examples{
-library(GenomicRanges)
-data("hg19.gr")
-tiles <- tileGenome(seqlengths(hg19.gr), tilewidth = 1e3, cut.last.tile.in.chrom = TRUE)
-se <- importBigWig(system.file("inst/extdata/k562_scrna_chr14.bw", package = "compartmap"), bins=tiles, summarize=TRUE, genome="hg19")
-}

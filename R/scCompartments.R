@@ -12,8 +12,8 @@
 #' @param bootstrap Whether we should perform bootstrapping of inferred compartments
 #' @param num.bootstraps How many bootstraps to run
 #' @param genome What genome to work on ("hg19", "hg38", "mm9", "mm10")
-#' @param other Another arbitrary genome to compute compartments on
 #' @param group Whether to treat this as a group set of samples
+#' @param assay What type of single-cell assay is the input data ("atac" or "rna")
 #'
 #' @return A RaggedExperiment of inferred compartments
 #' @import SummarizedExperiment

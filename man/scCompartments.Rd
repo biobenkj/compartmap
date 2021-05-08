@@ -39,7 +39,7 @@ scCompartments(
 
 \item{group}{Whether to treat this as a group set of samples}
 
-\item{other}{Another arbitrary genome to compute compartments on}
+\item{assay}{What type of single-cell assay is the input data ("atac" or "rna")}
 }
 \value{
 A RaggedExperiment of inferred compartments
