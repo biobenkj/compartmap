@@ -30,7 +30,7 @@ A GRanges object of compartment inflection points
 A wrapper function to generate a GRanges object of chromatin domain inflection points
 }
 \examples{
-data("k562_scrna_chr14", package = "comartmap")
+data("k562_scrna_chr14", package = "compartmap")
 chr14_domains <- scCompartments(k562_scrna_chr14,
                                 res = 1e6, genome = "hg19",
                                 group = TRUE, bootstrap = FALSE)

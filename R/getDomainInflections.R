@@ -14,7 +14,7 @@
 #' @export
 #'
 #' @examples
-#' data("k562_scrna_chr14", package = "comartmap")
+#' data("k562_scrna_chr14", package = "compartmap")
 #' chr14_domains <- scCompartments(k562_scrna_chr14,
 #'                                 res = 1e6, genome = "hg19",
 #'                                 group = TRUE, bootstrap = FALSE)
