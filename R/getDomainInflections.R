@@ -28,7 +28,6 @@ getDomainInflections <- function(gr, what = "score", res = 1e6,
   stopifnot(what %in% names(mcols(gr)))
   #determine which genome we are working with
   genome <- match.arg(genome)
-  if (!genome %in% c("hg19", "hg38", "mm9", "mm10")) stop("Don't know what to do with genome", genome)
   genome <- switch(genome,
                    hg19=data("hg19.gr", package = "compartmap"),
                    hg38=data("hg38.gr", package = "compartmap"),
@@ -37,7 +36,7 @@ getDomainInflections <- function(gr, what = "score", res = 1e6,
   #we may not be able to assume continuous compartment structure here
   #so somehow, we need to find continuous runs
   message("Tiling genome.")
-  tiles <- tileGenome(seqlengths = seqlengths(genome)[chrs],
+  tiles <- tileGenome(seqlengths = seqlengths(get(genome))[chrs],
                       tilewidth = res,
                       cut.last.tile.in.chrom = TRUE)
   #reset to 0-based
