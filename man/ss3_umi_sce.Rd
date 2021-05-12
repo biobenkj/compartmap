@@ -8,6 +8,9 @@
 data(ss3_umi_sce, package = "compartmap")
 }
 \description{
+Only keep chromosome 22 for the example
+}
+\details{
 This object was generated using the HEK293T data from the SMART-seq3 paper
 }
 \references{

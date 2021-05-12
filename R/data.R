@@ -31,6 +31,7 @@ NULL
 #' @docType data
 #' @author Benjamin K Johnson \email{ben.johnson@vai.org}
 #' @references \url{https://www.ebi.ac.uk/arrayexpress/experiments/E-MTAB-8735/}
+#' @description Only keep chromosome 22 for the example
 #' @keywords data
 #' @usage data(ss3_umi_sce, package = "compartmap")
 NULL

@@ -22,18 +22,20 @@ Compartmap extends methods proposed by Fortin and Hansen 2015, Genome Biology (h
 
 Here, we propose a method to infer both group and single-cell level higher-order chromatin states from scRNA-seq and scATAC-seq. To accomplish this, we employ a James-Stein estimator (JSE) towards a global or targeted mean, using either chromsome or genome-wide information from scRNA-seq and scATAC-seq. Additionally, due to the sparsity of single-cell data, we employ a bootstrap procedure to quantify the uncertainty associated with the state and boundaries of inferred compartments. The output from compartmap can then be visualized directly, compared with orthogonal assay types, and/or embedded with something like UMAP or t-SNE. Further, to explore the higher-order interacting domains inferred from compartmap, we use a Random Matrix Theory (RMT) approach to resolve the "plaid-like" patterning, similar to what is observed in Hi-C and scHi-C. 
 
-## Quick Start
+## Quick start with example data
 
 ### Input
 The expected input for compartmap is a `RangedSummarizedExperiment` object. These can be built using the built-in function `importBigWig()` if starting from BigWigs (recommended for scRNA-seq) or from a feature level object like a `SingleCellExperiment` with the `rowRanges` slot populated with the GRanges for each feature (see below in the examples). 
 
 ```{r loadData, message=FALSE}
 # As an example for the quick start, we will load an existing example
-# See further down for if starting from bigWigs or a feature based object
+# See further down if starting from bigWigs or a feature based object
 library(compartmap)
 
 # Load in some example scRNA-seq data from K562
 # These data are derived from Johnson and Rhodes et. al 2021 STORM-seq
+# They have already been TF-IDF transformed with transformTFIDF()
+# See the full workflow below for more details
 data("k562_scrna_chr14", package = "compartmap")
 
 ```
@@ -118,7 +120,7 @@ k562_cell_1_inflections
 
 The currently recommended input files to compartmap for scRNA-seq are single-cell bigWigs, though does work with a feature/counts based object as demonstrated in the next section. Single-cell bigWigs can be generated through several tools, such as deeptools (https://deeptools.readthedocs.io/en/latest/). To import bigWigs, we can use the `importBigWig` function in compartmap. This will read in a bigWig file and optionally summarize to an arbitrary bin size. The bin size used in the compartmap manuscript was 1kb and is what we do here as well.
 
-```{r importbw}
+```{r importbw, eval=FALSE}
 
 ## We can import a list of bigWig files and merge them into a RangedSummarizedExperiment object
 
@@ -141,8 +143,6 @@ bigwigs_lst <- lapply(bigwigs, function(x) {
 ## combine
 bigwig_rse <- do.call(cbind, bigwigs_lst)
 colnames(bigwig_rse) <- c("cell_1", "cell_2")
-
-bigwig_rse
 
 ```
 
@@ -173,15 +173,29 @@ But if we don't have `rowRanges` for something like a `SingleCellExperiment` we 
 ```{r addrr, eval=FALSE}
 
 ## define a helper function for adding rowRanges
-## taken from https://github.com/trichelab/velocessor/blob/master/R/import_plate_txis.R
+## modified from https://github.com/trichelab/velocessor/blob/master/R/import_plate_txis.R
 ## NOTE that you can modify the rtracklayer::import to not subset to gene level
 ## if using feature level information (e.g. a bed file of fragments for scATAC)
 getRowRanges <- function(gtf, asys) { 
   gxs <- subset(rtracklayer::import(gtf), type=="gene")
   names(gxs) <- gxs$gene_id
-  granges(gxs)[rownames(asys$counts)]
+  granges(gxs)[rownames(asys)]
 }
 
+## import the example HEK293T SingleCellExperiment from the SMART-seq3 paper
+data("ss3_umi_sce", package = "compartmap")
 
+## import the example GTF with the helper function
+gtf_rowranges <- getRowRanges(system.file("extdata/grch38_91_hsapiens.gtf.gz",
+                                          package = "compartmap"),
+                              ss3_umi_sce)
+
+## add rowRanges to the SingleCellExperiment
+rowRanges(ss3_umi_sce) <- gtf_rowranges
+
+## we can now proceed to the next steps and run the compartmap workflow
 
 ```
+
+## Running the compartmap workflow
+
