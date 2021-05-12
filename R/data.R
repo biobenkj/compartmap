@@ -23,6 +23,18 @@ NULL
 #' @usage data(k562_scatac_chr14, package = "compartmap")
 NULL
 
+#' Example SMART-seq3 scRNA-seq data for compartmap
+#' 
+#' This object was generated using the HEK293T data from the SMART-seq3 paper
+#' 
+#' @name ss3_umi_sce
+#' @docType data
+#' @author Benjamin K Johnson \email{ben.johnson@vai.org}
+#' @references \url{https://www.ebi.ac.uk/arrayexpress/experiments/E-MTAB-8735/}
+#' @keywords data
+#' @usage data(ss3_umi_sce, package = "compartmap")
+NULL
+
 #' hg38 seqlengths as a GRanges object
 #' 
 #' This object was generated using the BSgenome.Hsapiens.UCSC.hg38 package.

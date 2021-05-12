@@ -144,7 +144,6 @@ colnames(bigwig_rse) <- c("cell_1", "cell_2")
 
 bigwig_rse
 
-## can proceed to scCompartments() with this object
 ```
 
 ## Starting with a feature or counts-based object
@@ -169,3 +168,20 @@ Showing the `rowRanges` slot is a `GRanges` for each feature
 rowRanges(k562_scatac_chr14)
 ```
 
+But if we don't have `rowRanges` for something like a `SingleCellExperiment` we are working with, we need to generate them. Thus, we will show an example of how to add `rowRanges` from a GTF file to a `SingleCellExperiment`.
+
+```{r addrr, eval=FALSE}
+
+## define a helper function for adding rowRanges
+## taken from https://github.com/trichelab/velocessor/blob/master/R/import_plate_txis.R
+## NOTE that you can modify the rtracklayer::import to not subset to gene level
+## if using feature level information (e.g. a bed file of fragments for scATAC)
+getRowRanges <- function(gtf, asys) { 
+  gxs <- subset(rtracklayer::import(gtf), type=="gene")
+  names(gxs) <- gxs$gene_id
+  granges(gxs)[rownames(asys$counts)]
+}
+
+
+
+```

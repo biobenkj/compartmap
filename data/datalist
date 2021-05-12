@@ -1,5 +1,6 @@
 k562_scrna_chr14: k562_scrna_chr14
 k562_scatac_chr14: k562_scatac_chr14
+ss3_umi_sce: ss3_umi_sce
 hg19.gr: hg19.gr
 hg38.gr: hg38.gr
 mm9.gr: mm9.gr
