@@ -100,7 +100,7 @@ plotAB(k562_compartments.boot.fix[[1]], chr = "chr14",
 
 It is often of interest to extract the chromatin domain inflection points as they transition from "open" to "closed" states to look for nearby CTCF sites, etc. We can accomplish this task using the `getDomainInflections` function in compartmap.
 
-```{r postprocessInflections, message=FALSE}
+```{r postprocessInflections, message=FALSE, warning=FALSE}
 
 # Extract single-cell domain inflections
 # Domain inflections can be used to look for nearby CTCF sites, etc.
@@ -116,14 +116,56 @@ k562_cell_1_inflections
 
 ## Importing bigWigs as input to compartmap
 
-The currently recommended input files for scRNA-seq is single-cell bigWigs, though does work with a counts based object as demonstrated below. Single-cell bigWigs can be generated through several tools, such as deeptools (https://deeptools.readthedocs.io/en/latest/). To import bigWigs, we can use the `importBigWig` function in compartmap. This will read in a bigWig file and optionally summarize to an arbitrary bin size. The bin size used in the compartmap manuscript was 1kb and is the default for the function.
+The currently recommended input files to compartmap for scRNA-seq are single-cell bigWigs, though does work with a feature/counts based object as demonstrated in the next section. Single-cell bigWigs can be generated through several tools, such as deeptools (https://deeptools.readthedocs.io/en/latest/). To import bigWigs, we can use the `importBigWig` function in compartmap. This will read in a bigWig file and optionally summarize to an arbitrary bin size. The bin size used in the compartmap manuscript was 1kb and is what we do here as well.
 
 ```{r importbw}
 
 ## We can import a list of bigWig files and merge them into a RangedSummarizedExperiment object
 
-bigwigs <- 
+## list the example bigWigs
+bigwigs <- list.files(system.file("extdata", package = "compartmap"),
+                      full.names = TRUE)
+
+## generate the 1kb bins
+data("hg19.gr", package = "compartmap")
+kb_bins <- tileGenome(seqlengths = seqlengths(hg19.gr)["chr14"],
+                      tilewidth = 1000,
+                      cut.last.tile.in.chrom = TRUE)
+
+## import
+bigwigs_lst <- lapply(bigwigs, function(x) {
+  importBigWig(x, bins = kb_bins,
+               summarize = TRUE, genome = "hg19")
+})
+
+## combine
+bigwig_rse <- do.call(cbind, bigwigs_lst)
+colnames(bigwig_rse) <- c("cell_1", "cell_2")
+
+bigwig_rse
+
+## can proceed to scCompartments() with this object
+```
+
+## Starting with a feature or counts-based object
+
+In the cases where we do not have or can't start with bigWigs (e.g. scATAC), we can start with a feature-level or counts object (e.g. `SingleCellExperiment`). The two things that must be there are making sure `rowRanges` and `colnames` are set for each feature and cell/sample. We will use the scATAC-seq from K562 as an example of how the object should look, but will also show one way to add `rowRanges` to a `SingleCellExperiment`, which works the same way for a `SummarizedExperiment` object.
+
+```{r processCounts, warnings=FALSE, message=FALSE}
+
+## load the scATAC-seq example
+## these data were pre-processed using the csaw package
+data("k562_scatac_chr14", package = "compartmap")
+
+## show the overall object structure
+## NOTE that the colnames are also there and the assay name is 'counts'
+k562_scatac_chr14
 
 ```
 
+Showing the `rowRanges` slot is a `GRanges` for each feature
+
+```{r rowranges}
+rowRanges(k562_scatac_chr14)
+```
 
