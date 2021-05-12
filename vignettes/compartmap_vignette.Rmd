@@ -20,52 +20,110 @@ knitr::opts_chunk$set(collapse = TRUE, warning = TRUE)
 
 Compartmap extends methods proposed by Fortin and Hansen 2015, Genome Biology (https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0741-y) to perform direct inference of higher-order chromatin in _single cells_ from scRNA-seq and scATAC-seq. Originally, Fortin and Hansen demonstrated that chromatin conformation could be inferred from (sc)ATAC-seq, bisulfite sequencing, DNase-seq and methylation arrays, similar to the results provided by HiC at the group level. Thus, in addition to the base information provided by the aforementioned assays, chromatin state could also be inferred.
 
-Here, we propose a method to infer sample-level chromatin state, thus enabling (un)supervised clustering of samples/cells based on A/B compartments. To accomplish this, we employ a shrinkage estimator towards a global or targeted mean, using either chromsome or genome-wide information from ATAC-seq and methylation arrays (e.g. Illumina 450k or EPIC arrays). The output from compartmap can then be embedded and visualized using your favorite clustering approach, such as UMAP/tSNE.
+Here, we propose a method to infer both group and single-cell level higher-order chromatin states from scRNA-seq and scATAC-seq. To accomplish this, we employ a James-Stein estimator (JSE) towards a global or targeted mean, using either chromsome or genome-wide information from scRNA-seq and scATAC-seq. Additionally, due to the sparsity of single-cell data, we employ a bootstrap procedure to quantify the uncertainty associated with the state and boundaries of inferred compartments. The output from compartmap can then be visualized directly, compared with orthogonal assay types, and/or embedded with something like UMAP or t-SNE. Further, to explore the higher-order interacting domains inferred from compartmap, we use a Random Matrix Theory (RMT) approach to resolve the "plaid-like" patterning, similar to what is observed in Hi-C and scHi-C. 
 
 ## Quick Start
 
 ### Input
-The expected input for compartmap is either a RangedSummarizedExperiment object or GenomicRatioSet object. These can be built using packages like [ATACseeker](https://github.com/biobenkj/ATACseeker) or [SeSAMe](https://www.bioconductor.org/packages/devel/bioc/html/sesame.html). 
+The expected input for compartmap is a `RangedSummarizedExperiment` object. These can be built using the built-in function `importBigWig()` if starting from BigWigs (recommended for scRNA-seq) or from a feature level object like a `SingleCellExperiment` with the `rowRanges` slot populated with the GRanges for each feature (see below in the examples). 
 
-```{r loadData}
+```{r loadData, message=FALSE}
+# As an example for the quick start, we will load an existing example
+# See further down for if starting from bigWigs or a feature based object
+library(compartmap)
 
-suppressPackageStartupMessages(library(compartmap))
-
-#Load in some example methylation array data
-#This data is derived from https://f1000research.com/articles/5-1281/v3
-#data(meth_array_450k_chr14, package = "compartmap")
-
-#Load in some example ATAC-seq data
+# Load in some example scRNA-seq data from K562
+# These data are derived from Johnson and Rhodes et. al 2021 STORM-seq
 data("k562_scrna_chr14", package = "compartmap")
 
 ```
 
-### Processing data
+### Inferring higher-order chromatin domains at the group and single-cell level
 
-To process the data (filter and perform compartment inference) a wrapper function is used for all data types.
+```{r processData, message=FALSE}
 
-```{r processData}
+#### Group level inference ####
+#Process chr14 of the example K562 scRNA-seq data and infer higher-order chromatin at 1Mb resolution
+k562_compartments <- scCompartments(k562_scrna_chr14,
+                                    chr = "chr14",
+                                    res = 1e6,
+                                    group = TRUE,
+                                    bootstrap = FALSE,
+                                    genome = "hg19",
+                                    assay = "rna")
 
-#Process chr14 of the example array data
-#Note: running this in parallel is memory hungry!
+#### Single-cell level inference ####
+# To infer higher-order domains in single cells and quantifying sign coherence with the bootstrapping procedure, you can run:
+# Sub-sample to 10 cells as an example
+k562_scrna_chr14.sub <- k562_scrna_chr14[,sample(colnames(k562_scrna_chr14),
+                                                 size = 10, replace = FALSE)]
+k562_compartments.boot <- scCompartments(k562_scrna_chr14.sub,
+                                         chr = "chr14",
+                                         res = 1e6,
+                                         group = FALSE,
+                                         bootstrap = TRUE,
+                                         num.bootstraps = 10,
+                                         genome = "hg19",
+                                         assay = "rna")
 
-#array_compartments <- getCompartments(array.data.chr14, type = "array", parallel = FALSE, chrs = "chr14")
+# Flip the domain sign if the sign coherence is discordant in 80% of the bootstraps
+k562_compartments.boot.fix <- fixCompartments(k562_compartments.boot,
+                                              min.conf = 0.8)
 
-#Process chr14 of the example ATAC-seq data
-k562_compartments <- scCompartments(k562_scrna_chr14, chr = "chr14", group = TRUE, bootstrap = FALSE, genome = "hg19", assay = "rna")
+# Look at the first cell in the GRangesList object
+k562_compartments.boot.fix[[1]]
 
 ```
 
-### Ouput and post-processing
+### Visualization of inferred chromatin domains
 
-Once the data have been processed, the object returned is a matrix of sample-level A/B compartments (samples as columns and compartments as rows). These are normalized to chromosome length and each compartment corresponds to a non-empty bin (based on the desired resolution - 1 Mb is the default). From here, the data can be visualized using something like plotAB for individual samples or your favorite clustering method. Additionally, these can be overlaid in something like IGV to see where compartments are changing between samples/conditions. 
+Once the data have been processed at either the group or single-cell level, one can visualize the results using the `plotAB` function in compartmap. Notably, we can include the confidence intervals and median, chromosome-wide confidence estimate derived from the bootstrap procedure for sign coherence. At 50%, this suggests that estimates are evenly split between open and closed states. This may be due to data sparsity or heterogeneity in the data. One possible approach to resolve this is to increase the number of bootstraps performed if initially set low (e.g. 10). Alternatively, it may be a region that is worth investigating for your data set.
 
-```{r clustering, eval = FALSE}
+```{r postprocessPlot, warning=FALSE}
 
-#Plotting individual samples
-#For 7 samples
-#Adjust ylim as necessary
-plotAB(k562_compartments, chr = "chr14")
+# Plot the "fixed" results in cell 1 from above with plotAB
+# Include the confidence intervals and median confidence estimate
+plotAB(k562_compartments.boot.fix[[1]], chr = "chr14",
+       what = "flip.score", with.ci = TRUE, median.conf = TRUE)
+
+# It is known that sometimes, the domains may be inverted relative to orthogonal data
+# This is also true in Hi-C and scHi-C domain inference
+# One can invert all domains by setting reverse = TRUE in the plotAB call
+
+# plotAB(k562_compartments.boot.fix[[1]], chr = "chr14",
+#        what = "flip.score", with.ci = TRUE, median.conf = TRUE,
+#        reverse = TRUE)
 
 
 ```
+### Extraction of domain inflections
+
+It is often of interest to extract the chromatin domain inflection points as they transition from "open" to "closed" states to look for nearby CTCF sites, etc. We can accomplish this task using the `getDomainInflections` function in compartmap.
+
+```{r postprocessInflections, message=FALSE}
+
+# Extract single-cell domain inflections
+# Domain inflections can be used to look for nearby CTCF sites, etc.
+k562_cell_1_inflections <- getDomainInflections(k562_compartments.boot.fix[[1]],
+                                                what = "flip.score",
+                                                res = 1e6,
+                                                chrs = "chr14",
+                                                genome = "hg19")
+# Show the inflection points
+k562_cell_1_inflections
+
+```
+
+## Importing bigWigs as input to compartmap
+
+The currently recommended input files for scRNA-seq is single-cell bigWigs, though does work with a counts based object as demonstrated below. Single-cell bigWigs can be generated through several tools, such as deeptools (https://deeptools.readthedocs.io/en/latest/). To import bigWigs, we can use the `importBigWig` function in compartmap. This will read in a bigWig file and optionally summarize to an arbitrary bin size. The bin size used in the compartmap manuscript was 1kb and is the default for the function.
+
+```{r importbw}
+
+## We can import a list of bigWig files and merge them into a RangedSummarizedExperiment object
+
+bigwigs <- 
+
+```
+
+
