@@ -1,13 +1,26 @@
 #' Example scRNA-seq data for compartmap
 #' 
 #' This object was generated using the K562 data from the STORM-seq paper
-#' and pre-processed using the scran and scater packages
+#' and pre-processed using the scran and scater packages and TF-IDF
+#' transformed.
 #' 
 #' @name k562_scrna_chr14
 #' @docType data
 #' @author Benjamin K Johnson \email{ben.johnson@vai.org}
 #' @keywords data
 #' @usage data(k562_scrna_chr14, package = "compartmap")
+NULL
+
+#' Example scRNA-seq data for compartmap
+#' 
+#' This object was generated using the K562 data from the STORM-seq paper
+#' and pre-processed using the scran and scater packages and are raw counts.
+#' 
+#' @name k562_scrna_raw
+#' @docType data
+#' @author Benjamin K Johnson \email{ben.johnson@vai.org}
+#' @keywords data
+#' @usage data(k562_scrna_se_chr14, package = "compartmap")
 NULL
 
 #' Example scATAC-seq data for compartmap
