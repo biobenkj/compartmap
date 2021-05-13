@@ -1,8 +1,9 @@
 <img id="compartmap_logo" src="man/figures/compartmap_logo.png" align="left" width="300"/>
 
+
 ## Compartmap: Direct inference of higher-order chromatin structure in individual cells from scRNA-seq and scATAC-seq
 
-## How to install the R package
+### How to install the R package
 
 ```
 # Release
