@@ -13,7 +13,7 @@ getDenoisedCorMatrix(
   iter = 2,
   targets = NULL,
   prior.means = NULL,
-  assay = c("rna", "atac", "bisulfite", "array")
+  assay = c("rna", "atac")
 )
 }
 \arguments{
@@ -31,7 +31,7 @@ getDenoisedCorMatrix(
 
 \item{prior.means}{The means of the bin-level prior distribution (default will compute them for you)}
 
-\item{assay}{What assay type this is ("rna", "atac", "bisulfite", "array")}
+\item{assay}{What assay type this is ("rna", "atac")}
 }
 \value{
 A denoised correlation matrix object for plotting with plotCorMatrix
