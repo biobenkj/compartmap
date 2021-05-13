@@ -143,7 +143,7 @@ estRMT <- function(R, Q = NA, cutoff = c("max", "each"),
 #' @param iter How many iterations to perform denoising
 #' @param targets Samples/cells to shrink towards
 #' @param prior.means The means of the bin-level prior distribution (default will compute them for you)
-#' @param assay What assay type this is ("rna", "atac", "bisulfite", "array")
+#' @param assay What assay type this is ("rna", "atac")
 #'
 #' @return A denoised correlation matrix object for plotting with plotCorMatrix
 #' 
@@ -160,8 +160,7 @@ estRMT <- function(R, Q = NA, cutoff = c("max", "each"),
 getDenoisedCorMatrix <- function(obj, res = 1e6, chr = "chr14",
                                  genome = c("hg19", "hg38", "mm9", "mm10"),
                                  iter = 2, targets = NULL, prior.means = NULL,
-                                 assay = c("rna", "atac",
-                                           "bisulfite", "array")) {
+                                 assay = c("rna", "atac")) {
   ## this is a wrapper to give back a denoised correlation matrix to plot
   #match the assay args
   assay <- match.arg(assay)
@@ -250,10 +249,10 @@ plotCorMatrix <- function(denoised.cor.mat,
   ## plot
   p <- ggplot(cor.mat.melt, aes(x = Var2, y = Var1, fill = value)) +
     geom_raster() +
-    scale_fill_gradient2(low = "white", mid = "white", high = "red3", midpoint = midpoint) +
+    scale_fill_gradient2(low = "white", mid = "white", high = "red3", midpoint = midpoint,
+                         name = "Correlation") +
     theme_minimal() +
     theme(
-      legend.position = "None",
       axis.title = element_blank(),
       axis.text = element_blank(),
       panel.grid = element_blank(),
