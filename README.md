@@ -1,5 +1,4 @@
-<img id="compartmap_logo" src="man/figures/compartmap_logo.png" align="left" width="300"/><br />
-
+<img id="compartmap_logo" src="man/figures/compartmap_logo.png" align="right" width="300"/><br />
 <br />
 
 ## Compartmap: Direct inference of higher-order chromatin structure in individual cells from scRNA-seq and scATAC-seq
