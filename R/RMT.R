@@ -160,7 +160,7 @@ estRMT <- function(R, Q = NA, cutoff = c("max", "each"),
 getDenoisedCorMatrix <- function(obj, res = 1e6, chr = "chr14",
                                  genome = c("hg19", "hg38", "mm9", "mm10"),
                                  iter = 2, targets = NULL, prior.means = NULL,
-                                 assay = c("rna", "atac")) {
+                                 assay = c("rna", "atac", "array")) {
   ## this is a wrapper to give back a denoised correlation matrix to plot
   #match the assay args
   assay <- match.arg(assay)

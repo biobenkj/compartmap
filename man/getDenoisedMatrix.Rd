@@ -13,7 +13,7 @@ getDenoisedCorMatrix(
   iter = 2,
   targets = NULL,
   prior.means = NULL,
-  assay = c("rna", "atac")
+  assay = c("rna", "atac", "array")
 )
 }
 \arguments{
