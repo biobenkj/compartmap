@@ -68,6 +68,7 @@ getBinMatrix <- function(x, genloc, chr = "chr1", chr.start = 0,
       stop("If you'd like to use an unsupported genome, specify chr.end to an appropriate value...")
     }
   }
+
   start <- seq(chr.start, chr.end, res) #Build the possible bin ranges given resolution
   end <- c(start[-1], chr.end) - 1L #Set the end ranges for desired resolution
   

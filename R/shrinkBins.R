@@ -38,7 +38,7 @@ shrinkBins <- function(x, original.x, prior.means = NULL, chr = NULL,
   
   #match the genome if given
   genome <- match.arg(genome)
-  
+
   #double check the obj class is compatible
   if (!checkAssayType(x)) stop("Input needs to be a SummarizedExperiment")
   

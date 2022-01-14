@@ -50,7 +50,7 @@ getArrayABsignal <- function(obj, res = 1e6, parallel = TRUE, chr = NULL,
                             genome = genome, other = other,
                             array.type = array.type)
   }
-  
+
   # critical check if imputation was _not_ done
   # to send things back to beta land
   is.beta <- ifelse(min(assays(obj)$Beta, na.rm = TRUE) < 0, FALSE, TRUE)
@@ -86,9 +86,9 @@ getArrayABsignal <- function(obj, res = 1e6, parallel = TRUE, chr = NULL,
       message("Working on ", s)
       sort(unlist(as(lapply(chr, function(c) .arrayCompartments(obj.sub, obj, res = res,
                                                                         chr = c, targets = targets, genome = genome,
-                                                                        bootstrap = bootstrap,
+                                                                        bootstrap = bootstrap, prior.means = prior.means,
                                                                         num.bootstraps = num.bootstraps, parallel = boot.parallel,
-                                                                        cores = boot.cores, group = group)), "GRangesList")))
+                                                                        cores = boot.cores, group = group, bootstrap.means = bmeans)), "GRangesList")))
     }, mc.cores = cores, mc.preschedule = F)
   }
   
@@ -98,7 +98,7 @@ getArrayABsignal <- function(obj, res = 1e6, parallel = TRUE, chr = NULL,
       message("Working on ", s)
       sort(unlist(as(lapply(chr, function(c) .arrayCompartments(obj.sub, obj, res = res,
                                                                 chr = c, targets = targets, genome = genome,
-                                                                bootstrap = bootstrap,
+                                                                bootstrap = bootstrap, prior.means = prior.means,
                                                                 num.bootstraps = num.bootstraps, parallel = boot.parallel,
                                                                 cores = boot.cores, group = group, bootstrap.means = bmeans)), "GRangesList")))
     })
@@ -108,7 +108,7 @@ getArrayABsignal <- function(obj, res = 1e6, parallel = TRUE, chr = NULL,
     array.compartments <- sort(unlist(as(mclapply(chr, function(c) {
       .arrayCompartments(obj, obj, res = res,
                          chr = c, targets = targets, genome = genome,
-                         bootstrap = bootstrap,num.bootstraps = num.bootstraps,
+                         bootstrap = bootstrap,num.bootstraps = num.bootstraps, prior.means = prior.means,
                          parallel = boot.parallel, cores = boot.cores, group = group, bootstrap.means = bmeans)},
       mc.cores = cores), "GRangesList")))
   }
@@ -117,7 +117,7 @@ getArrayABsignal <- function(obj, res = 1e6, parallel = TRUE, chr = NULL,
     array.compartments <- sort(unlist(as(lapply(chr, function(c) {
       .arrayCompartments(obj, obj, res = res,
                          chr = c, targets = targets, genome = genome,
-                         bootstrap = bootstrap,num.bootstraps = num.bootstraps,
+                         bootstrap = bootstrap, num.bootstraps = num.bootstraps, prior.means = prior.means,
                          parallel = boot.parallel, cores = boot.cores, group = group, bootstrap.means = bmeans)}),
       "GRangesList")))
   }
@@ -211,6 +211,16 @@ preprocessArrays <- function(obj,
   message("Computing compartments for ", chr)
   obj <- keepSeqlevels(obj, chr, pruning.mode = "coarse")
   original.obj <- keepSeqlevels(original.obj, chr, pruning.mode = "coarse")
+  
+  #take care of the global means
+  if (!is.null(prior.means)) {
+    #this assumes that we've alread computed the global means
+    pmeans <- as(prior.means, "GRanges")
+    pmeans <- keepSeqlevels(pmeans, chr, pruning.mode = "coarse")
+    #go back to a matrix
+    prior.means <- as(pmeans, "matrix")
+    colnames(prior.means) <- "globalMean"
+  }
   
   #get the shrunken bins
   obj.bins <- shrinkBins(obj, original.obj, prior.means=prior.means, chr = chr,
