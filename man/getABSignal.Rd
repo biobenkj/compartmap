@@ -4,14 +4,14 @@
 \alias{getABSignal}
 \title{Calculate Pearson correlations of smoothed eigenvectors}
 \usage{
-getABSignal(x, squeeze = FALSE, assay = c("rna", "atac"))
+getABSignal(x, squeeze = FALSE, assay = c("rna", "atac", "array"))
 }
 \arguments{
 \item{x}{A list object from getCorMatrix}
 
 \item{squeeze}{Whether squeezing was used (implies Fisher's Z transformation)}
 
-\item{assay}{What kind of assay are we working on ("array", "atac", "bisulfite")}
+\item{assay}{What kind of assay are we working on ("array", "atac", "array")}
 }
 \value{
 A list x to pass to getABSignal

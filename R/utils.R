@@ -14,12 +14,13 @@
 #' sing_vec <- getSVD(dummy, k = 1, sing.vec = "right")
 #' 
 extractOpenClosed <- function(gr, cutoff = 0,
-                              assay = c("rna", "atac")){
+                              assay = c("rna", "atac", "array")){
   #check for input to be GRanges
   if (!is(gr, "GRanges")) stop("Input needs to be a GRanges.")
   if (!("pc" %in% names(mcols(gr)))) stop("Need to have an mcols column be named 'pc'.")
   assay <- match.arg(assay)
   if (assay %in% c("atac", "rna")) return(ifelse(gr$pc < cutoff, "closed", "open"))
+  if (assay %in% c("array")) return(ifelse(gr$pc < cutoff, "open", "closed"))
 }
 
 #' Check if the assay is a SummarizedExperiment

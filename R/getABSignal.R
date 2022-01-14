@@ -4,7 +4,7 @@
 #'
 #' @param x      A list object from getCorMatrix
 #' @param squeeze    Whether squeezing was used (implies Fisher's Z transformation)
-#' @param assay What kind of assay are we working on ("array", "atac", "bisulfite")
+#' @param assay What kind of assay are we working on ("array", "atac", "array")
 #' 
 #' @return    A list x to pass to getABSignal
 #' 
@@ -41,7 +41,7 @@
 #' absignal <- getABSignal(bin.cor.counts)
 
 getABSignal <- function(x, squeeze = FALSE,
-                        assay = c("rna", "atac")){
+                        assay = c("rna", "atac", "array")){
   message("Calculating eigenvectors.")
   assay <- match.arg(assay)
   pc <- getSVD(x$binmat.cor, sing.vec = "right")
@@ -49,7 +49,8 @@ getABSignal <- function(x, squeeze = FALSE,
   message("Smoothing eigenvector.")
   pc <- switch(assay,
                rna = meanSmoother(pc, k=1, iter=2),
-               atac = meanSmoother(pc, k=1, iter=2))
+               atac = meanSmoother(pc, k=1, iter=2),
+               array = meanSmoother(pc, k=1, iter=2))
   message("Done smoothing.")
   gr <- x$gr
   gr$pc <- pc
