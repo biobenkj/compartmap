@@ -382,3 +382,65 @@ cleanAssayCols <- function(se, colmax = 0.8,
          array = se[,colMeans(is.na(assays(se)$Beta)) < colmax],
          bisulfite = se[,colMeans(is.na(assays(se)$counts)) < colmax])
 }
+
+#' Filter to open sea CpG loci
+#'
+#' @name filterOpenSea
+#'
+#' @param obj Input SummarizedExperiment or GRanges object
+#' @param genome Which genome to filter
+#'
+#' @return Filtered to open sea CpG loci
+#' @import SummarizedExperiment
+#'
+#' @examples
+#' data("meth_array_450k_chr14", package = "compartmap")
+#' opensea <- filterOpenSea(array.data.chr14, genome = "hg19")
+#' 
+#' @export
+filterOpenSea <- function(obj, genome = c("hg19", "hg38", "mm10", "mm9"), other = NULL) {
+  #get the desired open sea loci given the genome
+  genome <- match.arg(genome)
+  if (is.null(other)) {
+    openseas.genome <- switch(genome,
+                              hg19=data("openSeas.hg19", package="compartmap"),
+                              hg38=data("openSeas.hg38", package="compartmap"),
+                              mm10=data("openSeas.mm10", package="compartmap"),
+                              mm9=data("openSeas.mm9", package="compartmap"))
+  } else {
+    #check if it's a GRanges flavored object
+    if (!is(other, "GRanges")) stop("The 'other' input needs to be a GRanges of open sea regions")
+    openseas.genome <- other
+  }
+  #Subset by overlaps
+  message("Filtering to open sea CpG loci...")
+  #subset to just CpG loci if CpH or rs probes still exist
+  obj <- obj[grep("cg", rownames(obj)),]
+  obj.openseas <- subsetByOverlaps(obj, get(openseas.genome))
+  return(obj.openseas)
+}
+
+#' Gather open sea CpG from a GRanges of CpG islands
+#' 
+#' @description This function accepts a GRanges input of CpG islands that can
+#' be derived from UCSC table browser and rtracklayer::import(yourbed.bed)
+#'
+#' @name filterOpenSea
+#'
+#' @param gr Input GRanges of CpG islands
+#'
+#' @return GRanges object that can be used with filterOpenSea()
+#' @import rtracklayer
+#' @import GenomicRanges
+#' @export
+#'
+#' @examples
+#' cpgi <- rtracklayer::import(system.file("inst/extdata/mm10_cpgi.bed", package = "compartmap"))
+#' opensea_cpg <- getOpenSeas(cpgi)
+#' 
+
+getOpenSeas <- function(gr) {
+  resorts <- trim(resize(gr, width(gr) + 8000, fix = "center"))
+  openSeas <- subset(gaps(resorts), strand == "*")
+  return(openSeas)
+}
