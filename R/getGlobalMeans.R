@@ -21,7 +21,8 @@ getGlobalMeans <- function(obj, targets = NULL,
   assay <- match.arg(assay)
 
   #check the names of the assays
-  if (!any(getAssayNames(obj) %in% c("counts"))) {
+  if (!any(getAssayNames(obj) %in% c("counts", "Beta"))) {
+    message("The assay slot should contain 'Beta' for arrays.")
     stop("The assay slot should contain 'counts' for atac/rna.")
   }
   
