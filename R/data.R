@@ -49,6 +49,19 @@ NULL
 #' @usage data(ss3_umi_sce, package = "compartmap")
 NULL
 
+#' Example Illumina 450k methylation array data for compartmap
+#' 
+#' This data was generated using the data from the reference via the
+#' sesamize function from the SeSAMe package.
+#' 
+#' @name array.data.chr14
+#' @docType data
+#' @author Benjamin K Johnson \email{ben.johnson@vai.org}
+#' @references \url{https://f1000research.com/articles/5-1281/v3}
+#' @keywords data
+#' @usage data(meth_array_450k_chr14, package = "compartmap")
+NULL
+
 #' hg38 seqlengths as a GRanges object
 #' 
 #' This object was generated using the BSgenome.Hsapiens.UCSC.hg38 package.
@@ -95,4 +108,48 @@ NULL
 #' @author Benjamin K Johnson \email{ben.johnson@vai.org}
 #' @keywords data
 #' @usage data(mm9.gr, package = "compartmap")
+NULL
+
+#' hg38 open sea CpG as a GRanges object
+#' 
+#' This object was generated using the BSgenome.Hsapiens.UCSC.hg38 package.
+#' 
+#' @name openSeas.hg38
+#' @docType data
+#' @author Benjamin K Johnson \email{ben.johnson@vai.org}
+#' @keywords data
+#' @usage data(openSeas.hg38, package = "compartmap")
+NULL
+
+#' hg19 open sea CpG as a GRanges object
+#' 
+#' This object was generated using the Homo.sapiens package.
+#' 
+#' @name openSeas.hg19
+#' @docType data
+#' @author Benjamin K Johnson \email{ben.johnson@vai.org}
+#' @keywords data
+#' @usage data(openSeas.hg19, package = "compartmap")
+NULL
+
+#' mm10 open sea CpG as a GRanges object
+#' 
+#' This object was generated using the Mus.musculus package.
+#' 
+#' @name openSeas.mm10
+#' @docType data
+#' @author Benjamin K Johnson \email{ben.johnson@vai.org}
+#' @keywords data
+#' @usage data(openSeas.mm10, package = "compartmap")
+NULL
+
+#' mm9 open sea CpG as a GRanges object
+#' 
+#' This object was generated using the BSgenome.Mmusculus.UCSC.mm9 package.
+#' 
+#' @name openSeas.mm9
+#' @docType data
+#' @author Benjamin K Johnson \email{ben.johnson@vai.org}
+#' @keywords data
+#' @usage data(openSeas.mm9, package = "compartmap")
 NULL

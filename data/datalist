@@ -6,3 +6,7 @@ hg19.gr: hg19.gr
 hg38.gr: hg38.gr
 mm9.gr: mm9.gr
 mm10.gr: mm10.gr
+openSeas.hg19: openSeas.hg19
+openSeas.hg38: openSeas.hg38
+openSeas.mm10: openSeas.mm10
+openSeas.mm9: openSeas.mm9
