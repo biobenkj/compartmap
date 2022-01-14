@@ -27,7 +27,7 @@
 #' 
 #' @export
 bootstrapCompartments <- function(obj, original.obj, bootstrap.samples = 1000,
-                                  chr = "chr14", assay = c("rna", "atac"),
+                                  chr = "chr14", assay = c("rna", "atac", "array"),
                                   parallel = TRUE, cores = 2, targets = NULL, res = 1e6,
                                   genome = c("hg19", "hg38", "mm9", "mm10"), q = 0.95,
                                   svd = NULL, group = FALSE, bootstrap.means = NULL) {
@@ -40,8 +40,9 @@ bootstrapCompartments <- function(obj, original.obj, bootstrap.samples = 1000,
   if (!checkAssayType(original.obj)) stop("Input needs to be a SummarizedExperiment")
   
   #check the names of the assays
-  if (!any(getAssayNames(original.obj) %in% c("counts"))) {
-    stop("The assay slot should contain 'counts' for atac/rna.")
+  if (!any(getAssayNames(original.obj) %in% c("counts", "Beta"))) {
+    message("The assay slot should contain 'counts' for atac/rna.")
+    stop("The assay slot should contain 'Beta' for methylation arrays.")
   }
   
   #if we are using targeted means

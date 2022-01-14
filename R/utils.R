@@ -341,3 +341,43 @@ importBigWig <- function(bw, bins = NULL, summarize = FALSE,
   return(bw.sub)
 }
 
+#' Remove rows with NAs exceeding a threshold
+#'
+#' @param se Input SummarizedExperiment object
+#' @param rowmax The maximum NAs allowed in a row as a fraction
+#' @param assay The type of assay we are working with
+#'
+#' @return A filtered matrix
+#' @export
+#'
+#' @examples
+#' data("meth_array_450k_chr14", package = "compartmap")
+#' cleanAssayRows(array.data.chr14, assay = "array")
+
+cleanAssayRows <- function(se, rowmax = 0.5,
+                           assay = c("array", "bisulfite")) {
+  assay <- match.arg(assay)
+  switch(assay,
+         array = se[rowMeans(is.na(assays(se)$Beta)) < rowmax,],
+         bisulfite = se[rowMeans(is.na(assays(se)$counts)) < rowmax,])
+}
+
+#' Remove columns/cells/samples with NAs exceeding a threshold
+#'
+#' @param se Input SummarizedExperiment object
+#' @param colmax The maximum number of NAs allowed as a fraction
+#' @param assay The type of assay we are working with
+#'
+#' @return A filtered matrix
+#' @export
+#'
+#' @examples
+#' data("meth_array_450k_chr14", package = "compartmap")
+#' cleanAssayCols(array.data.chr.14, assay = "array")
+cleanAssayCols <- function(se, colmax = 0.8,
+                           assay = c("array", "bisulfite")) {
+  assay <- match.arg(assay)
+  switch(assay,
+         array = se[,colMeans(is.na(assays(se)$Beta)) < colmax],
+         bisulfite = se[,colMeans(is.na(assays(se)$counts)) < colmax])
+}

@@ -9,7 +9,7 @@ bootstrapCompartments(
   original.obj,
   bootstrap.samples = 1000,
   chr = "chr14",
-  assay = c("rna", "atac"),
+  assay = c("rna", "atac", "array"),
   parallel = TRUE,
   cores = 2,
   targets = NULL,

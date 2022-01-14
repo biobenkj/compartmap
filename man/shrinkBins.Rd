@@ -12,7 +12,7 @@ shrinkBins(
   res = 1e+06,
   targets = NULL,
   jse = TRUE,
-  assay = c("rna", "atac"),
+  assay = c("rna", "atac", "array"),
   genome = c("hg19", "hg38", "mm9", "mm10")
 )
 }
@@ -31,7 +31,7 @@ shrinkBins(
 
 \item{jse}{Whether to use a James-Stein estimator (default is TRUE)}
 
-\item{assay}{What assay type this is ("rna", "atac")}
+\item{assay}{What assay type this is ("rna", "atac", "array")}
 
 \item{genome}{What genome are we working with ("hg19", "hg38", "mm9", "mm10")}
 }

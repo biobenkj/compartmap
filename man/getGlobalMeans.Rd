@@ -4,7 +4,7 @@
 \alias{getGlobalMeans}
 \title{Get the global means of a matrix}
 \usage{
-getGlobalMeans(obj, targets = NULL, assay = c("atac", "rna"))
+getGlobalMeans(obj, targets = NULL, assay = c("atac", "rna", "array"))
 }
 \arguments{
 \item{obj}{Input SummarizedExperiment object}

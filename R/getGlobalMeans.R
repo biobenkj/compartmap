@@ -16,7 +16,7 @@
 #'
 
 getGlobalMeans <- function(obj, targets = NULL,
-                           assay = c("atac", "rna")) {
+                           assay = c("atac", "rna", "array")) {
   #match the assay arg
   assay <- match.arg(assay)
 
@@ -32,12 +32,14 @@ getGlobalMeans <- function(obj, targets = NULL,
     message("Using ", paste(shQuote(targets), collapse = ", "), " as shrinkage targets...")
     globalMean <- switch(assay,
                          atac = matrix(rowMeans(assays(stargets)$counts, na.rm=TRUE), ncol=1),
-                         rna = matrix(rowMeans(assays(stargets)$counts, na.rm=TRUE), ncol=1))
+                         rna = matrix(rowMeans(assays(stargets)$counts, na.rm=TRUE), ncol=1),
+                         array = matrix(rowMeans(flogit(assays(stargets)$Beta), na.rm=TRUE), ncol=1))
   }
   else {
     globalMean <- switch(assay,
                          atac = matrix(rowMeans(assays(obj)$counts, na.rm=TRUE), ncol=1),
-                         rna = matrix(rowMeans(assays(obj)$counts, na.rm=TRUE), ncol=1))
+                         rna = matrix(rowMeans(assays(obj)$counts, na.rm=TRUE), ncol=1),
+                         array = matrix(rowMeans(flogit(assays(obj)$Beta), na.rm=TRUE), ncol=1))
   }
   colnames(globalMean) <- "globalMean"
   #coercion to get the rownames to be the GRanges coordinates
@@ -69,7 +71,7 @@ getGlobalMeans <- function(obj, targets = NULL,
 #' 
 
 precomputeBootstrapMeans <- function(obj, targets = NULL, num.bootstraps = 100,
-                                     assay = c("atac", "rna"),
+                                     assay = c("atac", "rna", "array"),
                                      parallel = FALSE, num.cores = 1) {
   #this function precomputes the bootstrapped global means
   #as a default we will make 100 bootstraps
@@ -82,13 +84,16 @@ precomputeBootstrapMeans <- function(obj, targets = NULL, num.bootstraps = 100,
       }
       resamp.mat <- switch(assay,
                            atac = .resampleMatrix(assays(obj)$counts),
-                           rna = .resampleMatrix(assays(obj)$counts))
+                           rna = .resampleMatrix(assays(obj)$counts),
+                           array = .resampleMatrix(assays(obj)$Beta))
       #turn back into SummarizedExperiment
       resamp.se <- switch(assay,
                           atac = SummarizedExperiment(assays=SimpleList(counts=resamp.mat),
                                                       rowRanges = rowRanges(obj)),
                           rna = SummarizedExperiment(assays=SimpleList(counts=resamp.mat),
-                                                           rowRanges = rowRanges(obj)))
+                                                           rowRanges = rowRanges(obj)),
+                          array = SummarizedExperiment(assays=SimpleList(Beta=resamp.mat),
+                                                       rowRanges = rowRanges(obj)))
       #make sure targets is NULL since we already subset to them!
       return(getGlobalMeans(obj = resamp.se, targets = NULL, assay = assay))
     }, mc.cores = num.cores)
@@ -101,13 +106,16 @@ precomputeBootstrapMeans <- function(obj, targets = NULL, num.bootstraps = 100,
       }
       resamp.mat <- switch(assay,
                            atac = .resampleMatrix(assays(obj)$counts),
-                           rna = .resampleMatrix(assays(obj)$counts))
+                           rna = .resampleMatrix(assays(obj)$counts),
+                           array = .resampleMatrix(assays(obj)$Beta))
       #turn back into SummarizedExperiment
       resamp.se <- switch(assay,
                           atac = SummarizedExperiment(assays=SimpleList(counts=resamp.mat),
                                                       rowRanges = rowRanges(obj)),
                           rna = SummarizedExperiment(assays=SimpleList(counts=resamp.mat),
-                                                           rowRanges = rowRanges(obj)))
+                                                     rowRanges = rowRanges(obj)),
+                          array = SummarizedExperiment(assays=SimpleList(Beta=resamp.mat),
+                                                       rowRanges = rowRanges(obj)))
       #make sure targets is NULL since we already subset to them!
       return(getGlobalMeans(obj = resamp.se, targets = NULL, assay = assay))
     })

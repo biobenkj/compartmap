@@ -12,7 +12,7 @@
 #' @param res Resolution to perform the binning
 #' @param targets The column/sample/cell names to shrink towards
 #' @param jse Whether to use a James-Stein estimator (default is TRUE)
-#' @param assay What assay type this is ("rna", "atac")
+#' @param assay What assay type this is ("rna", "atac", "array")
 #' @param genome What genome are we working with ("hg19", "hg38", "mm9", "mm10")
 #'
 #' @return A list object to pass to getCorMatrix
@@ -31,7 +31,7 @@
 
 shrinkBins <- function(x, original.x, prior.means = NULL, chr = NULL,
                        res = 1e6, targets = NULL, jse = TRUE,
-                       assay = c("rna", "atac"),
+                       assay = c("rna", "atac", "array"),
                        genome = c("hg19", "hg38", "mm9", "mm10")) {
   #match the assay args
   assay <- match.arg(assay)
@@ -61,7 +61,11 @@ shrinkBins <- function(x, original.x, prior.means = NULL, chr = NULL,
                                                            genome = genome),
                                        rna = getBinMatrix(x=as.matrix(cbind(assays(original.x)$counts, prior.means)),
                                                           genloc=rowRanges(x), chr=chr, res=res, FUN=mean,
-                                                          genome = genome)))
+                                                          genome = genome),
+                                       # make sure we are with betas or we will double flogit
+                                       array = getBinMatrix(x=as.matrix(cbind(flogit(assays(original.x)$Beta), prior.means)),
+                                                            genloc=rowRanges(x), chr=chr, res=res, FUN=mean,
+                                                            genome = genome)))
   } else {
     bin.mat <- suppressMessages(switch(assay,
                                        atac = getBinMatrix(x=as.matrix(cbind(assays(original.x)$counts, prior.means)),
@@ -69,7 +73,10 @@ shrinkBins <- function(x, original.x, prior.means = NULL, chr = NULL,
                                                            genome = genome),
                                        rna = getBinMatrix(x=as.matrix(cbind(assays(original.x)$counts, prior.means)),
                                                           genloc=rowRanges(x), chr=chr, res=res, FUN=atac_fun,
-                                                          genome = genome)))
+                                                          genome = genome),
+                                       array = getBinMatrix(x=as.matrix(cbind(flogit(assays(original.x)$Beta), prior.means)),
+                                                            genloc=rowRanges(x), chr=chr, res=res, FUN=median,
+                                                            genome = genome)))
   }
   
   #shrink the bins using a James-Stein Estimator
@@ -83,11 +90,13 @@ shrinkBins <- function(x, original.x, prior.means = NULL, chr = NULL,
     if (jse) {
       switch(assay,
              atac = .jse(x=r.samps, grand.mean=r.prior.m, targets=targets),
-             rna = .jse(x=r.samps, grand.mean=r.prior.m, targets=targets))
+             rna = .jse(x=r.samps, grand.mean=r.prior.m, targets=targets),
+             array = .jse(x=r.samps, grand.mean=r.prior.m, targets=targets))
     } else {
       switch(assay,
              atac = .ebayes(x=r.samps, prior=r.prior.m, targets=targets),
-             rna = .ebayes(x=r.samps, prior=r.prior.m, targets=targets))
+             rna = .ebayes(x=r.samps, prior=r.prior.m, targets=targets),
+             array = .ebayes(x=r.samps, prior=r.prior.m, targets=targets))
       }
     }))
   

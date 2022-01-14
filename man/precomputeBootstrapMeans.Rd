@@ -8,7 +8,7 @@ precomputeBootstrapMeans(
   obj,
   targets = NULL,
   num.bootstraps = 100,
-  assay = c("atac", "rna"),
+  assay = c("atac", "rna", "array"),
   parallel = FALSE,
   num.cores = 1
 )
