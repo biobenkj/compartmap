@@ -467,8 +467,8 @@ filterOpenSea <- function(
 #' @export
 #'
 #' @examples
-#' cpgi <- rtracklayer::import(system.file("inst/extdata/mm10_cpgi.bed", package = "compartmap"))
-#' opensea_cpg <- getOpenSeas(cpgi)
+#' #cpgi <- rtracklayer::import(system.file("inst/extdata/mm10_cpgi.bed", package = "compartmap"))
+#' #opensea_cpg <- getOpenSeas(cpgi)
 getOpenSeas <- function(gr) {
   resorts <- trim(resize(gr, width(gr) + 8000, fix = "center"))
   openSeas <- subset(gaps(resorts), strand == "*")
