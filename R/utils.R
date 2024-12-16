@@ -412,6 +412,7 @@ cleanAssayCols <- function(
 #'
 #' @param obj Input SummarizedExperiment or GRanges object
 #' @param genome Which genome to filter
+#' @param other GRanges of open sea regions (TODO)
 #'
 #' @return Filtered to open sea CpG loci
 #' @import SummarizedExperiment

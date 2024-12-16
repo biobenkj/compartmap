@@ -14,6 +14,8 @@ getOpenSeas(gr)
 
 \item{genome}{Which genome to filter}
 
+\item{other}{GRanges of open sea regions (TODO)}
+
 \item{gr}{Input GRanges of CpG islands}
 }
 \value{
