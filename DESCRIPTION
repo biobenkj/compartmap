@@ -41,6 +41,8 @@ Imports:
    RMTstat,
    impute
 Suggests:
+   minfi,
+   minfiData,
    BiocStyle,
    covr,
    testthat,
