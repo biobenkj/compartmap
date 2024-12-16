@@ -7,7 +7,7 @@
 \usage{
 getDenoisedCorMatrix(
   obj,
-  res = 1e+06,
+  res = 1000000,
   chr = "chr14",
   genome = c("hg19", "hg38", "mm9", "mm10"),
   iter = 2,

@@ -21,6 +21,3 @@ A "fixed" set of compartments
 \description{
 Invert, or "fix", compartments that have a minimum confidence score (1-min.conf)
 }
-\examples{
- 
-}

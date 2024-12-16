@@ -7,7 +7,7 @@
 \usage{
 getATACABsignal(
   obj,
-  res = 1e+06,
+  res = 1000000,
   parallel = FALSE,
   chr = NULL,
   targets = NULL,
@@ -23,7 +23,7 @@ getATACABsignal(
 
 getRNAABsignal(
   obj,
-  res = 1e+06,
+  res = 1000000,
   parallel = FALSE,
   chr = NULL,
   targets = NULL,
@@ -72,9 +72,9 @@ A RaggedExperiment of inferred compartments
 }
 \section{Functions}{
 \itemize{
-\item \code{getRNAABsignal}: Alias for getATACABsignal
-}}
+\item \code{getRNAABsignal()}: Alias for getATACABsignal
 
+}}
 \examples{
 data("k562_scatac_chr14", package = "compartmap")
 atac_compartments <- getATACABsignal(k562_scatac_chr14, parallel=FALSE, chr="chr14", bootstrap=FALSE, genome="hg19", group = TRUE)

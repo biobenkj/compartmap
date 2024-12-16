@@ -4,7 +4,7 @@
 \alias{fexpit}
 \title{Helper function: expanded expit}
 \usage{
-fexpit(x, sqz = 1e-06)
+fexpit(x, sqz = 0.000001)
 }
 \arguments{
 \item{x}{a vector of values between -Inf and +Inf}
@@ -12,8 +12,8 @@ fexpit(x, sqz = 1e-06)
 \item{sqz}{the amount by which we 'squoze', default is .000001}
 }
 \value{
-\preformatted{   a vector of values between 0 and 1 inclusive
-}
+\if{html}{\out{<div class="sourceCode">}}\preformatted{   a vector of values between 0 and 1 inclusive
+}\if{html}{\out{</div>}}
 }
 \description{
 Helper function: expanded expit

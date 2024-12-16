@@ -20,8 +20,8 @@ meanSmoother(x, k = 1, iter = 2, na.rm = TRUE, delta = 0, w = NULL)
 \item{w}{Weights, if using any (NULL)}
 }
 \value{
-\preformatted{ Smoothed data matrix
-}
+\if{html}{\out{<div class="sourceCode">}}\preformatted{ Smoothed data matrix
+}\if{html}{\out{</div>}}
 }
 \description{
 TODO: farm out to C++ and test, at least when there are no NAs
