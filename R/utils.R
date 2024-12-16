@@ -396,7 +396,7 @@ cleanAssayRows <- function(
 #' @examples
 #' if (require(minfi)) {
 #'   data("meth_array_450k_chr14", package = "compartmap")
-#'   cleanAssayCols(array.data.chr.14, assay = "array")
+#'   cleanAssayCols(array.data.chr14, assay = "array")
 #' }
 cleanAssayCols <- function(
   se,
