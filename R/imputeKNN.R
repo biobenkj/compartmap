@@ -17,9 +17,11 @@
 #' @export
 #'
 #' @examples
-#' data("meth_array_450k_chr14", package = "compartmap")
-#' # impute
-#' imputed <- imputeKNN(array.data.chr14, assay = "array")
+#' if (require(minfi)) {
+#'   data("meth_array_450k_chr14", package = "compartmap")
+#'   #impute
+#'   imputed <- imputeKNN(array.data.chr14, assay = "array")
+#' }
 imputeKNN <- function(
   obj,
   rowmax = 0.5,

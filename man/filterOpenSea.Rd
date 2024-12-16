@@ -28,10 +28,10 @@ This function accepts a GRanges input of CpG islands that can
 be derived from UCSC table browser and rtracklayer::import(yourbed.bed)
 }
 \examples{
-data("meth_array_450k_chr14", package = "compartmap")
-opensea <- filterOpenSea(array.data.chr14, genome = "hg19")
-
+if (require(minfi)) {
+  data("meth_array_450k_chr14", package = "compartmap")
+  opensea <- filterOpenSea(array.data.chr14, genome = "hg19")
+}
 cpgi <- rtracklayer::import(system.file("inst/extdata/mm10_cpgi.bed", package = "compartmap"))
 opensea_cpg <- getOpenSeas(cpgi)
-
 }

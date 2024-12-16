@@ -39,7 +39,9 @@ Imputed data matrix that is added to the assays slot
 Impute missing values/NAs with KNN
 }
 \examples{
-data("meth_array_450k_chr14", package = "compartmap")
-#impute
-imputed <- imputeKNN(array.data.chr14, assay = "array")
+if (require(minfi)) {
+  data("meth_array_450k_chr14", package = "compartmap")
+  #impute
+  imputed <- imputeKNN(array.data.chr14, assay = "array")
+}
 }
