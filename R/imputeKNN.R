@@ -79,12 +79,12 @@ imputeKNN <- function(obj, rowmax = 0.5, colmax = 0.8, k = 10,
   } else {
     if (assay == "array") {
       # assumes beta values and use squeezed M-values
-      impute.knn(flogit(assays(obj.clean)$Beta), k = k,
+      imputed.data <- impute.knn(flogit(assays(obj.clean)$Beta), k = k,
                  rowmax = rowmax, colmax = colmax,
                  maxp = maxp)$data
     } else {
       # assumes that bisulfite-seq was given as betas
-      impute.knn(flogit(assays(obj.clean)$counts), k = k,
+      imputed.data <- impute.knn(flogit(assays(obj.clean)$counts), k = k,
                  rowmax = rowmax, colmax = colmax,
                  maxp = maxp)$data
     }
