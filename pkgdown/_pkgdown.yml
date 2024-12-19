@@ -42,6 +42,7 @@ reference:
     - getArrayABsignal
     - getAssayNames
     - getBinMatrix
+    - getChrs
     - getCorMatrix
     - getDenoisedCorMatrix
     - getDomainInflections
@@ -57,6 +58,7 @@ reference:
     - meanSmoother
     - precomputeBootstrapMeans
     - preprocessArrays
+    - removeEmptyBoots
     - scCompartments
     - shrinkBins
     - sparseToDenseMatrix
@@ -65,6 +67,14 @@ reference:
 - title: Plotting
   contents:
     - starts_with("plot")
+- title: Helpers
+  contents:
+    - cleanAssayCols
+    - cleanAssayRows
+    - checkAssayType
+    - .n_approx
+    - .p_approx
+    - .z
 - title: Datasets
   contents:
     - hg19.gr
