@@ -1,7 +1,6 @@
-<img id="compartmap_logo" src="man/figures/compartmap_logo.png" align="left" width="300"/><br />
-<br />
+## <a href="https://biobenkj.github.io/compartmap/"><img src="man/figures/compartmap_logo.png" align="right" height="138" style="float:right; height:138px;"/></a>
 
-## Compartmap: Direct inference of higher-order chromatin structure in individual cells from scRNA-seq and scATAC-seq
+*Chromatin compartment inference from single-cell RNA- and ATAC-seq*
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/huishenlab/compartmap/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/huishenlab/compartmap/actions/workflows/R-CMD-check.yaml)
