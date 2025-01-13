@@ -59,37 +59,31 @@ imputeKNN <- function(obj, rowmax = 0.5, colmax = 0.8, k = 10,
   } else {
     warning("Imputation may not work with samples that are too sparse!")
   }
-  
+
   ## check if we are in beta land
   is.beta <- ifelse(min(assays(obj.clean)$Beta, na.rm = TRUE) < 0, FALSE, TRUE)
+  is.array <- assay == "array"
+
+  impute.input <-
+    if (is.beta && is.array) {
+      flogit(assays(obj.clean)$Beta)      # assumes beta values and use squeezed M-values
+    } else if (is.beta && !is.array) {
+      flogit(assays(obj.clean)$counts)    # assumes that bisulfite-seq was given as betas
+    } else if (!is.beta && is.array) {
+      assays(obj.clean)$Beta              # assumes these are M-values
+    } else if (!is.beta && !is.array) {
+      assays(obj.clean)$counts            # assumes the assay is bisulfite-seq, calculated as M-values
+    }
+
   message("Imputing missing data with kNN.")
-  if (!is.beta) {
-    if (assay == "array") {
-      # assumes these are M-values
-      imputed.data <- impute.knn(assays(obj.clean)$Beta, k = k,
-                                 rowmax = rowmax, colmax = colmax,
-                                 maxp = maxp)$data
-    } else {
-      # assumes the assay is bisulfite-seq
-      # calculated as M-values
-      imputed.data <- impute.knn(assays(obj.clean)$counts, k = k,
-                                 rowmax = rowmax, colmax = colmax,
-                                 maxp = maxp)$data
-    }
-  } else {
-    if (assay == "array") {
-      # assumes beta values and use squeezed M-values
-      imputed.data <- impute.knn(flogit(assays(obj.clean)$Beta), k = k,
-                 rowmax = rowmax, colmax = colmax,
-                 maxp = maxp)$data
-    } else {
-      # assumes that bisulfite-seq was given as betas
-      imputed.data <- impute.knn(flogit(assays(obj.clean)$counts), k = k,
-                 rowmax = rowmax, colmax = colmax,
-                 maxp = maxp)$data
-    }
-  }
-  
+  imputed.data <- impute.knn(
+    impute.input,
+    k = k,
+    rowmax = rowmax,
+    colmax = colmax,
+    maxp = maxp
+  )$data
+
   #add on another counts matrix to the assays slot if not in.place
   if (!in.place) {
     assays(obj.clean)$imputed.data <- imputed.data
