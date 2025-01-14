@@ -25,7 +25,7 @@ fixCompartments <- function(obj, min.conf = 0.8,
     if (!any((names(mcols(obj)) %in% "conf.est"))) stop("Bootstrapping was not performed. Cannot fix compartments.")
     message("Assuming we only have a single sample to process.")
     invert_compartments <- apply(mcols(obj), 1, function(c) {
-      return(ifelse(c["conf.est"] < 1-min.conf, TRUE, FALSE))
+      return(c["conf.est"] < 1-min.conf)
     })
     message("Fixing compartments using a minimum confidence score of ", min.conf*100, "%")
     mcols(obj)$flip.compartment <- invert_compartments
@@ -51,7 +51,7 @@ fixCompartments <- function(obj, min.conf = 0.8,
     flip_compartments_lst <- mclapply(obj, function(s) {
       if (!any((names(mcols(s)) %in% "conf.est"))) stop("Bootstrapping was not performed. Cannot fix compartments.")
       invert_compartments <- apply(mcols(s), 1, function(c) {
-        return(ifelse(c["conf.est"] < 1-min.conf, TRUE, FALSE))
+        return(c["conf.est"] < 1-min.conf)
       })
       mcols(s)$flip.compartment <- invert_compartments
       #add a new column for flipped scores
@@ -73,7 +73,7 @@ fixCompartments <- function(obj, min.conf = 0.8,
     flip_compartments_lst <- lapply(obj, function(s) {
       if (!any((names(mcols(s)) %in% "conf.est"))) stop("Bootstrapping was not performed. Cannot fix compartments.")
       invert_compartments <- apply(mcols(s), 1, function(c) {
-        return(ifelse(c["conf.est"] < 1-min.conf, TRUE, FALSE))
+        return(c["conf.est"] < 1-min.conf)
       })
       mcols(s)$flip.compartment <- invert_compartments
       #add a new column for flipped scores
