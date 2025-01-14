@@ -61,7 +61,7 @@ imputeKNN <- function(obj, rowmax = 0.5, colmax = 0.8, k = 10,
   }
 
   ## check if we are in beta land
-  is.beta <- ifelse(min(assays(obj.clean)$Beta, na.rm = TRUE) < 0, FALSE, TRUE)
+  is.beta <- min(assays(obj.clean)$Beta, na.rm = TRUE) > 0
   is.array <- assay == "array"
 
   impute.input <-
