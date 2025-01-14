@@ -79,49 +79,48 @@ getArrayABsignal <- function(obj, res = 1e6, parallel = TRUE, chr = NULL,
     bmeans <- precomputeBootstrapMeans(obj = obj, targets = targets, num.bootstraps = num.bootstraps,
                                        assay = "array", parallel = parallel, num.cores = cores)
   }
-  
-  if (parallel & isFALSE(group)) {
+
+  if (group) {
+    array.compartments.list <- mclapply(chr, function(c) {
+      .arrayCompartments(
+        obj, obj,
+        res = res,
+        chr = c,
+        targets = targets,
+        genome = genome,
+        bootstrap = bootstrap,
+        num.bootstraps = num.bootstraps,
+        prior.means = prior.means,
+        parallel = boot.parallel,
+        cores = boot.cores,
+        group = group,
+        bootstrap.means = bmeans
+      )
+    }, mc.cores = cores)
+    array.compartments <- sort(unlist(as(array.compartments.list, "GRangesList")))
+  } else {
     array.compartments <- mclapply(columns, function(s) {
       obj.sub <- obj[,s]
       message("Working on ", s)
-      sort(unlist(as(lapply(chr, function(c) .arrayCompartments(obj.sub, obj, res = res,
-                                                                        chr = c, targets = targets, genome = genome,
-                                                                        bootstrap = bootstrap, prior.means = prior.means,
-                                                                        num.bootstraps = num.bootstraps, parallel = boot.parallel,
-                                                                        cores = boot.cores, group = group, bootstrap.means = bmeans)), "GRangesList")))
-    }, mc.cores = cores, mc.preschedule = F)
+      array.compartments.list <- lapply(chr, function(c) {
+        .arrayCompartments(
+          obj.sub, obj,
+          res = res,
+          chr = c,
+          targets = targets,
+          genome = genome,
+          bootstrap = bootstrap,
+          prior.means = prior.means,
+          num.bootstraps = num.bootstraps,
+          parallel = boot.parallel,
+          cores = boot.cores,
+          group = group,
+          bootstrap.means = bmeans)
+      })
+      sort(unlist(as(array.compartments.list, "GRangesList")))
+    }, mc.cores = ifelse(parallel, cores, 1), mc.preschedule = F)
   }
-  
-  if (!parallel & isFALSE(group)) {
-    array.compartments <- lapply(columns, function(s) {
-      obj.sub <- obj[,s]
-      message("Working on ", s)
-      sort(unlist(as(lapply(chr, function(c) .arrayCompartments(obj.sub, obj, res = res,
-                                                                chr = c, targets = targets, genome = genome,
-                                                                bootstrap = bootstrap, prior.means = prior.means,
-                                                                num.bootstraps = num.bootstraps, parallel = boot.parallel,
-                                                                cores = boot.cores, group = group, bootstrap.means = bmeans)), "GRangesList")))
-    })
-  }
-  
-  if (parallel & isTRUE(group)) {
-    array.compartments <- sort(unlist(as(mclapply(chr, function(c) {
-      .arrayCompartments(obj, obj, res = res,
-                         chr = c, targets = targets, genome = genome,
-                         bootstrap = bootstrap,num.bootstraps = num.bootstraps, prior.means = prior.means,
-                         parallel = boot.parallel, cores = boot.cores, group = group, bootstrap.means = bmeans)},
-      mc.cores = cores), "GRangesList")))
-  }
-  
-  if (!parallel & isTRUE(group)) {
-    array.compartments <- sort(unlist(as(lapply(chr, function(c) {
-      .arrayCompartments(obj, obj, res = res,
-                         chr = c, targets = targets, genome = genome,
-                         bootstrap = bootstrap, num.bootstraps = num.bootstraps, prior.means = prior.means,
-                         parallel = boot.parallel, cores = boot.cores, group = group, bootstrap.means = bmeans)}),
-      "GRangesList")))
-  }
-  
+
   #if group-level treat a little differently
   if (group) {
     return(array.compartments)
