@@ -27,11 +27,7 @@ fixCompartments <- function(obj, min.conf = 0.8,
   
   message("Fixing compartments using a minimum confidence score of ", min.conf*100, "%")
   #go through and invert compartments based on the min.conf
-  if (parallel) {
-    flip_compartments_lst <- mclapply(obj, flipper, min.conf, mc.cores = cores)
-  } else {
-    flip_compartments_lst <- lapply(obj, flipper, min.conf)
-  }
+  flip_compartments_lst <- mclapply(obj, flipper, min.conf, mc.cores = ifelse(parallel, cores, 1))
   names(flip_compartments_lst) <- names(obj)
   return(flip_compartments_lst)
 }
