@@ -53,7 +53,7 @@ getArrayABsignal <- function(obj, res = 1e6, parallel = TRUE, chr = NULL,
 
   # critical check if imputation was _not_ done
   # to send things back to beta land
-  is.beta <- ifelse(min(assays(obj)$Beta, na.rm = TRUE) < 0, FALSE, TRUE)
+  is.beta <- min(assays(obj)$Beta, na.rm = TRUE) > 0
   if (!is.beta) {
     #send things back to beta land
     assays(obj)$Beta <- fexpit(assays(obj)$Beta)
@@ -171,7 +171,7 @@ preprocessArrays <- function(obj,
   
   #convert to M-values if beta values given
   #this should be default but allows handling if given M-values in Beta slot
-  is.beta <- ifelse(min(assays(obj)$Beta, na.rm = TRUE) < 0, FALSE, TRUE)
+  is.beta <- min(assays(obj)$Beta, na.rm = TRUE) > 0
   if (is.beta) {
     message("Converting to squeezed M-values.")
     assays(obj.opensea)$Beta <- flogit(assays(obj.opensea)$Beta)
@@ -185,8 +185,6 @@ preprocessArrays <- function(obj,
   
   return(obj.opensea)
 }
-
-
 
 
 #worker function
@@ -228,8 +226,8 @@ preprocessArrays <- function(obj,
                          genome = genome, jse = TRUE)
   
   #compute correlations
-  if (group) obj.cor <- getCorMatrix(obj.bins, squeeze = FALSE)
-  if (isFALSE(group)) obj.cor <- getCorMatrix(obj.bins, squeeze = TRUE)
+  obj.cor <- getCorMatrix(obj.bins, squeeze = !group)
+
   if (any(is.na(obj.cor$binmat.cor))) {
     obj.cor$gr$pc <- matrix(rep(NA, nrow(obj.cor$binmat.cor)))
     obj.svd <- obj.cor$gr
