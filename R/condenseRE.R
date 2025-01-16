@@ -44,12 +44,19 @@ condenseRE <- function(obj) {
 #' condense.x <- condenseSE(x, sample.name = "A")
 condenseSE <- function(obj, sample.name = NULL) {
   if (is.null(sample.name)) sample.name <- colnames(obj)
+
   #condense the input to something that can be plotted with plotAB
   if (is(obj, "RaggedExperiment")) obj <- condenseRE(obj)
+
   #make sure there are some assays to work with
   if (length(obj) < 1) stop("No assays found to condense.")
+
   #check and make sure that the names needed are found in the column names
-  if (!(all(sample.name %in% colnames(assay(obj[[1]]))))) stop("The sample.name(s) not found in the colnames of the assays.")
+  colnames.assay <- colnames(assay(obj[[1]]))
+  if (!all(sample.name %in% colnames.assay)) {
+    stop("The sample.name(s) not found in the colnames of the assays.")
+  }
+
   #check and see how many samples we are extracting
   if (length(sample.name) == 1) {
     obj.dense <- lapply(1:length(obj), function(a) {
