@@ -65,47 +65,25 @@ getATACABsignal <- function(obj, res = 1e6, parallel = FALSE, chr = NULL,
 
   #initialize global means
   #gmeans <- getGlobalMeans(obj, targets = targets, assay = "atac")
-  
-  if (parallel & isFALSE(group)) {
+
+  if (group) {
+    atac.compartments.list <- mclapply(chr, function(c) {
+      atacCompartments(obj, obj, res = res,
+        chr = c, targets = targets, genome = genome,
+        bootstrap = bootstrap,num.bootstraps = num.bootstraps, prior.means = prior.means,
+        parallel = boot.parallel, cores = boot.cores, group = group, bootstrap.means = bmeans)}, mc.cores = ifelse(parallel, cores, 1))
+    atac.compartments <- sort(unlist(as(atac.compartments.list, "GRangesList")))
+  } else {
     atac.compartments <- mclapply(columns, function(s) {
       obj.sub <- obj[,s]
       message("Working on ", s)
-      sort(unlist(as(lapply(chr, function(c) atacCompartments(obj.sub, obj, res = res,
-                                                               chr = c, targets = targets, genome = genome,
-                                                               bootstrap = bootstrap, prior.means = prior.means,
-                                                               num.bootstraps = num.bootstraps, parallel = boot.parallel,
-                                                               cores = boot.cores, group = group, bootstrap.means = bmeans)), "GRangesList")))
-    }, mc.cores = cores)
-  }
-  
-  if (!parallel & isFALSE(group)) {
-    atac.compartments <- lapply(columns, function(s) {
-      obj.sub <- obj[,s]
-      message("Working on ", s)
-      sort(unlist(as(lapply(chr, function(c) atacCompartments(obj.sub, obj, res = res,
-                                                               chr = c, targets = targets, genome = genome,
-                                                               bootstrap = bootstrap, prior.means = prior.means,
-                                                               num.bootstraps = num.bootstraps, parallel = boot.parallel,
-                                                               cores = boot.cores, group = group, bootstrap.means = bmeans)), "GRangesList")))
-    })
-  }
-  
-  if (parallel & isTRUE(group)) {
-    atac.compartments <- sort(unlist(as(mclapply(chr, function(c) {
-      atacCompartments(obj, obj, res = res,
-                        chr = c, targets = targets, genome = genome,
-                        bootstrap = bootstrap,num.bootstraps = num.bootstraps, prior.means = prior.means,
-                        parallel = boot.parallel, cores = boot.cores, group = group, bootstrap.means = bmeans)}, mc.cores = cores),
-      "GRangesList")))
-  }
-  
-  if (!parallel & isTRUE(group)) {
-    atac.compartments <- sort(unlist(as(lapply(chr, function(c) {
-      atacCompartments(obj, obj, res = res,
-                        chr = c, targets = targets, genome = genome, prior.means = prior.means,
-                        bootstrap = bootstrap,num.bootstraps = num.bootstraps,
-                        parallel = boot.parallel, cores = boot.cores, group = group, bootstrap.means = bmeans)}),
-      "GRangesList")))
+      atac.compartments.list <- lapply(chr, function(c) atacCompartments(obj.sub, obj, res = res,
+        chr = c, targets = targets, genome = genome,
+        bootstrap = bootstrap, prior.means = prior.means,
+        num.bootstraps = num.bootstraps, parallel = boot.parallel,
+        cores = boot.cores, group = group, bootstrap.means = bmeans))
+      sort(unlist(as(atac.compartments.list, "GRangesList")))
+    }, mc.cores = ifelse(parallel, cores, 1))
   }
 
   #if group-level treat a little differently
