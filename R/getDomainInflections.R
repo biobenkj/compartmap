@@ -66,51 +66,8 @@ getDomainInflections <- function(gr, what = "score", res = 1e6,
   #technically, we really only need the places that are non-contiguous
   #to bookend our vectors to calculate
   non_contig <- which(d != 1)
-  
-  #convert to pos and negative signs
-  .getInflections <- function(gr, what = "score") {
-    gr.signs <- sign(mcols(gr)[[what]])
-    #find the inflected compartment
-    gr.signs.bool <- gr.signs < 0
-    #big list of things that are less than zero
-    #where the flip will be FALSE
-    gr.inflect <- gr[!gr.signs.bool,]
-    if (length(gr.inflect) == 0) {
-      return(GRanges())
-    }
-    #merge them
-    #shift
-    end(gr.inflect) <- end(gr.inflect) + 1
-    #reduce
-    gr.inflect <- reduce(gr.inflect)
-    #shift back
-    end(gr.inflect) <- end(gr.inflect) - 1
-    #gr.signs.diff <- diff(gr.signs) != 0
-    #subset the original granges
-    #gr.inflect <- gr[gr.signs.diff,]
-    if (length(gr.signs) == 2 & any(gr.signs.bool)) {
-      #special case
-      gr.inflect <- gr[2,]
-      gr.inflect.new <- GRanges(seqnames = seqnames(gr.inflect),
-                                ranges = IRanges(start = start(gr.inflect),
-                                                 end = start(gr.inflect)),
-                                strand = "*")
-      return(gr.inflect.new)
-    }
-    gr.inflect.new.start <- GRanges(seqnames = seqnames(gr.inflect),
-                                    ranges = IRanges(start = start(gr.inflect),
-                                                     end = start(gr.inflect)),
-                                    strand = "*")
-    gr.inflect.new.end <- GRanges(seqnames = seqnames(gr.inflect),
-                                  ranges = IRanges(start = end(gr.inflect),
-                                                   end = end(gr.inflect)),
-                                  strand = "*")
-    gr.inflect.new <- sort(c(gr.inflect.new.start,
-                             gr.inflect.new.end))
-    #NOTE: the start of the inflected compartment is what we want
-    return(gr.inflect.new)
-  }
-  
+
+
   #if we have fully continuous data, short circuit
   if (!length(non_contig)) {
     message("Contiguous runs. Finding inflections.")
@@ -143,3 +100,49 @@ getDomainInflections <- function(gr, what = "score", res = 1e6,
   message("Returning inflections.")
   return(unlist(as(grl.new, "GRangesList")))
 }
+
+
+#convert to pos and negative signs
+.getInflections <- function(gr, what = "score") {
+  gr.signs <- sign(mcols(gr)[[what]])
+  #find the inflected compartment
+  gr.signs.bool <- gr.signs < 0
+  #big list of things that are less than zero
+  #where the flip will be FALSE
+  gr.inflect <- gr[!gr.signs.bool,]
+  if (length(gr.inflect) == 0) {
+    return(GRanges())
+  }
+  #merge them
+
+  end(gr.inflect) <- end(gr.inflect) + 1  #shift
+
+  gr.inflect <- reduce(gr.inflect)        #reduce
+
+  end(gr.inflect) <- end(gr.inflect) - 1  #shift back
+  #gr.signs.diff <- diff(gr.signs) != 0
+
+  #subset the original granges
+  #gr.inflect <- gr[gr.signs.diff,]
+  if (length(gr.signs) == 2 & any(gr.signs.bool)) {
+    gr.inflect <- gr[2,]     #special case
+    gr.inflect.new <- GRanges(seqnames = seqnames(gr.inflect),
+      ranges = IRanges(start = start(gr.inflect),
+        end = start(gr.inflect)),
+      strand = "*")
+    return(gr.inflect.new)
+  }
+  gr.inflect.new.start <- GRanges(seqnames = seqnames(gr.inflect),
+    ranges = IRanges(start = start(gr.inflect),
+      end = start(gr.inflect)),
+    strand = "*")
+  gr.inflect.new.end <- GRanges(seqnames = seqnames(gr.inflect),
+    ranges = IRanges(start = end(gr.inflect),
+      end = end(gr.inflect)),
+    strand = "*")
+  gr.inflect.new <- sort(c(gr.inflect.new.start, gr.inflect.new.end))
+
+  #NOTE: the start of the inflected compartment is what we want
+  return(gr.inflect.new)
+}
+
