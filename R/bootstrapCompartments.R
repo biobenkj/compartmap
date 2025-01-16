@@ -57,52 +57,33 @@ bootstrapCompartments <- function(obj, original.obj, bootstrap.samples = 1000,
     bmeans <- sample.int(bootstrap.means, size = bootstrap.samples, replace = FALSE)
     colnames(bmeans) <- rep("globalMean", ncol(bmeans))
     }
-  
+
   #if (ncol(original.obj) < 6) stop("We need more than 5 samples to bootstrap with for the results to be meaningful.")
-  if (!parallel) {
-    message("Not bootstrapping in parallel will take a long time...")
-    #bootstrap and recompute compartments
-    resamp.compartments <- lapply(1:ncol(bmeans), function(b) {
-      #resample the global means with replacement
-      message("Working on bootstrap ", b)
-      
-      #get the shrunken bins with new global mean
-      boot.mean <- as.matrix(bmeans[,b])
-      colnames(boot.mean) <- "globalMean"
-      s.bins <- shrinkBins(obj, original.obj, prior.means = boot.mean,
-                           chr = chr, res = res, assay = assay, genome = genome)
-      cor.bins <- getCorMatrix(s.bins, squeeze = !group)
-      #Stupid check for perfect correlation with global mean
-      if (any(is.na(cor.bins$binmat.cor))) {
-        absig <- matrix(rep(NA, nrow(cor.bins$binmat.cor)))
-      } else {
-        absig <- getABSignal(cor.bins, assay = assay)
-      }
-      return(absig)
-    })
-  } else {
+  if (parallel) {
     message("Bootstrapping in parallel with ", cores, " cores.")
-    #bootstrap and recompute compartments
-    resamp.compartments <- mclapply(1:ncol(bmeans), function(b) {
-      #get the shrunken bins with new global mean
-      boot.mean <- as.matrix(bmeans[,b])
-      colnames(boot.mean) <- "globalMean"
-      s.bins <- shrinkBins(obj, original.obj, prior.means = boot.mean,
-                           chr = chr, res = res, assay = assay, genome = genome)
-      cor.bins <- getCorMatrix(s.bins, squeeze = !group)
-      #Stupid check for perfect correlation with global mean
-      if (any(is.na(cor.bins$binmat.cor))) {
-        absig <- matrix(rep(NA, nrow(cor.bins$binmat.cor)))
-      } else {
-        absig <- getABSignal(cor.bins, assay = assay)
-      }
-      return(absig)
-    }, mc.cores = cores)
+  } else {
+    message("Not bootstrapping in parallel will take a long time...")
   }
 
+  #bootstrap and recompute compartments
+  resamp.compartments <- mclapply(1:ncol(bmeans), function(b) {
+    #get the shrunken bins with new global mean
+    boot.mean <- as.matrix(bmeans[,b])
+    colnames(boot.mean) <- "globalMean"
+    s.bins <- shrinkBins(obj, original.obj, prior.means = boot.mean,
+      chr = chr, res = res, assay = assay, genome = genome)
+    cor.bins <- getCorMatrix(s.bins, squeeze = !group)
+    #Stupid check for perfect correlation with global mean
+    if (any(is.na(cor.bins$binmat.cor))) {
+      absig <- matrix(rep(NA, nrow(cor.bins$binmat.cor)))
+    } else {
+      absig <- getABSignal(cor.bins, assay = assay)
+    }
+    return(absig)
+  }, mc.cores = ifelse(parallel, cores, 1))
+
   #summarize the bootstraps and compute confidence intervals
-  resamp.compartments <- summarizeBootstraps(resamp.compartments, svd,
-                                             q = q, assay = assay)
+  resamp.compartments <- summarizeBootstraps(resamp.compartments, svd, q = q, assay = assay)
   return(resamp.compartments)
 }
 
