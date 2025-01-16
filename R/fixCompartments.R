@@ -13,19 +13,17 @@
 #' @export
 #'
 #' @examples
-#'
-
 fixCompartments <- function(obj, min.conf = 0.8, parallel = FALSE, cores = 1) {
-  #this function will invert or "fix" compartments based on bootstrapping results
+  # this function will invert or "fix" compartments based on bootstrapping results
   if (is(obj, "RaggedExperiment")) obj <- condenseSE(obj, sample.name = colnames(assay(obj)))
 
-  #if we somehow only have 1 sample
+  # if we somehow only have 1 sample
   if (is(obj, "GRanges")) {
     return(flipper(obj, min.conf))
   }
 
-  message("Fixing compartments using a minimum confidence score of ", min.conf*100, "%")
-  #go through and invert compartments based on the min.conf
+  message("Fixing compartments using a minimum confidence score of ", min.conf * 100, "%")
+  # go through and invert compartments based on the min.conf
   flip_compartments_lst <- mclapply(obj, flipper, min.conf, mc.cores = ifelse(parallel, cores, 1))
   names(flip_compartments_lst) <- names(obj)
   return(flip_compartments_lst)
@@ -48,28 +46,28 @@ flipper <- function(input_obj, min.conf) {
   invert_compartments <- apply(mcols(input_obj), 1, function(c) {
     return(ifelse(c["conf.est"] < 1 - min.conf, TRUE, FALSE))
   })
-  message("Fixing compartments using a minimum confidence score of ", min.conf*100, "%")
+  message("Fixing compartments using a minimum confidence score of ", min.conf * 100, "%")
   mcols(input_obj)$flip.compartment <- invert_compartments
 
-  #add a new column for flipped scores
+  # add a new column for flipped scores
   mcols(input_obj)$flip.score <- mcols(input_obj)$score
-  #flip the score
+  # flip the score
   mcols(input_obj)$flip.score[invert_compartments] <- -(mcols(input_obj)$score[invert_compartments])
 
-  #add a new column for flipped CIs
+  # add a new column for flipped CIs
   mcols(input_obj)$flip.conf.est <- mcols(input_obj)$conf.est
   mcols(input_obj)$flip.conf.est.upperCI <- mcols(input_obj)$conf.est.upperCI
   mcols(input_obj)$flip.conf.est.lowerCI <- mcols(input_obj)$conf.est.lowerCI
 
-  #flip the conf.est
-  mcols(input_obj)$flip.conf.est[invert_compartments] <- 1-(mcols(input_obj)$conf.est[invert_compartments])
+  # flip the conf.est
+  mcols(input_obj)$flip.conf.est[invert_compartments] <- 1 - (mcols(input_obj)$conf.est[invert_compartments])
 
-  #flip the upper/lowerCI
+  # flip the upper/lowerCI
   conf.est.upperCI <- mcols(input_obj)$conf.est.upperCI[invert_compartments]
-  mcols(input_obj)$flip.conf.est.upperCI[invert_compartments] <- 1-(conf.est.upperCI)
+  mcols(input_obj)$flip.conf.est.upperCI[invert_compartments] <- 1 - (conf.est.upperCI)
 
   conf.est.lowerCI <- mcols(input_obj)$conf.est.lowerCI[invert_compartments]
-  mcols(input_obj)$flip.conf.est.lowerCI[invert_compartments] <- 1-(conf.est.lowerCI)
+  mcols(input_obj)$flip.conf.est.lowerCI[invert_compartments] <- 1 - (conf.est.lowerCI)
 
   return(input_obj)
 }
