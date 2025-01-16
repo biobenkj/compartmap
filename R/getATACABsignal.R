@@ -131,9 +131,10 @@ atacCompartments <- function(obj, original.obj, res = 1e6, chr = NULL, targets =
   obj.bins <- shrinkBins(obj, original.obj, prior.means = prior.means, chr = chr,
     res = res, targets = targets, assay = "atac",
     genome = genome, jse = TRUE)
+
   #compute correlations
-  if (group) obj.cor <- getCorMatrix(obj.bins, squeeze = FALSE)
-  if (isFALSE(group)) obj.cor <- getCorMatrix(obj.bins, squeeze = TRUE)
+  obj.cor <- getCorMatrix(obj.bins, squeeze = !group)
+
   if (any(is.na(obj.cor$binmat.cor))) {
     obj.cor$gr$pc <- matrix(rep(NA, nrow(obj.cor$binmat.cor)))
     obj.svd <- obj.cor$gr
