@@ -78,18 +78,12 @@ shrinkBins <- function(x, original.x, prior.means = NULL, chr = NULL,
         stop("Cannot perform targeted bin-level shrinkage with one target sample.")
       }}
     if (jse) {
-      switch(assay,
-             atac = .jse(x=r.samps, grand.mean=r.prior.m, targets=targets),
-             rna = .jse(x=r.samps, grand.mean=r.prior.m, targets=targets),
-             array = .jse(x=r.samps, grand.mean=r.prior.m, targets=targets))
+      .jse(x=r.samps, grand.mean=r.prior.m, targets=targets)
     } else {
-      switch(assay,
-             atac = .ebayes(x=r.samps, prior=r.prior.m, targets=targets),
-             rna = .ebayes(x=r.samps, prior=r.prior.m, targets=targets),
-             array = .ebayes(x=r.samps, prior=r.prior.m, targets=targets))
-      }
-    }))
-  
+      .ebayes(x=r.samps, prior=r.prior.m, targets=targets)
+    }
+  }))
+
   #drop things that are zeroes as global means
   #this can and does crop up in resampling when you have something sparse
   #for instance single-cell data...
