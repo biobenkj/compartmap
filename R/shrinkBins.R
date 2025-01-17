@@ -52,33 +52,23 @@ shrinkBins <- function(x, original.x, prior.means = NULL, chr = NULL,
   atac_fun <- function(x) {
     return(sqrt(mean(x)) * length(x))
   }
-  
+
+  input.fun <- switch(assay,
+    atac = ifelse(jse, mean, atac_fun),
+    rna = ifelse(jse, mean, atac_fun),
+    array = ifelse(jse, mean, median)
+  )
+
   #bin the input
-  if (jse) {
-    bin.mat <- suppressMessages(switch(assay,
-                                       atac = getBinMatrix(x=as.matrix(cbind(assays(original.x)$counts, prior.means)),
-                                                           genloc=rowRanges(x), chr=chr, res=res, FUN=mean,
-                                                           genome = genome),
-                                       rna = getBinMatrix(x=as.matrix(cbind(assays(original.x)$counts, prior.means)),
-                                                          genloc=rowRanges(x), chr=chr, res=res, FUN=mean,
-                                                          genome = genome),
-                                       # make sure we are with betas or we will double flogit
-                                       array = getBinMatrix(x=as.matrix(cbind(flogit(assays(original.x)$Beta), prior.means)),
-                                                            genloc=rowRanges(x), chr=chr, res=res, FUN=mean,
-                                                            genome = genome)))
-  } else {
-    bin.mat <- suppressMessages(switch(assay,
-                                       atac = getBinMatrix(x=as.matrix(cbind(assays(original.x)$counts, prior.means)),
-                                                           genloc=rowRanges(x), chr=chr, res=res, FUN=atac_fun,
-                                                           genome = genome),
-                                       rna = getBinMatrix(x=as.matrix(cbind(assays(original.x)$counts, prior.means)),
-                                                          genloc=rowRanges(x), chr=chr, res=res, FUN=atac_fun,
-                                                          genome = genome),
-                                       array = getBinMatrix(x=as.matrix(cbind(flogit(assays(original.x)$Beta), prior.means)),
-                                                            genloc=rowRanges(x), chr=chr, res=res, FUN=median,
-                                                            genome = genome)))
-  }
-  
+  bin.mat <- getBinMatrix(
+    x=as.matrix(cbind(assays(original.x)$counts, prior.means)),
+    genloc=rowRanges(x),
+    chr=chr,
+    res=res,
+    FUN=input.fun,
+    genome = genome
+  )
+
   #shrink the bins using a James-Stein Estimator
   x.shrink <- t(apply(bin.mat$x, 1, function(r) {
     r.samps <- r[!names(r) %in% "globalMean"]
