@@ -62,57 +62,19 @@ summarizeBootstraps <- function(boot.list, est.ab, q = 0.95, assay = c("rna", "a
   est.ab$conf.est <- 0
   est.ab$conf.est.upperCI <- 0
   est.ab$conf.est.lowerCI <- 0
-  conf.int <- lapply(1:length(est.ab), function(e) {
-    # compute intervals
-    if (est.ab[e, ]$score > 0) {
-      if (assay %in% c("atac", "rna")) {
-        # assumes open for ATAC and RNA
-        est <- agrestiCoullCI(
-          est.ab[e, ]$boot.open,
-          est.ab[e, ]$boot.closed,
-          q = 0.95
-        )
-      } else {
-        # assumes closed otherwise
-        est <- agrestiCoullCI(
-          est.ab[e, ]$boot.closed,
-          est.ab[e, ]$boot.open,
-          q = 0.95
-        )
-      }
 
-      # this really isn't a good idea...
-      # so... don't do it?
-      # just return the ests
-      # it will be the same length as est.ab
-      return(est)
-      # est.ab[e,]$conf.est.lowerCI <<- est[1]
-      # est.ab[e,]$conf.est <<- est[2]
-      # est.ab[e,]$conf.est.upperCI <<- est[3]
-    }
-    if (est.ab[e, ]$score < 0) {
-      if (assay %in% c("atac", "rna")) {
-        # assumes closed for ATAC
-        est <- agrestiCoullCI(
-          est.ab[e, ]$boot.closed,
-          est.ab[e, ]$boot.open,
-          q = 0.95
-        )
-      } else {
-        # assumes open otherwise
-        est <- agrestiCoullCI(
-          est.ab[e, ]$boot.open,
-          est.ab[e, ]$boot.closed,
-          q = 0.95
-        )
-      }
-      # this really isn't a good idea...
-      # est.ab[e,]$conf.est.lowerCI <<- est[1]
-      # est.ab[e,]$conf.est <<- est[2]
-      # est.ab[e,]$conf.est.upperCI <<- est[3]
-      return(est)
-    }
-  })
+  conf.int <- lapply(1:length(est.ab), function(e) {
+    compartment.call <- est.ab[e, ]
+    ab.score <- compartment.call$score
+
+    # check if the compartment is open
+    is.open <- .isCompartmentOpen(is.atac_or_rna, ab.score)
+
+    # get ones and zeroes input for agrestiCoullCI
+    ones <- ifelse(is.open, compartment.call$boot.open, compartment.call$boot.closed)
+    zeroes <- ifelse(is.open, compartment.call$boot.closed, compartment.call$boot.open)
+    agrestiCoullCI(ones, zeroes, q = 0.95)
+  }
 
   # combine the conf.est results into something sensible and bind with est.ab
   conf.int.ests <- do.call("rbind", conf.int)
