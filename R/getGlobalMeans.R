@@ -31,17 +31,17 @@ getGlobalMeans <- function(obj, targets = NULL,
   if (!is.null(targets)){
     stargets <- getShrinkageTargets(obj, targets)
     message("Using ", paste(shQuote(targets), collapse = ", "), " as shrinkage targets...")
-    globalMean <- switch(assay,
-                         atac = matrix(rowMeans(assays(stargets)$counts, na.rm=TRUE), ncol=1),
-                         rna = matrix(rowMeans(assays(stargets)$counts, na.rm=TRUE), ncol=1),
-                         array = matrix(rowMeans(flogit(assays(stargets)$Beta), na.rm=TRUE), ncol=1))
+    globalMean.input <- stargets
   }
   else {
-    globalMean <- switch(assay,
-                         atac = matrix(rowMeans(assays(obj)$counts, na.rm=TRUE), ncol=1),
-                         rna = matrix(rowMeans(assays(obj)$counts, na.rm=TRUE), ncol=1),
-                         array = matrix(rowMeans(flogit(assays(obj)$Beta), na.rm=TRUE), ncol=1))
+    globalMean.input <- obj
   }
+
+  globalMean <- switch(assay,
+    atac = matrix(rowMeans(assays(globalMean.input)$counts, na.rm=TRUE), ncol=1),
+    rna = matrix(rowMeans(assays(globalMean.input)$counts, na.rm=TRUE), ncol=1),
+    array = matrix(rowMeans(flogit(assays(globalMean.input)$Beta), na.rm=TRUE), ncol=1))
+
   colnames(globalMean) <- "globalMean"
   #coercion to get the rownames to be the GRanges coordinates
   #allows to flip back and forth between a matrix and GRanges
