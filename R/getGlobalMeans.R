@@ -14,44 +14,41 @@
 #' data("k562_scrna_chr14", package = "compartmap")
 #' scrna.global.means <- getGlobalMeans(k562_scrna_chr14, assay = "rna")
 #'
-
-getGlobalMeans <- function(obj, targets = NULL,
-                           assay = c("atac", "rna", "array")) {
-  #match the assay arg
+getGlobalMeans <- function(obj, targets = NULL, assay = c("atac", "rna", "array")) {
+  # match the assay arg
   assay <- match.arg(assay)
 
-  #check the names of the assays
+  # check the names of the assays
   if (!any(getAssayNames(obj) %in% c("counts", "Beta"))) {
     message("The assay slot should contain 'Beta' for arrays.")
     stop("The assay slot should contain 'counts' for atac/rna.")
   }
-  
-  #get the global means
-  #check if shrinkage targets are being used
-  if (!is.null(targets)){
+
+  # get the global means
+  # check if shrinkage targets are being used
+  if (!is.null(targets)) {
     stargets <- getShrinkageTargets(obj, targets)
     message("Using ", paste(shQuote(targets), collapse = ", "), " as shrinkage targets...")
     globalMean.input <- stargets
-  }
-  else {
+  } else {
     globalMean.input <- obj
   }
 
   globalMean <- switch(assay,
-    atac = matrix(rowMeans(assays(globalMean.input)$counts, na.rm=TRUE), ncol=1),
-    rna = matrix(rowMeans(assays(globalMean.input)$counts, na.rm=TRUE), ncol=1),
-    array = matrix(rowMeans(flogit(assays(globalMean.input)$Beta), na.rm=TRUE), ncol=1))
+    atac = matrix(rowMeans(assays(globalMean.input)$counts, na.rm = TRUE), ncol = 1),
+    rna = matrix(rowMeans(assays(globalMean.input)$counts, na.rm = TRUE), ncol = 1),
+    array = matrix(rowMeans(flogit(assays(globalMean.input)$Beta), na.rm = TRUE), ncol = 1)
+  )
 
   colnames(globalMean) <- "globalMean"
-  #coercion to get the rownames to be the GRanges coordinates
-  #allows to flip back and forth between a matrix and GRanges
-  #for subsetting, etc.
+  # coercion to get the rownames to be the GRanges coordinates
+  # allows to flip back and forth between a matrix and GRanges for subsetting, etc.
   rownames(globalMean) <- as.character(granges(obj))
-  return(globalMean) 
+  return(globalMean)
 }
 
 #' Pre-compute the global means for bootstrapping compartments
-#' 
+#'
 #' @name precomputeBootstrapMeans
 #'
 #' @param obj Input SummarizedExperiment object
@@ -62,20 +59,24 @@ getGlobalMeans <- function(obj, targets = NULL,
 #' @param num.cores How many cores to use for parallel processing
 #'
 #' @return A matrix of bootstrapped global means
-#' 
+#'
 #' @import SummarizedExperiment
 #' @export
 #'
 #' @examples
 #' data("k562_scrna_chr14", package = "compartmap")
 #' scrna.bootstrap.global.means <- precomputeBootstrapMeans(k562_scrna_chr14, assay = "rna", num.bootstraps = 2)
-#' 
-
-precomputeBootstrapMeans <- function(obj, targets = NULL, num.bootstraps = 100,
-                                     assay = c("atac", "rna", "array"),
-                                     parallel = FALSE, num.cores = 1) {
-  #this function precomputes the bootstrapped global means
-  #as a default we will make 100 bootstraps
+#'
+precomputeBootstrapMeans <- function(
+  obj,
+  targets = NULL,
+  num.bootstraps = 100,
+  assay = c("atac", "rna", "array"),
+  parallel = FALSE,
+  num.cores = 1
+) {
+  # this function precomputes the bootstrapped global means
+  # as a default we will make 100 bootstraps
 
   bootMean <- mclapply(1:num.bootstraps, function(b) {
     message("Working on bootstrap ", b)
@@ -86,16 +87,24 @@ precomputeBootstrapMeans <- function(obj, targets = NULL, num.bootstraps = 100,
     resamp.mat <- switch(assay,
       atac = .resampleMatrix(assays(obj)$counts),
       rna = .resampleMatrix(assays(obj)$counts),
-      array = .resampleMatrix(assays(obj)$Beta))
-    #turn back into SummarizedExperiment
+      array = .resampleMatrix(assays(obj)$Beta)
+    )
+    # turn back into SummarizedExperiment
     resamp.se <- switch(assay,
-      atac = SummarizedExperiment(assays=SimpleList(counts=resamp.mat),
-        rowRanges = rowRanges(obj)),
-      rna = SummarizedExperiment(assays=SimpleList(counts=resamp.mat),
-        rowRanges = rowRanges(obj)),
-      array = SummarizedExperiment(assays=SimpleList(Beta=resamp.mat),
-        rowRanges = rowRanges(obj)))
-    #make sure targets is NULL since we already subset to them!
+      atac = SummarizedExperiment(
+        assays = SimpleList(counts = resamp.mat),
+        rowRanges = rowRanges(obj)
+      ),
+      rna = SummarizedExperiment(
+        assays = SimpleList(counts = resamp.mat),
+        rowRanges = rowRanges(obj)
+      ),
+      array = SummarizedExperiment(
+        assays = SimpleList(Beta = resamp.mat),
+        rowRanges = rowRanges(obj)
+      )
+    )
+    # make sure targets is NULL since we already subset to them!
     return(getGlobalMeans(obj = resamp.se, targets = NULL, assay = assay))
   }, mc.cores = ifelse(parallel, num.cores, 1))
 
