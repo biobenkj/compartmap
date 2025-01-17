@@ -36,15 +36,10 @@ scCompartments <- function(obj, res = 1e6, parallel = FALSE, chr = NULL,
   #which assay are we working on
   assay <- tolower(match.arg(assay))
   if (!assay %in% c("atac", "rna")) stop("Supported assays are 'atac', and 'rna'.")
-  
-  sc_compartments <- switch(assay,
-                            atac=getATACABsignal(obj = obj, res = res, parallel = parallel,
+
+  sc_compartments <- getATACABsignal(obj = obj, res = res, parallel = parallel,
                                                  chr = chr, targets = targets, cores = cores,
                                                  bootstrap = bootstrap, num.bootstraps = num.bootstraps,
-                                                 genome = genome, group = group),
-                            rna=getRNAABsignal(obj = obj, res = res, parallel = parallel,
-                                               chr = chr, targets = targets, cores = cores,
-                                               bootstrap = bootstrap, num.bootstraps = num.bootstraps,
-                                               genome = genome, group = group))
+                                                 genome = genome, group = group)
   return(sc_compartments)
 }
