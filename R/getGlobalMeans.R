@@ -76,50 +76,28 @@ precomputeBootstrapMeans <- function(obj, targets = NULL, num.bootstraps = 100,
                                      parallel = FALSE, num.cores = 1) {
   #this function precomputes the bootstrapped global means
   #as a default we will make 100 bootstraps
-  if (parallel) {
-    bootMean <- mclapply(1:num.bootstraps, function(b) {
-      message("Working on bootstrap ", b)
-      if (!is.null(targets)) {
-        if (length(targets) < 5) stop("Need more than 5 samples for bootstrapping to work.")
-        obj <- getShrinkageTargets(obj, targets)
-      }
-      resamp.mat <- switch(assay,
-                           atac = .resampleMatrix(assays(obj)$counts),
-                           rna = .resampleMatrix(assays(obj)$counts),
-                           array = .resampleMatrix(assays(obj)$Beta))
-      #turn back into SummarizedExperiment
-      resamp.se <- switch(assay,
-                          atac = SummarizedExperiment(assays=SimpleList(counts=resamp.mat),
-                                                      rowRanges = rowRanges(obj)),
-                          rna = SummarizedExperiment(assays=SimpleList(counts=resamp.mat),
-                                                           rowRanges = rowRanges(obj)),
-                          array = SummarizedExperiment(assays=SimpleList(Beta=resamp.mat),
-                                                       rowRanges = rowRanges(obj)))
-      #make sure targets is NULL since we already subset to them!
-      return(getGlobalMeans(obj = resamp.se, targets = NULL, assay = assay))
-    }, mc.cores = num.cores)
-  } else {
-    bootMean <- lapply(1:num.bootstraps, function(b) {
-      message("Working on bootstrap ", b)
-      if (!is.null(targets)) {
-        if (length(targets) < 5) stop("Need more than 5 samples for targeted bootstrapping to be useful.")
-        obj <- getShrinkageTargets(obj, targets)
-      }
-      resamp.mat <- switch(assay,
-                           atac = .resampleMatrix(assays(obj)$counts),
-                           rna = .resampleMatrix(assays(obj)$counts),
-                           array = .resampleMatrix(assays(obj)$Beta))
-      #turn back into SummarizedExperiment
-      resamp.se <- switch(assay,
-                          atac = SummarizedExperiment(assays=SimpleList(counts=resamp.mat),
-                                                      rowRanges = rowRanges(obj)),
-                          rna = SummarizedExperiment(assays=SimpleList(counts=resamp.mat),
-                                                     rowRanges = rowRanges(obj)),
-                          array = SummarizedExperiment(assays=SimpleList(Beta=resamp.mat),
-                                                       rowRanges = rowRanges(obj)))
-      #make sure targets is NULL since we already subset to them!
-      return(getGlobalMeans(obj = resamp.se, targets = NULL, assay = assay))
-    })
-  }
+
+  bootMean <- mclapply(1:num.bootstraps, function(b) {
+    message("Working on bootstrap ", b)
+    if (!is.null(targets)) {
+      if (length(targets) < 5) stop("Need more than 5 samples for targeted bootstrapping to work.")
+      obj <- getShrinkageTargets(obj, targets)
+    }
+    resamp.mat <- switch(assay,
+      atac = .resampleMatrix(assays(obj)$counts),
+      rna = .resampleMatrix(assays(obj)$counts),
+      array = .resampleMatrix(assays(obj)$Beta))
+    #turn back into SummarizedExperiment
+    resamp.se <- switch(assay,
+      atac = SummarizedExperiment(assays=SimpleList(counts=resamp.mat),
+        rowRanges = rowRanges(obj)),
+      rna = SummarizedExperiment(assays=SimpleList(counts=resamp.mat),
+        rowRanges = rowRanges(obj)),
+      array = SummarizedExperiment(assays=SimpleList(Beta=resamp.mat),
+        rowRanges = rowRanges(obj)))
+    #make sure targets is NULL since we already subset to them!
+    return(getGlobalMeans(obj = resamp.se, targets = NULL, assay = assay))
+  }, mc.cores = ifelse(parallel, num.cores, 1))
+
   return(do.call("cbind", bootMean))
 }
