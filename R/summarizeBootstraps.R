@@ -55,8 +55,11 @@ summarizeBootstraps <- function(boot.list, est.ab, q = 0.95, assay = c("rna", "a
   })
 
   # eunumerate bootstraps
-  est.ab$boot.open <- rowSums(do.call("cbind", lapply(boot.summary.mat.lst, function(x) x[, 1])))
-  est.ab$boot.closed <- rowSums(do.call("cbind", lapply(boot.summary.mat.lst, function(x) x[, 2])))
+  .getBootRowSums <- function(index) {
+    rowSums(do.call("cbind", lapply(boot.summary.mat.lst, function(x) x[, index])))
+  }
+  est.ab$boot.open <- .getBootRowSums(1)
+  est.ab$boot.closed <- .getBootRowSums(2)
 
   message("Computing Agresti-Coull 95% confidence intervals.")
   est.ab$conf.est <- 0
