@@ -104,9 +104,9 @@ shrinkBins <- function(x, original.x, prior.means = NULL, chr = NULL,
   } else {
     C <- sd(x)
   }
-  prior.m <- prior
+
   #convert back to beta values
-  return(prior.m + C*(x - prior.m))
+  return(prior + C*(x - prior))
 }
 
 .jse <- function(x, grand.mean = NULL, targets = NULL) {
