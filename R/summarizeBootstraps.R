@@ -16,6 +16,8 @@ summarizeBootstraps <- function(boot.list, est.ab, q = 0.95, assay = c("rna", "a
   # go through the estimated A/B compartments and compute proportions from the boot.list
   est.ab$score <- est.ab$pc
 
+  is.atac_or_rna <- assay %in% c("atac", "rna")
+
   message("Summarizing bootstraps.")
 
   # initialize open and closed counts to enumerate
@@ -36,19 +38,15 @@ summarizeBootstraps <- function(boot.list, est.ab, q = 0.95, assay = c("rna", "a
     est.ab.dummy$boot.closed <- 0
 
     # convert to binary result for proportions
-    # logic for methylation
-    # open = eigen < 0
-    # closed = eigen > 0
-    # the logic is flipped for ATAC
-    # open = eigen > 0
-    # closed = eigen < 0
-    if (assay %in% c("atac", "rna")) {
-      b$open <- ifelse(b$score > 0, 1, 0)
-      b$closed <- ifelse(b$score < 0, 1, 0)
+    b.isOpen <- .isCompartmentOpen(is.atac_or_rna, b$score)
+    if (b.isOpen) {
+      b$open <- 1
+      b$closed <- 0
     } else {
-      b$open <- ifelse(b$score < 0, 1, 0)
-      b$closed <- ifelse(b$score > 0, 1, 0)
+      b$open <- 0
+      b$closed <- 1
     }
+
     # overlap by common intervals
     ol <- findOverlaps(b, est.ab.dummy)
     mcols(est.ab.dummy)$boot.open[subjectHits(ol)] <- mcols(est.ab.dummy)$boot.open[subjectHits(ol)] + mcols(b)$open[queryHits(ol)]
@@ -129,4 +127,17 @@ summarizeBootstraps <- function(boot.list, est.ab, q = 0.95, assay = c("rna", "a
   est.ab$conf.est <- conf.int.ests[, 2]
   est.ab$conf.est.upperCI <- conf.int.ests[, 3]
   return(est.ab)
+}
+
+# Check if a compartment is open based on assay type and eigenvalue
+#
+# For ATAC/RNA:
+# eigen < 0 - closed
+# eigen > 0 - open
+#
+# For methylation the logic is flipped:
+# eigen < 0 - open
+# eigen > 0 - closed
+.isCompartmentOpen <- function(is.atac_or_rna, eigen) {
+  (is.atac_or_rna & eigen > 0) | (!is.atac_or_rna & eigen < 0)
 }
