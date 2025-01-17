@@ -73,10 +73,11 @@ shrinkBins <- function(x, original.x, prior.means = NULL, chr = NULL,
   x.shrink <- t(apply(bin.mat$x, 1, function(r) {
     r.samps <- r[!names(r) %in% "globalMean"]
     r.prior.m <- r["globalMean"]
-    if (!is.null(targets)) {
-      if (length(r.samps[targets]) == 1) {
-        stop("Cannot perform targeted bin-level shrinkage with one target sample.")
-      }}
+
+    if (!is.null(targets) & length(r.samps[targets]) == 1) {
+      stop("Cannot perform targeted bin-level shrinkage with one target sample.")
+    }
+
     if (jse) {
       .jse(x=r.samps, grand.mean=r.prior.m, targets=targets)
     } else {
@@ -112,19 +113,18 @@ shrinkBins <- function(x, original.x, prior.means = NULL, chr = NULL,
 .jse <- function(x, grand.mean = NULL, targets = NULL) {
   ## see if we have enough means...
   ## this also assumes we are just computing a straight mean
-  if (!is.null(targets)) {
-    if (length(targets) < 4) {
-      message("Number of means fewer than 4. Using Bayes instead.")
-      ## this falls back to using Bayes rule which will probably not be great
-      ## but it won't explode and may provide some reasonable results anyway
-      c <- sd(x[targets])
-    } else {
-      ## targeted shrinkage
-      c <- 1 - ((length(x) - 3)*(sd(x[targets])^2) / sum(x - grand.mean)^2)
-      }
-  } else {
+  if (is.null(targets)) {
     ## typical shrinkage
     c <- 1 - ((length(x) - 3)*(sd(x)^2) / sum((x - grand.mean)^2))
+  } else if (length(targets) < 4) {
+    message("Number of means fewer than 4. Using Bayes instead.")
+    ## this falls back to using Bayes rule which will probably not be great
+    ## but it won't explode and may provide some reasonable results anyway
+    c <- sd(x[targets])
+  } else {
+    ## targeted shrinkage
+    c <- 1 - ((length(x) - 3)*(sd(x[targets])^2) / sum(x - grand.mean)^2)
   }
+
   return(grand.mean + c*(x - grand.mean))
 }
