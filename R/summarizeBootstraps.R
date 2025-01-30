@@ -37,15 +37,10 @@ summarizeBootstraps <- function(boot.list, est.ab, q = 0.95, assay = c("rna", "a
     est.ab.dummy$boot.open <- 0
     est.ab.dummy$boot.closed <- 0
 
-    # convert to binary result for proportions
+    # determine whether compartment is open and convert the boolean to 1/0 binary result for proportions
     b.isOpen <- .isCompartmentOpen(is.atac_or_rna, b$score)
-    if (b.isOpen) {
-      b$open <- 1
-      b$closed <- 0
-    } else {
-      b$open <- 0
-      b$closed <- 1
-    }
+    b$open <- as.integer(b.isOpen)
+    b$closed <- as.integer(!b.isOpen)
 
     # overlap by common intervals
     ol <- findOverlaps(b, est.ab.dummy)
