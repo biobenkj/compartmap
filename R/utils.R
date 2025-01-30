@@ -172,12 +172,8 @@ getSeqLengths <- function(
   # check if the genome used exists in what is currently supported, stopping if not
   if (!genome %in% c("hg19", "hg38", "mm9", "mm10")) stop("Only human and mouse are supported for the time being.")
   # import
-  genome.gr <- switch(genome,
-    hg19 = data("hg19.gr", package = "compartmap"),
-    hg38 = data("hg38.gr", package = "compartmap"),
-    mm9 = data("mm9.gr", package = "compartmap"),
-    mm10 = data("mm10.gr", package = "compartmap")
-  )
+  genome.name <- paste0(genome, ".gr")
+  genome.gr <- data(genome.name, package = "compartmap")
   # make sure that the chromosome specified exists in the seqlevels
   if (!chr %in% seqlevels(get(genome.gr))) stop("Desired chromosome is not found in the seqlevels of ", genome)
   # get the seqlengths
@@ -435,12 +431,8 @@ filterOpenSea <- function(
   # get the desired open sea loci given the genome
   genome <- match.arg(genome)
   if (is.null(other)) {
-    openseas.genome <- switch(genome,
-      hg19 = data("openSeas.hg19", package = "compartmap"),
-      hg38 = data("openSeas.hg38", package = "compartmap"),
-      mm10 = data("openSeas.mm10", package = "compartmap"),
-      mm9 = data("openSeas.mm9", package = "compartmap")
-    )
+    genome.name <- paste0("openSeas.", genome)
+    openseas.genome <- data("openSeas.hg19", package = "compartmap")
   } else {
     # check if it's a GRanges flavored object
     if (!is(other, "GRanges")) stop("The 'other' input needs to be a GRanges of open sea regions")
