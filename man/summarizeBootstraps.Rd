@@ -21,6 +21,3 @@ A GRanges object with bootstraps summarized
 \description{
 Summarize the bootstrap compartment estimates and compute Agresti-Coull confidence intervals
 }
-\examples{
-
-}

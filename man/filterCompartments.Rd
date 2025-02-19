@@ -19,6 +19,3 @@ A filtered/subset of the input object/list
 \description{
 Filter compartments using confidence estimates and eigenvalue thresholds
 }
-\examples{
-
-}

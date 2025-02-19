@@ -7,7 +7,7 @@
 getDomainInflections(
   gr,
   what = "score",
-  res = 1e+06,
+  res = 1000000,
   chrs = c(paste0("chr", 1:22), "chrX"),
   genome = c("hg19", "hg38", "mm9", "mm10")
 )
