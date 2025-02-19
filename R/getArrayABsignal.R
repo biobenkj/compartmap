@@ -27,8 +27,10 @@
 #'
 #' @examples
 #'
-#' data("meth_array_450k_chr14", package = "compartmap")
-#' array_compartments <- getArrayABsignal(array.data.chr14, parallel = FALSE, chr = "chr14", bootstrap = FALSE, genome = "hg19", array.type = "hm450")
+#' if (require(minfi)) {
+#'   data("meth_array_450k_chr14", package = "compartmap")
+#'   array_compartments <- getArrayABsignal(array.data.chr14, parallel=FALSE, chr="chr14", bootstrap=FALSE, genome="hg19", array.type="hm450")
+#' }
 getArrayABsignal <- function(
   obj,
   res = 1e6,

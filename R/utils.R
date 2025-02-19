@@ -368,8 +368,10 @@ importBigWig <- function(
 #' @export
 #'
 #' @examples
-#' data("meth_array_450k_chr14", package = "compartmap")
-#' cleanAssayRows(array.data.chr14, assay = "array")
+#' if (require(minfi)) {
+#'   data("meth_array_450k_chr14", package = "compartmap")
+#'   cleanAssayRows(array.data.chr14, assay = "array")
+#' }
 cleanAssayRows <- function(
   se,
   rowmax = 0.5,
@@ -392,8 +394,10 @@ cleanAssayRows <- function(
 #' @export
 #'
 #' @examples
-#' data("meth_array_450k_chr14", package = "compartmap")
-#' cleanAssayCols(array.data.chr.14, assay = "array")
+#' if (require(minfi)) {
+#'   data("meth_array_450k_chr14", package = "compartmap")
+#'   cleanAssayCols(array.data.chr14, assay = "array")
+#' }
 cleanAssayCols <- function(
   se,
   colmax = 0.8,
@@ -412,13 +416,17 @@ cleanAssayCols <- function(
 #'
 #' @param obj Input SummarizedExperiment or GRanges object
 #' @param genome Which genome to filter
+#' @param other GRanges of open sea regions (TODO)
 #'
 #' @return Filtered to open sea CpG loci
 #' @import SummarizedExperiment
+#' @export
 #'
 #' @examples
-#' data("meth_array_450k_chr14", package = "compartmap")
-#' opensea <- filterOpenSea(array.data.chr14, genome = "hg19")
+#' if (require(minfi)) {
+#'   data("meth_array_450k_chr14", package = "compartmap")
+#'   opensea <- filterOpenSea(array.data.chr14, genome = "hg19")
+#' }
 #'
 #' @export
 filterOpenSea <- function(
@@ -459,9 +467,8 @@ filterOpenSea <- function(
 #' @export
 #'
 #' @examples
-#' cpgi <- rtracklayer::import(system.file("inst/extdata/mm10_cpgi.bed", package = "compartmap"))
-#' opensea_cpg <- getOpenSeas(cpgi)
-#'
+#' #cpgi <- rtracklayer::import(system.file("inst/extdata/mm10_cpgi.bed", package = "compartmap"))
+#' #opensea_cpg <- getOpenSeas(cpgi)
 getOpenSeas <- function(gr) {
   resorts <- trim(resize(gr, width(gr) + 8000, fix = "center"))
   openSeas <- subset(gaps(resorts), strand == "*")
