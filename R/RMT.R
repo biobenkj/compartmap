@@ -149,8 +149,7 @@ estRMT <- function(R, Q = NA, cutoff = c("max", "each"),
 #' 
 #' @import SummarizedExperiment
 #' @import GenomicRanges
-#' @import scales
-#' 
+#'
 #' @export
 #'
 #' @examples
