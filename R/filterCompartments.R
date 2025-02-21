@@ -29,15 +29,10 @@ filterCompartments <- function(obj, min.conf = 0.7, min.eigen = 0.02) {
 filterer <- function(obj, min.conf, min.eigen) {
   apply(mcols(obj), 1, function(x) {
     # check if we have "fixed" things
-    if ("flip.score" %in% names(x)) {
-      filt.score <- ifelse(as.numeric(x["flip.conf.est"]) >= min.conf &
-        abs(as.numeric(x["flip.score"])) >= min.eigen,
-      TRUE, FALSE
-      )
-      return(filt.score)
-    } else {
-      return(ifelse(as.numeric(x["conf.est"]) >= min.conf &
-        abs(as.numeric(x["score"])) >= min.eigen, TRUE, FALSE))
-    }
+    flip <- "flip.score" %in% names(x)
+    conf.name <- ifelse(flip, "filp.conf.est", "conf.est")
+    score.name <- ifelse(flip, "filp.score", "score")
+    filt.score <- as.numeric(x[conf.name]) >= min.conf & abs(as.numeric(x[score.name])) >= min.eigen
+    return(filt.score)
   })
 }
