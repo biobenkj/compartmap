@@ -35,7 +35,6 @@ fixCompartments <- function(obj, min.conf = 0.8, parallel = FALSE, cores = 1) {
 #' @param min.conf Minimum confidence score to use
 #'
 #' @return A "fixed" set of compartments
-#' @export
 #' @keywords internal
 flipper <- function(input_obj, min.conf) {
   if (!any((names(mcols(input_obj)) %in% "conf.est"))) {
