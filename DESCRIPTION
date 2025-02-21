@@ -24,10 +24,10 @@ Depends:
    R (>= 4.1.0),
    SummarizedExperiment,
    RaggedExperiment,
-   BiocSingular,
    bsseq,
    HDF5Array
 Imports: 
+   BiocSingular,
    GenomicRanges,
    parallel,
    grid,
