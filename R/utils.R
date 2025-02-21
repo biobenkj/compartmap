@@ -234,7 +234,7 @@ getMatrixBlocks <- function(
 #' @return A dense matrix of the same dimensions as the input
 #'
 #' @import Matrix
-#' @import parallel
+#' @importFrom parallel mclapply
 #'
 #'
 #' @examples
