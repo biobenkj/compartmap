@@ -221,7 +221,6 @@ getDenoisedCorMatrix <- function(obj, res = 1e6, chr = "chr14",
 #'
 #' @return Either a ggplot object or plot
 #' 
-#' @import reshape2
 #' @importFrom ggplot2 ggplot aes geom_raster scale_fill_gradient2 theme_minimal theme element_blank
 #' 
 #' @export
