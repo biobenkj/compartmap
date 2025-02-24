@@ -159,7 +159,7 @@ The currently recommended input files to *compartmap* for scRNA-seq are
 single-cell bigWigs, though does work with a feature/counts based object as
 demonstrated in the next section. Single-cell bigWigs can be generated through
 several tools, such as [deeptools](https://deeptools.readthedocs.io/en/latest/).
-To import bigWigs, we can use the `importBigWig` function in *compartmap*. This
+To import bigWigs, we can use the `importBigWig()` function in *compartmap*. This
 will read in a bigWig file and optionally summarize to an arbitrary bin size.
 The bin size used in the *compartmap* manuscript was 1kb and is what we do here
 as well.
