@@ -11,10 +11,7 @@
 #' Finally, correlation matrix is converted to covariance matrix. This function
 #' was taken and modified from the covmat package (https://github.com/cran/covmat)
 #' which has since been deprecated on CRAN.
-#' 
-#' @importFrom Matrix nearPD
-#' @importFrom RMTstat dmp qmp
-#' 
+#'
 #' @param  R input matrix
 #' @param  Q ratio of rows/size. Can be supplied externally or fit using data
 #' @param  cutoff takes two values max/each. If cutoff is max, Q is fitted and 
