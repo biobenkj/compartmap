@@ -34,6 +34,7 @@ further down if starting from bigWigs or a feature based object. See the full
 workflow below for more details.
 
 ```{r loadData, message=FALSE}
+set.seed(42)
 library(compartmap)
 data("k562_scrna_chr14", package = "compartmap")
 ```
