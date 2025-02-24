@@ -24,7 +24,6 @@ Depends:
    R (>= 4.1.0),
    SummarizedExperiment,
    RaggedExperiment,
-   bsseq,
    HDF5Array
 Imports: 
    BiocSingular,
