@@ -11,6 +11,7 @@
 #' @return A GRanges object of compartment inflection points
 #'
 #' @import GenomicRanges
+#' @importFrom methods as is
 #' @export
 #'
 #' @examples
