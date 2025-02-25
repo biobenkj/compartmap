@@ -11,6 +11,7 @@
 #' @return A GRanges object of compartment inflection points
 #'
 #' @import GenomicRanges
+#' @importFrom S4Vectors subjectHits queryHits
 #' @importFrom GenomeInfoDb seqlengths
 #' @importFrom methods as is
 #' @importFrom utils data

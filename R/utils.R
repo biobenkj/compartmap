@@ -355,7 +355,7 @@ importBigWig <- function(
     bw.bin <- GenomicRanges::binnedAverage(bins, bw.score, "ave_score")
     # cast to a SummarizedExperiment to bin them
     bw.se <- SummarizedExperiment(
-      assays = SimpleList(counts = as.matrix(mcols(bw.bin)$ave_score)),
+      assays = S4Vectors::SimpleList(counts = as.matrix(mcols(bw.bin)$ave_score)),
       rowRanges = granges(bw.bin)
     )
     colnames(bw.se) <- as.character(bw)

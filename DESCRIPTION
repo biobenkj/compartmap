@@ -27,6 +27,7 @@ Depends:
 Imports: 
    BiocSingular,
    rlang,
+   S4Vectors,
    IRanges,
    GenomicRanges,
    GenomeInfoDb,
