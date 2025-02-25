@@ -6,6 +6,7 @@
 #'
 #' @return A vector of binary/categorical compartment states
 #' @import SummarizedExperiment
+#' @importFrom methods is
 #' @export
 #'
 #' @examples
@@ -31,6 +32,8 @@ extractOpenClosed <- function(
 #' Check if the assay is a SummarizedExperiment
 #'
 #' @param obj Input object
+#'
+#' @importFrom methods is
 #'
 #' @return Boolean
 #' @export
@@ -233,6 +236,7 @@ getMatrixBlocks <- function(
 #'
 #' @import Matrix
 #' @importFrom parallel mclapply
+#' @importFrom methods as
 #'
 #'
 #' @examples
@@ -418,6 +422,7 @@ cleanAssayCols <- function(
 #'
 #' @return Filtered to open sea CpG loci
 #' @import SummarizedExperiment
+#' @importFrom methods is
 #' @export
 #'
 #' @examples

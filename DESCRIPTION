@@ -28,6 +28,7 @@ Imports:
    BiocSingular,
    GenomicRanges,
    parallel,
+   methods,
    grid,
    ggplot2,
    reshape2,
