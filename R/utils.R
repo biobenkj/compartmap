@@ -158,6 +158,9 @@ removeEmptyBoots <- function(obj) {
 #' @param chr What chromosome to extract the seqlengths of
 #'
 #' @return The seqlengths of a specific chromosome
+#'
+#' @importFrom GenomeInfoDb seqlengths seqlevels
+#' @importFrom utils data
 #' @import GenomicRanges
 #'
 #' @examples
@@ -425,6 +428,7 @@ cleanAssayCols <- function(
 #' @return Filtered to open sea CpG loci
 #' @import SummarizedExperiment
 #' @importFrom methods is
+#' @importFrom utils data
 #' @export
 #'
 #' @examples

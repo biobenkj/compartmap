@@ -12,6 +12,7 @@
 #'
 #' @import GenomicRanges
 #' @importFrom methods as is
+#' @importFrom utils data
 #' @export
 #'
 #' @examples
