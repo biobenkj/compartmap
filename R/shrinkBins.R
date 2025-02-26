@@ -70,9 +70,15 @@ shrinkBins <- function(
     median
   }
 
+  input.assay <- if (is.atac_or_rna) {
+    assays(original.x)$counts
+  } else {
+    flogit(assays(original.x)$Beta) # make sure we are with betas or we will double flogit
+  }
+
   # bin the input
   bin.mat <- getBinMatrix(
-    x = as.matrix(cbind(assays(original.x)$counts, prior.means)),
+    x = as.matrix(cbind(input.assay, prior.means)),
     genloc = rowRanges(x),
     chr = chr,
     res = res,
