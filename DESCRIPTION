@@ -26,6 +26,7 @@ Depends:
    HDF5Array
 Imports: 
    BiocSingular,
+   IRanges,
    GenomicRanges,
    parallel,
    methods,
