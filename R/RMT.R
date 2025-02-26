@@ -56,7 +56,7 @@ estRMT <- function(R, Q = NA, cutoff = c("max", "each"),
   
   #eigenvalues can be negative. To avoid this e need a positive-definite matrix 
   S <- cov(.data); S <- as.matrix(Matrix::nearPD(S)$mat)
-  D <- diag(diag(S)); C <- cov2cor(S); 
+  D <- diag(diag(S)); C <- Matrix::cov2cor(S);
   
   # Marchenko Pastur density is defined for eigenvalues of correlation matrix
   eigen.C <- eigen(C,symmetric=T)
