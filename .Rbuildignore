@@ -1,4 +1,4 @@
 ^\.github$
 .direnv
 .envrc
-.git
+^\.git
