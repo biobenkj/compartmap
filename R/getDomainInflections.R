@@ -137,7 +137,7 @@ getDomainInflections <- function(
     gr.inflect <- gr[2, ] # special case
     gr.inflect.new <- GRanges(
       seqnames = seqnames(gr.inflect),
-      ranges = IRanges(
+      ranges = IRanges::IRanges(
         start = start(gr.inflect),
         end = start(gr.inflect)
       ),
@@ -147,7 +147,7 @@ getDomainInflections <- function(
   }
   gr.inflect.new.start <- GRanges(
     seqnames = seqnames(gr.inflect),
-    ranges = IRanges(
+    ranges = IRanges::IRanges(
       start = start(gr.inflect),
       end = start(gr.inflect)
     ),
@@ -155,7 +155,7 @@ getDomainInflections <- function(
   )
   gr.inflect.new.end <- GRanges(
     seqnames = seqnames(gr.inflect),
-    ranges = IRanges(
+    ranges = IRanges::IRanges(
       start = end(gr.inflect),
       end = end(gr.inflect)
     ),

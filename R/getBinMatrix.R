@@ -74,7 +74,7 @@ getBinMatrix <- function(x, genloc, chr = "chr1", chr.start = 0,
   
   #Build up the genomic ranges object given chr, start, end, and resolution
   gr.bin <- GRanges(seqnames = chr,
-                    ranges = IRanges(start = start, end = end))
+                    ranges = IRanges::IRanges(start = start, end = end))
   
   #Identify overlaps between the user defined GRanges object (loci) and bins
   ids <- findOverlaps(genloc, gr.bin, select="first")
