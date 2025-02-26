@@ -7,9 +7,9 @@
 flipper(input_obj, min.conf)
 }
 \arguments{
-\item{min.conf}{Minimum confidence score to use}
+\item{input_obj}{Input RaggedExperiment or output of condenseSE}
 
-\item{obj}{Input RaggedExperiment or output of condenseSE}
+\item{min.conf}{Minimum confidence score to use}
 }
 \value{
 A "fixed" set of compartments
