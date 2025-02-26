@@ -8,6 +8,7 @@
 #'
 #' @return A singular vector or matrix with sign corresponding to positive values
 #' 
+#' @importFrom stats cor
 #' @importFrom BiocSingular IrlbaParam runSVD
 #' @export
 #'
