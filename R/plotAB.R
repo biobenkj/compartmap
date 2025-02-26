@@ -18,6 +18,7 @@
 #' 
 #' @import GenomicRanges
 #' @importFrom methods as is
+#' @importFrom stats median
 #' @importFrom graphics abline barplot par
 #' 
 #' @export 

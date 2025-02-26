@@ -24,6 +24,9 @@
 #'        correlation matrix are replaced with 1 to make the matrix psd.
 #' @param numEig number of eigenvalues that are known for variance calculation.
 #'        Default is set to 1. If numEig = 0 then variance is assumed to be 1.
+#'
+#' @importFrom stats optim
+#'
 #' @return A denoised RMT object
 #' 
 #' @examples 
