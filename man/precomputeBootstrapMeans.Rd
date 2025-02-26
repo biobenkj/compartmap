@@ -34,6 +34,9 @@ Pre-compute the global means for bootstrapping compartments
 }
 \examples{
 data("k562_scrna_chr14", package = "compartmap")
-scrna.bootstrap.global.means <- precomputeBootstrapMeans(k562_scrna_chr14, assay = "rna", num.bootstraps = 2)
-
+scrna.bootstrap.global.means <- precomputeBootstrapMeans(
+  k562_scrna_chr14,
+  assay = "rna",
+  num.bootstraps = 2
+)
 }
