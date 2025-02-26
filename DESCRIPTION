@@ -8,10 +8,10 @@ Description: Compartmap performs direct inference of higher-order chromatin
     achieve a similar "plaid-like" patterning as observed in Hi-C and scHi-C data.
 Version: 1.13.05
 Date: 2022-01-13
-Authors@R: c(person("Benjamin", "Johnson", role = c("aut", "cre"),
-                    email = "ben.johnson@vai.org",),
+Authors@R: c(person("Benjamin", "Johnson", role = c("aut", "cre"), email = "ben.johnson@vai.org",),
+             person("James", "Eapen", role = c("aut"), email = "james.eapen@vai.org"),
              person("Tim", "Triche", role = c("aut")),
-	     person("Hui", "Shen", role = c("aut")),
+             person("Hui", "Shen", role = c("aut")),
              person("Kasper", "Hansen", role = c("aut")),
              person("Jean-Philippe", "Fortin", role = c("aut")))
 URL: https://github.com/biobenkj/compartmap
@@ -19,12 +19,12 @@ BugReports: https://github.com/biobenkj/compartmap/issues
 Encoding: UTF-8
 License: GPL-3 + file LICENSE
 biocViews: Genetics, Epigenetics, ATACSeq, RNASeq, SingleCell
-Depends: 
+Depends:
    R (>= 4.1.0),
    SummarizedExperiment,
    RaggedExperiment,
    HDF5Array
-Imports: 
+Imports:
    BiocSingular,
    rlang,
    S4Vectors,
