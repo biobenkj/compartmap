@@ -28,6 +28,7 @@ Imports:
    BiocSingular,
    IRanges,
    GenomicRanges,
+   GenomeInfoDb,
    parallel,
    methods,
    grid,

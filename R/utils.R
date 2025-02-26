@@ -316,6 +316,7 @@ sparseToDenseMatrix <- function(
 #'
 #' @import SummarizedExperiment
 #' @import GenomicRanges
+#' @importFrom GenomeInfoDb seqlengths seqlevels seqlevelsStyle<-  keepSeqlevels keepStandardChromosomes
 #'
 #' @export
 

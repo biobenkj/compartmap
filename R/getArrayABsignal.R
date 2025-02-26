@@ -23,6 +23,7 @@
 #' @import SummarizedExperiment
 #' @import RaggedExperiment
 #' @importFrom parallel mclapply
+#' @importFrom GenomeInfoDb keepSeqlevels
 #' @importFrom methods as
 #' @export
 #'
