@@ -220,6 +220,7 @@ getDenoisedCorMatrix <- function(obj, res = 1e6, chr = "chr14",
 #'
 #' @return Either a ggplot object or plot
 #' 
+#' @importFrom rlang .data
 #' @importFrom ggplot2 ggplot aes geom_raster scale_fill_gradient2 theme_minimal theme element_blank
 #' 
 #' @export
@@ -245,9 +246,9 @@ plotCorMatrix <- function(denoised.cor.mat,
   ## melt for plotting
   cor.mat.melt <- reshape2::melt(denoised.cor.mat)
   ## plot
-  p <- ggplot(cor.mat.melt, aes(x = Var2, y = Var1, fill = value)) +
+  p <- ggplot(cor.mat.melt, aes(x = .data$Var2, y = .data$Var1, fill = .data$value)) +
     geom_raster() +
-    scale_fill_gradient2(low = "white", mid = "white", high = "red3", midpoint = midpoint,
+    scale_fill_gradient2(low = "white", mid = "white", high = "red3", midpoint = {{ midpoint }},
                          name = "Correlation") +
     theme_minimal() +
     theme(
