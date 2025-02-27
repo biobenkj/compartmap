@@ -27,7 +27,7 @@
 #' @aliases getRNAABsignal
 #'
 #' @examples
-#' if (require(csaw)) {
+#' if (requireNamespace("csaw", quietly = TRUE)) {
 #'   data("k562_scatac_chr14", package = "compartmap")
 #'   atac_compartments <- getATACABsignal(
 #'     k562_scatac_chr14,
