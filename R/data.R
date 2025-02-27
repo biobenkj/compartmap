@@ -54,7 +54,7 @@ NULL
 #' This data was generated using the data from the reference via the
 #' sesamize function from the SeSAMe package.
 #' 
-#' @name meth_array_450k_chr14
+#' @name array.data.chr14
 #' @docType data
 #' @author Benjamin K Johnson \email{ben.johnson@vai.org}
 #' @references \url{https://f1000research.com/articles/5-1281/v3}

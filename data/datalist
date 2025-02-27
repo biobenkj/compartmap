@@ -1,13 +1,13 @@
-k562_scrna_chr14: k562_scrna_chr14
+array_data_chr14: array.data.chr14
+hg19.gr
+hg38.gr
+k562_scatac_chr14
+k562_scrna_chr14
 k562_scrna_raw: k562_scrna_se_chr14
-k562_scatac_chr14: k562_scatac_chr14
-ss3_umi_sce: ss3_umi_sce
-hg19.gr: hg19.gr
-hg38.gr: hg38.gr
-mm9.gr: mm9.gr
-mm10.gr: mm10.gr
-openSeas.hg19: openSeas.hg19
-openSeas.hg38: openSeas.hg38
-openSeas.mm10: openSeas.mm10
-openSeas.mm9: openSeas.mm9
-meth_array_450k_chr14: meth_array_450k_chr14
+mm10.gr
+mm9.gr
+openSeas.hg19
+openSeas.hg38
+openSeas.mm10
+openSeas.mm9
+ss3_umi_sce
