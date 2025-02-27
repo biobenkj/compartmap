@@ -29,7 +29,7 @@ be derived from UCSC table browser and rtracklayer::import(yourbed.bed)
 }
 \examples{
 if (requireNamespace("minfi", quietly = TRUE)) {
-  data("meth_array_450k_chr14", package = "compartmap")
+  data("array_data_chr14", package = "compartmap")
   opensea <- filterOpenSea(array.data.chr14, genome = "hg19")
 }
 
