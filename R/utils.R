@@ -191,16 +191,16 @@ getSeqLengths <- function(
   chr = "chr14"
 ) {
   # eventually we should support arbitrary genomes
-  genome <- match.arg(genome)
+  genome.name <- match.arg(genome)
   # check if the genome used exists in what is currently supported, stopping if not
-  if (!genome %in% c("hg19", "hg38", "mm9", "mm10")) stop("Only human and mouse are supported for the time being.")
+  if (!genome.name %in% c("hg19", "hg38", "mm9", "mm10")) stop("Only human and mouse are supported for the time being.")
   # import
-  genome.name <- paste0(genome, ".gr")
-  genome.gr <- data(list = genome.name, package = "compartmap")
+  genome.gr <- get(paste0(genome.name, ".gr"))
+
   # make sure that the chromosome specified exists in the seqlevels
-  if (!chr %in% seqlevels(get(genome.gr))) stop("Desired chromosome is not found in the seqlevels of ", genome)
+  if (!chr %in% seqlevels(genome.gr)) stop("Desired chromosome is not found in the seqlevels of ", genome.name)
   # get the seqlengths
-  sl <- seqlengths(get(genome.gr))[chr]
+  sl <- seqlengths(genome.gr)[chr]
   return(sl)
 }
 
@@ -464,10 +464,9 @@ filterOpenSea <- function(
   other = NULL
 ) {
   # get the desired open sea loci given the genome
-  genome <- match.arg(genome)
+  genome.name <- match.arg(genome)
   if (is.null(other)) {
-    genome.name <- paste0("openSeas.", genome)
-    openseas.genome <- data("openSeas.hg19", package = "compartmap")
+    openseas.genome <- get(paste0("openSeas.", genome.name))
   } else {
     # check if it's a GRanges flavored object
     if (!is(other, "GRanges")) stop("The 'other' input needs to be a GRanges of open sea regions")
@@ -477,7 +476,7 @@ filterOpenSea <- function(
   message("Filtering to open sea CpG loci...")
   # subset to just CpG loci if CpH or rs probes still exist
   obj <- obj[grep("cg", rownames(obj)), ]
-  obj.openseas <- subsetByOverlaps(obj, get(openseas.genome))
+  obj.openseas <- subsetByOverlaps(obj, openseas.genome)
   return(obj.openseas)
 }
 

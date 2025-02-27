@@ -35,18 +35,14 @@ getDomainInflections <- function(
   stopifnot("'gr' is not a GRanges object" = is(gr, "GenomicRanges"))
   stopifnot("'what' is not present in mcols(gr)" = what %in% names(mcols(gr)))
   # determine which genome we are working with
-  genome <- match.arg(genome)
-  genome <- switch(genome,
-    hg19 = data("hg19.gr", package = "compartmap"),
-    hg38 = data("hg38.gr", package = "compartmap"),
-    mm9 = data("mm9.gr", package = "compartmap"),
-    mm10 = data("mm10.gr", package = "compartmap")
-  )
+  genome.name <- paste0(match.arg(genome), ".gr")
+  genome.gr <- get(genome.name)
+
   # we may not be able to assume continuous compartment structure here
   # so somehow, we need to find continuous runs
   message("Tiling genome.")
   tiles <- tileGenome(
-    seqlengths = seqlengths(get(genome))[chrs],
+    seqlengths = seqlengths(genome.gr)[chrs],
     tilewidth = res,
     cut.last.tile.in.chrom = TRUE
   )
