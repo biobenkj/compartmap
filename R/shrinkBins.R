@@ -61,15 +61,24 @@ shrinkBins <- function(
     return(sqrt(mean(x)) * length(x))
   }
 
-  input.fun <- switch(assay,
-    atac = ifelse(jse, mean, atac_fun),
-    rna = ifelse(jse, mean, atac_fun),
-    array = ifelse(jse, mean, median)
-  )
+  is.atac_or_rna <- assay %in% c("atac", "rna")
+  input.fun <- if (jse) {
+    mean
+  } else if (is.atac_or_rna) {
+    atac_fun
+  } else {
+    median
+  }
+
+  input.assay <- if (is.atac_or_rna) {
+    assays(original.x)$counts
+  } else {
+    flogit(assays(original.x)$Beta) # make sure we are with betas or we will double flogit
+  }
 
   # bin the input
   bin.mat <- getBinMatrix(
-    x = as.matrix(cbind(assays(original.x)$counts, prior.means)),
+    x = as.matrix(cbind(input.assay, prior.means)),
     genloc = rowRanges(x),
     chr = chr,
     res = res,
