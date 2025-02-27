@@ -44,6 +44,7 @@ Imports:
    RMTstat,
    impute
 Suggests:
+   csaw,
    minfi,
    minfiData,
    BiocStyle,
