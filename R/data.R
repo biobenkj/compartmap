@@ -59,7 +59,7 @@ NULL
 #' @author Benjamin K Johnson \email{ben.johnson@vai.org}
 #' @references \url{https://f1000research.com/articles/5-1281/v3}
 #' @keywords data
-#' @usage data(meth_array_450k_chr14, package = "compartmap")
+#' @usage data(array_data_chr14, package = "compartmap")
 NULL
 
 #' hg38 seqlengths as a GRanges object
