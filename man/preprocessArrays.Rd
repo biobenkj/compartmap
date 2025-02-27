@@ -27,8 +27,10 @@ A preprocessed SummarizedExperiment to compute compartments
 Preprocess arrays for compartment inference
 }
 \examples{
-if (require(minfiData)) {
-  grSet <- mapToGenome(ratioConvert(preprocessNoob(RGsetEx.sub)))
+if (requireNamespace("minfiData", quietly = TRUE)) {
+  grSet <- minfi::preprocessNoob(minfiData::RGsetEx.sub) |>
+    minfi::ratioConvert() |>
+    minfi::mapToGenome()
   preprocessArrays(grSet)
 }
 

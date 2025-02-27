@@ -61,7 +61,7 @@ A RaggedExperiment of inferred compartments
 }
 \examples{
 
-if (require(minfi)) {
+if (requireNamespace("minfi", quietly = TRUE)) {
   data("meth_array_450k_chr14", package = "compartmap")
   array_compartments <- getArrayABsignal(
     array.data.chr14,

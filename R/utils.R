@@ -395,7 +395,7 @@ importBigWig <- function(
 #' @export
 #'
 #' @examples
-#' if (require(minfi)) {
+#' if (requireNamespace("minfi", quietly = TRUE)) {
 #'   data("meth_array_450k_chr14", package = "compartmap")
 #'   cleanAssayRows(array.data.chr14, assay = "array")
 #' }
@@ -421,7 +421,7 @@ cleanAssayRows <- function(
 #' @export
 #'
 #' @examples
-#' if (require(minfi)) {
+#' if (requireNamespace("minfi", quietly = TRUE)) {
 #'   data("meth_array_450k_chr14", package = "compartmap")
 #'   cleanAssayCols(array.data.chr14, assay = "array")
 #' }
@@ -452,7 +452,7 @@ cleanAssayCols <- function(
 #' @export
 #'
 #' @examples
-#' if (require(minfi)) {
+#' if (requireNamespace("minfi", quietly = TRUE)) {
 #'   data("meth_array_450k_chr14", package = "compartmap")
 #'   opensea <- filterOpenSea(array.data.chr14, genome = "hg19")
 #' }
