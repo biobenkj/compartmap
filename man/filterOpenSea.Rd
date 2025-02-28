@@ -32,6 +32,7 @@ if (require(minfi)) {
   data("meth_array_450k_chr14", package = "compartmap")
   opensea <- filterOpenSea(array.data.chr14, genome = "hg19")
 }
+
 #cpgi <- rtracklayer::import(system.file("inst/extdata/mm10_cpgi.bed", package = "compartmap"))
 #opensea_cpg <- getOpenSeas(cpgi)
 }
