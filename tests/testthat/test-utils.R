@@ -86,3 +86,20 @@ test_that("getChrs", {
 })
 # }}}
 
+# getGenome {{{
+test_that("getGenome", {
+  bundled_genomes <- c("hg19", "hg38", "mm9", "mm10")
+  lapply(bundled_genomes, function(g) {
+    expect_equal(
+      getGenome(g),
+      get(paste0(g, ".gr"))
+    )
+    expect_equal(
+      getGenome(g, type = "openseas"),
+      get(paste0("openSeas.", g))
+    )
+  })
+  expect_error(getGenome("NA50"))
+})
+# }}}
+
