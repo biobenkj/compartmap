@@ -141,9 +141,8 @@ removeEmptyBoots <- function(obj) {
   # remove NAs from a bootstrap list
   # this can happen if the correlation between the bins and eigenvector fails
   # theoretically we can recover these but need an additional utility to find consensus
-  na.filt <- unlist(lapply(obj, function(n) ifelse(any(is.na(n)), FALSE, TRUE)))
-  obj <- obj[na.filt]
-  return(obj)
+  na.filt <- unlist(lapply(obj, function(n) !any(is.na(n))))
+  return(obj[na.filt])
 }
 
 #' Get the seqlengths of a chromosome
