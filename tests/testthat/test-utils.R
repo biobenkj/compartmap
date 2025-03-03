@@ -44,3 +44,45 @@ test_that("extractOpenClosed", {
 })
 # }}}
 
+# checkAssayType{{{
+test_that("checkAssayType", {
+  expect_true(checkAssayType(se))
+  expect_false(checkAssayType(re))
+  expect_false(checkAssayType(gr))
+  expect_false(checkAssayType(df))
+})
+# }}}
+
+# getAssayNames{{{
+
+nrows <- 200
+ncols <- 6
+counts1 <- matrix(runif(nrows * ncols, 1, 1e4), nrows)
+counts2 <- matrix(runif(nrows * ncols, 1, 1e4), nrows)
+counts3 <- matrix(runif(nrows * ncols, 1, 1e4), nrows)
+colData <- DataFrame(
+  Treatment = rep(c("a", "b"), 3),
+  row.names = LETTERS[1:6]
+)
+se <- SummarizedExperiment(
+  assays = SimpleList(one = counts1, two = counts2, three = counts3),
+  colData = colData
+)
+
+test_that("getAssayNames", {
+  expect_equal(
+    getAssayNames(se),
+    c("one", "two", "three")
+  )
+})
+# }}}
+
+# getChrs {{{
+test_that("getChrs", {
+  expect_equal(
+    getChrs(gr),
+    unique(chrs)
+  )
+})
+# }}}
+
