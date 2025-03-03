@@ -19,15 +19,14 @@ summarizeBootstraps <- function(boot.list, est.ab, q = 0.95, assay = c("rna", "a
   is.atac_or_rna <- assay %in% c("atac", "rna")
 
   message("Summarizing bootstraps.")
+  #initialize open and closed counts to enumerate
+  #est.ab$boot.open <- 0
+  #est.ab$boot.closed <- 0
 
-  # initialize open and closed counts to enumerate
-  # est.ab$boot.open <- 0
-  # est.ab$boot.closed <- 0
   # filter out failed compartment estimates
-  boot.list <- removeEmptyBoots(boot.list)
-
-  # summarize
-  # create a dummy matrix and then rowSum them up
+  boot.list <- Filter(Negate(anyNA), boot.list)
+  #summarize
+  #create a dummy matrix and then rowSum them up
   boot.summary.mat.lst <- lapply(boot.list, function(b) {
     # add the pc to the granges object
     b$score <- b$pc

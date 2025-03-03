@@ -131,21 +131,6 @@ getChrs <- function(obj) {
   return(unique(as.character(seqnames(obj))))
 }
 
-#' Remove bootstrap estimates that failed
-#'
-#' @param obj Input list object with elements 'pc' and 'gr'
-#'
-#' @return A filtered list object
-#' @export
-removeEmptyBoots <- function(obj) {
-  # remove NAs from a bootstrap list
-  # this can happen if the correlation between the bins and eigenvector fails
-  # theoretically we can recover these but need an additional utility to find consensus
-  na.filt <- unlist(lapply(obj, function(n) ifelse(any(is.na(n)), FALSE, TRUE)))
-  obj <- obj[na.filt]
-  return(obj)
-}
-
 #' Get the seqlengths of a chromosome
 #'
 #' The goal for this function is to eliminate the need to lug around
