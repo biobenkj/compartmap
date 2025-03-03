@@ -103,3 +103,30 @@ test_that("getGenome", {
 })
 # }}}
 
+# getSeqLengths{{{
+forseqlengths.gr <- GRanges(
+  Rle(c("chr1", "chr2", "chr3"), c(1, 3, 6)),
+  IRanges(1:10, width=10:1, names=head(letters, 10)),
+  Rle(strand(c("-", "+", "*", "+", "-")), c(1, 2, 2, 3, 2)),
+  score=1:10,
+  GC=seq(1, 0, length=10)
+)
+seqlengths.list <- c(chr1 = 100, chr2 = 200, chr3 = 300)
+seqinfo(forseqlengths.gr) <- GenomeInfoDb::Seqinfo(paste0("chr", 1:3), seqlengths.list, NA, "mock1")
+# to get seqlengths(gr) set to
+# chr1 chr2 chr3
+#  100  200  300
+
+seqlengths.list <- c(chr1 = 100, chr2 = 200, chr3 = 300)
+seqinfo(forseqlengths.gr) <- GenomeInfoDb::Seqinfo(paste0("chr", 1:3), seqlengths.list, NA, "mock1")
+test_that("getSeqLengths", {
+  lapply(seq(1:3), function(i) {
+    expect_equal(
+      getSeqLengths(forseqlengths.gr, paste0("chr", i)),
+      seqlengths.list[i]
+    )
+  })
+  # missing chromosome
+  expect_error(getSeqLengths(forseqlengths.gr, "chr0"))
+})
+# }}}
