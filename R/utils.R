@@ -168,7 +168,34 @@ removeEmptyBoots <- function(obj) {
   Filter(Negate(anyNA), obj)
 }
 
-#' Get the seqlengths of a chromosome
+#' Get a GRanges object from bundled compartmap genomes
+#'
+#' @param genome The desired genome to use ("hg19", "hg38", "mm9", "mm10")
+#' @param type The type of data - full genome or open sea regions
+#'
+#' @return Granges of the genome
+#'
+#' @examples
+#' hg19 <- getGenome(genome = "hg19")
+#'
+#' @export
+getGenome <- function(
+  genome = c("hg19", "hg38", "mm9", "mm10"),
+  type = "genome"
+) {
+  genome.name <- match.arg(genome) |> tryCatch(error = function(e) {
+    e <- gsub("'arg'", "'genome'", e)
+    msg <- paste0(e, "Only human and mouse genomes are supported for the time being.")
+    stop(msg)
+  })
+  gr <- switch(type,
+    genome = paste0(genome.name, ".gr"),
+    openseas = paste0("openSeas.", genome.name)
+  )
+  return(get(gr))
+}
+
+#' Get the seqlengths of a chromosome from a given genome's GRanges
 #'
 #' The goal for this function is to eliminate the need to lug around
 #' large packages when we only want seqlengths for things.
