@@ -395,57 +395,77 @@ importBigWig <- function(
   return(bw.sub)
 }
 
-#' Remove rows with NAs exceeding a threshold
+#' Generate function to filter rows/columns with NAs exceeding a threshold
 #'
-#' @param se Input SummarizedExperiment object
-#' @param rowmax The maximum NAs allowed in a row as a fraction
-#' @param assay The type of assay we are working with
+#' @details
+#' Since removing NAs from rows vs columns only differs by whether rowMeans or
+#' colMeans is used, and by where the comma goes in the subset operation,
+#' code repetition can be avoided by consolidating these operations.
+#' This `cleanAssay` function can generate two functions to remove NA's from
+#' rows and columns using the `by` argument based on which it selects the
+#' appropriate 'mean' and subset functions. This maintains the clarity of
+#' having the operation in the function name when used: `cleanAssayRows` and
+#' `cleanAssayCols`.
+#' @param by Whether to filter by rows or columns
 #'
-#' @return A filtered matrix
-#' @export
-#'
-#' @examples
-#' if (requireNamespace("minfi", quietly = TRUE)) {
-#'   data("array_data_chr14", package = "compartmap")
-#'   cleanAssayRows(array.data.chr14, assay = "array")
-#' }
-cleanAssayRows <- function(
-  se,
-  rowmax = 0.5,
-  assay = c("array", "bisulfite")
-) {
-  assay <- match.arg(assay)
-  switch(assay,
-    array = se[rowMeans(is.na(assays(se)$Beta)) < rowmax, ],
-    bisulfite = se[rowMeans(is.na(assays(se)$counts)) < rowmax, ]
-  )
+#' @return A function to filter assay rows/columns
+#' @keywords internal
+cleanAssay <- function(by = c("row", "col")) {
+  by <- match.arg(by)
+  if (by == "row") {
+    mean.fun <- rowMeans
+    subset.fun <- function(se, toKeep) {
+      se[toKeep, ]
+    }
+  } else {
+    mean.fun <- colMeans
+    subset.fun <- function(se, toKeep) {
+      se[, toKeep]
+    }
+  }
+
+  function(se, na.max = 0.8, assay = c("array", "bisulfite")) {
+    assay <- match.arg(assay)
+    assay.data <- switch(assay,
+      array = assays(se)$Beta,
+      bisulfite = assays(se)$counts
+    )
+    toKeep <- mean.fun(is.na(assay.data)) < na.max
+    subset.fun(se, toKeep)
+  }
 }
 
-#' Remove columns/cells/samples with NAs exceeding a threshold
+#' Remove rows with NAs exceeding a threshold. See `cleanAssay()`
 #'
 #' @param se Input SummarizedExperiment object
-#' @param colmax The maximum number of NAs allowed as a fraction
+#' @param na.max The maximum number of NAs allowed as a fraction
 #' @param assay The type of assay we are working with
 #'
 #' @return A filtered matrix
-#' @export
 #'
 #' @examples
 #' if (requireNamespace("minfi", quietly = TRUE)) {
 #'   data("array_data_chr14", package = "compartmap")
-#'   cleanAssayCols(array.data.chr14, assay = "array")
+#'   compartmap:::cleanAssayRows(array.data.chr14, assay = "array")
 #' }
-cleanAssayCols <- function(
-  se,
-  colmax = 0.8,
-  assay = c("array", "bisulfite")
-) {
-  assay <- match.arg(assay)
-  switch(assay,
-    array = se[, colMeans(is.na(assays(se)$Beta)) < colmax],
-    bisulfite = se[, colMeans(is.na(assays(se)$counts)) < colmax]
-  )
-}
+#' @keywords internal
+cleanAssayRows <- cleanAssay(by = "row")
+
+#' Remove columns/cells/samples with NAs exceeding a threshold. See `cleanAssay()`
+#'
+#' @param se Input SummarizedExperiment object
+#' @param na.max The maximum number of NAs allowed as a fraction
+#' @param assay The type of assay we are working with
+#'
+#' @return A filtered matrix
+#'
+#' @examples
+#' if (requireNamespace("minfi", quietly = TRUE)) {
+#'   data("array_data_chr14", package = "compartmap")
+#'   compartmap:::cleanAssayCols(array.data.chr14, assay = "array")
+#' }
+#' @keywords internal
+cleanAssayCols <- cleanAssay(by = "col")
 
 #' Filter to open sea CpG loci
 #'
