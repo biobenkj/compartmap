@@ -12,13 +12,12 @@
 #' @param assay The type of assay ("array", "bisulfite")
 #'
 #' @return Imputed data matrix that is added to the assays slot
-#' @import impute
 #' @import SummarizedExperiment
 #' @export
 #'
 #' @examples
-#' if (require(minfi)) {
-#'   data("meth_array_450k_chr14", package = "compartmap")
+#' if (requireNamespace("minfi", quietly = TRUE)) {
+#'   data("array_data_chr14", package = "compartmap")
 #'   #impute
 #'   imputed <- imputeKNN(array.data.chr14, assay = "array")
 #' }
@@ -84,7 +83,7 @@ imputeKNN <- function(
     }
 
   message("Imputing missing data with kNN.")
-  imputed.data <- impute.knn(
+  imputed.data <- impute::impute.knn(
     impute.input,
     k = k,
     rowmax = rowmax,
