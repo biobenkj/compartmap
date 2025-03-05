@@ -130,3 +130,46 @@ test_that("getSeqLengths", {
   expect_error(getSeqLengths(forseqlengths.gr, "chr0"))
 })
 # }}}
+
+# cleanAssay {{{
+
+checkCleanAssay <- function(se.array, se.bisulfite, cleanFun, dimFun) {
+  expect_equal(
+    dimFun(assays(cleanFun(se.array, assay = "array"))$Beta),
+    0
+  )
+  expect_equal(
+    dimFun(assays(cleanFun(se.bisulfite, assay = "bisulfite"))$counts),
+    0
+  )
+  expect_equal(
+    dimFun(assays(cleanFun(se.array, assay = "array", na.max = 0.9))$Beta),
+    10
+  )
+  expect_equal(
+    dimFun(assays(cleanFun(se.bisulfite, assay = "bisulfite", na.max = 0.9))$counts),
+    10
+  )
+}
+
+test_that("cleanAssayRows", {
+  cleanFun <- compartmap:::cleanAssayRows
+  dimFun <- nrow
+  m <- matrix(1:10, 10, 10)
+  m.allNA <- apply(m, 1, function(i) ifelse(i <= 2, i, NA))
+  se.array <- SummarizedExperiment(assays = SimpleList(Beta = m.allNA))
+  se.bisulfite <- SummarizedExperiment(assays = SimpleList(counts = m.allNA))
+  checkCleanAssay(se.array, se.bisulfite, cleanFun, dimFun)
+})
+
+test_that("cleanAssayCols", {
+  cleanFun <- compartmap:::cleanAssayCols
+  dimFun <- ncol
+  m <- matrix(1:10, 10, 10)
+  m.allNA <- apply(m, 2, function(i) ifelse(i <= 2, i, NA))
+  se.array <- SummarizedExperiment(assays = SimpleList(Beta = m.allNA))
+  se.bisulfite <- SummarizedExperiment(assays = SimpleList(counts = m.allNA))
+  checkCleanAssay(se.array, se.bisulfite, cleanFun, dimFun)
+})
+### }}}
+
