@@ -8,6 +8,7 @@
 #' @return    A list object to pass to getABSignal
 #' 
 #' @import    GenomicRanges
+#' @importFrom stats cor
 #' 
 #' @export 
 #' 

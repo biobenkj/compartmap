@@ -18,7 +18,7 @@
 #' @param bootstrap.means Pre-computed bootstrap means matrix
 #'
 #' @return Compartment estimates with summarized bootstraps and confidence intervals
-#' @import parallel
+#' @importFrom parallel mclapply
 #' @import SummarizedExperiment
 #'
 #' @examples
