@@ -11,6 +11,8 @@
 #' @param delta Convergence threshhold (overrides iter if > 0; default is 0) 
 #' @param w     Weights, if using any (NULL)
 #'
+#' @importFrom stats median weighted.mean
+#'
 #' @return      Smoothed data matrix
 #'
 #' @examples

@@ -6,6 +6,7 @@
 #'
 #' @return A vector of binary/categorical compartment states
 #' @import SummarizedExperiment
+#' @importFrom methods is
 #' @export
 #'
 #' @examples
@@ -31,6 +32,8 @@ extractOpenClosed <- function(
 #' Check if the assay is a SummarizedExperiment
 #'
 #' @param obj Input object
+#'
+#' @importFrom methods is
 #'
 #' @return Boolean
 #' @export
@@ -146,36 +149,60 @@ removeEmptyBoots <- function(obj) {
   return(obj)
 }
 
-#' Get the seqlengths of a chromosome
+#' Get a GRanges object from bundled compartmap genomes
+#'
+#' @param genome The desired genome to use ("hg19", "hg38", "mm9", "mm10")
+#' @param type The type of data - full genome or open sea regions
+#'
+#' @return Granges of the genome
+#'
+#' @examples
+#' hg19 <- getGenome(genome = "hg19")
+#'
+#' @export
+getGenome <- function(
+  genome = c("hg19", "hg38", "mm9", "mm10"),
+  type = "genome"
+) {
+  genome.name <- match.arg(genome) |> tryCatch(error = function(e) {
+    e <- gsub("'arg'", "'genome'", e)
+    msg <- paste0(e, "Only human and mouse genomes are supported for the time being.")
+    stop(msg)
+  })
+  gr <- switch(type,
+    genome = paste0(genome.name, ".gr"),
+    openseas = paste0("openSeas.", genome.name)
+  )
+  return(get(gr))
+}
+
+#' Get the seqlengths of a chromosome from a given genome's GRanges
 #'
 #' The goal for this function is to eliminate the need to lug around
 #' large packages when we only want seqlengths for things.
 #'
-#' @param genome The desired genome to use ("hg19", "hg38", "mm9", "mm10")
+#' @param genome.gr A GRanges object of the genome (from `getGenome()`)
 #' @param chr What chromosome to extract the seqlengths of
 #'
 #' @return The seqlengths of a specific chromosome
+#'
+#' @importFrom GenomeInfoDb seqlengths seqlevels
 #' @import GenomicRanges
 #'
 #' @examples
-#' hg19.chr14.seqlengths <- getSeqLengths(genome = "hg19", chr = "chr14")
+#' hg19.chr14.seqlengths <- getSeqLengths(getGenome('hg19'), chr = "chr14")
 #'
 #' @export
-getSeqLengths <- function(
-  genome = c("hg19", "hg38", "mm9", "mm10"),
-  chr = "chr14"
-) {
-  # eventually we should support arbitrary genomes
-  genome <- match.arg(genome)
-  # check if the genome used exists in what is currently supported, stopping if not
-  if (!genome %in% c("hg19", "hg38", "mm9", "mm10")) stop("Only human and mouse are supported for the time being.")
-  # import
-  genome.name <- paste0(genome, ".gr")
-  genome.gr <- data(list = genome.name, package = "compartmap")
-  # make sure that the chromosome specified exists in the seqlevels
-  if (!chr %in% seqlevels(get(genome.gr))) stop("Desired chromosome is not found in the seqlevels of ", genome)
-  # get the seqlengths
-  sl <- seqlengths(get(genome.gr))[chr]
+getSeqLengths <- function(genome.gr, chr = "chr14") {
+  sl <- seqlengths(genome.gr)[chr]
+  if (is.na(sl)) {
+    genome.build <- unique(genome(genome.gr))
+    msg <- paste(
+      chr, "not found in seqlevels of", genome.build,
+      "- check that the 'genome' and 'chr' arguments are correct"
+    )
+    stop(msg)
+  }
   return(sl)
 }
 
@@ -234,7 +261,8 @@ getMatrixBlocks <- function(
 #' @return A dense matrix of the same dimensions as the input
 #'
 #' @import Matrix
-#' @import parallel
+#' @importFrom parallel mclapply
+#' @importFrom methods as
 #'
 #'
 #' @examples
@@ -311,6 +339,7 @@ sparseToDenseMatrix <- function(
 #'
 #' @import SummarizedExperiment
 #' @import GenomicRanges
+#' @importFrom GenomeInfoDb seqlengths seqlevels seqlevelsStyle<-  keepSeqlevels keepStandardChromosomes
 #'
 #' @export
 
@@ -349,7 +378,7 @@ importBigWig <- function(
     bw.bin <- GenomicRanges::binnedAverage(bins, bw.score, "ave_score")
     # cast to a SummarizedExperiment to bin them
     bw.se <- SummarizedExperiment(
-      assays = SimpleList(counts = as.matrix(mcols(bw.bin)$ave_score)),
+      assays = S4Vectors::SimpleList(counts = as.matrix(mcols(bw.bin)$ave_score)),
       rowRanges = granges(bw.bin)
     )
     colnames(bw.se) <- as.character(bw)
@@ -358,57 +387,74 @@ importBigWig <- function(
   return(bw.sub)
 }
 
-#' Remove rows with NAs exceeding a threshold
+#' Generate function to filter rows/columns with NAs exceeding a threshold
 #'
-#' @param se Input SummarizedExperiment object
-#' @param rowmax The maximum NAs allowed in a row as a fraction
-#' @param assay The type of assay we are working with
+#' @details
+#' Since removing NAs from rows vs columns only differs by whether rowMeans or
+#' colMeans is used, and by where the comma goes in the subset operation,
+#' code repetition can be avoided by consolidating these operations.
+#' This `cleanAssay` function can generate two functions to remove NA's from
+#' rows and columns using the `by` argument based on which it selects the
+#' appropriate 'mean' and subset functions. This maintains the clarity of
+#' having the operation in the function name when used: `cleanAssayRows` and
+#' `cleanAssayCols`.
+#' @param by Whether to filter by rows or columns
 #'
-#' @return A filtered matrix
-#' @export
-#'
-#' @examples
-#' if (require(minfi)) {
-#'   data("meth_array_450k_chr14", package = "compartmap")
-#'   cleanAssayRows(array.data.chr14, assay = "array")
-#' }
-cleanAssayRows <- function(
-  se,
-  rowmax = 0.5,
-  assay = c("array", "bisulfite")
-) {
-  assay <- match.arg(assay)
-  switch(assay,
-    array = se[rowMeans(is.na(assays(se)$Beta)) < rowmax, ],
-    bisulfite = se[rowMeans(is.na(assays(se)$counts)) < rowmax, ]
-  )
+#' @return A function to filter assay rows/columns
+cleanAssay <- function(by = c("row", "col")) {
+  by <- match.arg(by)
+  if (by == "row") {
+    mean.fun <- rowMeans
+    subset.fun <- function(se, rows) {
+      se[rows, ]
+    }
+  } else {
+    mean.fun <- colMeans
+    subset.fun <- function(se, cols) {
+      se[, cols]
+    }
+  }
+
+  function(se, na.max = 0.8, assay = c("array", "bisulfite")) {
+    assay <- match.arg(assay)
+    assay.data <- switch(assay,
+      array = assays(se)$Beta,
+      bisulfite = assays(se)$counts
+    )
+    toKeep <- mean.fun(is.na(assay.data)) < na.max
+    subset.fun(se, toKeep)
+  }
 }
 
-#' Remove columns/cells/samples with NAs exceeding a threshold
+#' Remove rows with NAs exceeding a threshold. See `cleanAssay()`
 #'
 #' @param se Input SummarizedExperiment object
-#' @param colmax The maximum number of NAs allowed as a fraction
+#' @param na.max The maximum number of NAs allowed as a fraction
 #' @param assay The type of assay we are working with
 #'
 #' @return A filtered matrix
-#' @export
 #'
 #' @examples
-#' if (require(minfi)) {
-#'   data("meth_array_450k_chr14", package = "compartmap")
+#' if (requireNamespace("minfi", quietly = TRUE)) {
+#'   data("array_data_chr14", package = "compartmap")
+#'   cleanAssayRows(array.data.chr14, assay = "array")
+#' }
+cleanAssayRows <- cleanAssay(by = "row")
+
+#' Remove columns/cells/samples with NAs exceeding a threshold. See `cleanAssay()`
+#'
+#' @param se Input SummarizedExperiment object
+#' @param na.max The maximum number of NAs allowed as a fraction
+#' @param assay The type of assay we are working with
+#'
+#' @return A filtered matrix
+#'
+#' @examples
+#' if (requireNamespace("minfi", quietly = TRUE)) {
+#'   data("array_data_chr14", package = "compartmap")
 #'   cleanAssayCols(array.data.chr14, assay = "array")
 #' }
-cleanAssayCols <- function(
-  se,
-  colmax = 0.8,
-  assay = c("array", "bisulfite")
-) {
-  assay <- match.arg(assay)
-  switch(assay,
-    array = se[, colMeans(is.na(assays(se)$Beta)) < colmax],
-    bisulfite = se[, colMeans(is.na(assays(se)$counts)) < colmax]
-  )
-}
+cleanAssayCols <- cleanAssay(by = "col")
 
 #' Filter to open sea CpG loci
 #'
@@ -420,11 +466,13 @@ cleanAssayCols <- function(
 #'
 #' @return Filtered to open sea CpG loci
 #' @import SummarizedExperiment
+#' @importFrom methods is
+#' @importFrom utils data
 #' @export
 #'
 #' @examples
-#' if (require(minfi)) {
-#'   data("meth_array_450k_chr14", package = "compartmap")
+#' if (requireNamespace("minfi", quietly = TRUE)) {
+#'   data("array_data_chr14", package = "compartmap")
 #'   opensea <- filterOpenSea(array.data.chr14, genome = "hg19")
 #' }
 #'
@@ -434,22 +482,15 @@ filterOpenSea <- function(
   genome = c("hg19", "hg38", "mm10", "mm9"),
   other = NULL
 ) {
-  # get the desired open sea loci given the genome
-  genome <- match.arg(genome)
-  if (is.null(other)) {
-    genome.name <- paste0("openSeas.", genome)
-    openseas.genome <- data("openSeas.hg19", package = "compartmap")
-  } else {
-    # check if it's a GRanges flavored object
-    if (!is(other, "GRanges")) stop("The 'other' input needs to be a GRanges of open sea regions")
-    openseas.genome <- other
-  }
+  # get the desired open sea loci given the genome GRanges
+  openseas.genome <- other %||% getGenome(genome, type = "openseas")
+  stopifnot("The 'other' input needs to be a GRanges of open sea regions" = is(openseas.genome, "GRanges"))
+
   # Subset by overlaps
   message("Filtering to open sea CpG loci...")
   # subset to just CpG loci if CpH or rs probes still exist
   obj <- obj[grep("cg", rownames(obj)), ]
-  obj.openseas <- subsetByOverlaps(obj, get(openseas.genome))
-  return(obj.openseas)
+  subsetByOverlaps(obj, openseas.genome)
 }
 
 #' Gather open sea CpG from a GRanges of CpG islands

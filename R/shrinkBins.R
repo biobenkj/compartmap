@@ -19,6 +19,7 @@
 #'
 #' @import GenomicRanges
 #' @import SummarizedExperiment
+#' @importFrom stats median sd
 #'
 #' @export
 #'

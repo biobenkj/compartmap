@@ -61,8 +61,15 @@ A RaggedExperiment of inferred compartments
 }
 \examples{
 
-if (require(minfi)) {
-  data("meth_array_450k_chr14", package = "compartmap")
-  array_compartments <- getArrayABsignal(array.data.chr14, parallel=FALSE, chr="chr14", bootstrap=FALSE, genome="hg19", array.type="hm450")
+if (requireNamespace("minfi", quietly = TRUE)) {
+  data("array_data_chr14", package = "compartmap")
+  array_compartments <- getArrayABsignal(
+    array.data.chr14,
+    parallel=FALSE,
+    chr="chr14",
+    bootstrap=FALSE,
+    genome="hg19",
+    array.type="hm450"
+  )
 }
 }

@@ -21,15 +21,24 @@
 #'
 #' @return A RaggedExperiment of inferred compartments
 #' @import SummarizedExperiment
-#' @import parallel
 #' @import RaggedExperiment
+#' @importFrom parallel mclapply
+#' @importFrom GenomeInfoDb keepSeqlevels
+#' @importFrom methods as
 #' @export
 #'
 #' @examples
 #'
-#' if (require(minfi)) {
-#'   data("meth_array_450k_chr14", package = "compartmap")
-#'   array_compartments <- getArrayABsignal(array.data.chr14, parallel=FALSE, chr="chr14", bootstrap=FALSE, genome="hg19", array.type="hm450")
+#' if (requireNamespace("minfi", quietly = TRUE)) {
+#'   data("array_data_chr14", package = "compartmap")
+#'   array_compartments <- getArrayABsignal(
+#'     array.data.chr14,
+#'     parallel=FALSE,
+#'     chr="chr14",
+#'     bootstrap=FALSE,
+#'     genome="hg19",
+#'     array.type="hm450"
+#'   )
 #' }
 getArrayABsignal <- function(
   obj,
@@ -159,8 +168,10 @@ getArrayABsignal <- function(
 #' @import SummarizedExperiment
 #'
 #' @examples
-#' if (require(minfiData)) {
-#'   grSet <- mapToGenome(ratioConvert(preprocessNoob(RGsetEx.sub)))
+#' if (requireNamespace("minfiData", quietly = TRUE)) {
+#'   grSet <- minfi::preprocessNoob(minfiData::RGsetEx.sub) |>
+#'     minfi::ratioConvert() |>
+#'     minfi::mapToGenome()
 #'   preprocessArrays(grSet)
 #' }
 #'
@@ -168,6 +179,11 @@ getArrayABsignal <- function(
 preprocessArrays <- function(obj,
                              genome = c("hg19", "hg38", "mm9", "mm10"),
                              other = NULL, array.type = c("hm450", "EPIC")) {
+
+  if (!requireNamespace("minfi", quietly = TRUE)) {
+    stop("The minfi package must be installed for this functionality")
+  }
+
   # make sure the input is sane
   if (!checkAssayType(obj)) stop("Input needs to be a SummarizedExperiment")
 
@@ -192,7 +208,7 @@ preprocessArrays <- function(obj,
   }
 
   # impute missing values if possible
-  if (any(is.na(getBeta(obj.opensea)))) {
+  if (any(is.na(minfi::getBeta(obj.opensea)))) {
     message("Imputing missing values.")
     obj.opensea <- imputeKNN(obj.opensea, assay = "array")
   }
