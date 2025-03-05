@@ -13,10 +13,10 @@
 #' @examples
 #' data("k562_scrna_chr14", package = "compartmap")
 #' scrna.global.means <- getGlobalMeans(k562_scrna_chr14, assay = "rna")
-#'
 getGlobalMeans <- function(obj, targets = NULL, assay = c("atac", "rna", "array")) {
   # match the assay arg
   assay <- match.arg(assay)
+  is.array <- assay == "array"
 
   # check the names of the assays
   if (!any(getAssayNames(obj) %in% c("counts", "Beta"))) {
@@ -34,13 +34,15 @@ getGlobalMeans <- function(obj, targets = NULL, assay = c("atac", "rna", "array"
     globalMean.input <- obj
   }
 
-  globalMean <- switch(assay,
-    atac = matrix(rowMeans(assays(globalMean.input)$counts, na.rm = TRUE), ncol = 1),
-    rna = matrix(rowMeans(assays(globalMean.input)$counts, na.rm = TRUE), ncol = 1),
-    array = matrix(rowMeans(flogit(assays(globalMean.input)$Beta), na.rm = TRUE), ncol = 1)
-  )
+  assay.name <- ifelse(is.array, "Beta", "counts")
+  assay.data <- assays(globalMean.input)[[assay.name]]
+  if (is.array) {
+    assay.data <- flogit(assay.data)
+  }
+  globalMean <- matrix(rowMeans(assay.data, na.rm = TRUE), ncol = 1)
 
   colnames(globalMean) <- "globalMean"
+
   # coercion to get the rownames to be the GRanges coordinates
   # allows to flip back and forth between a matrix and GRanges for subsetting, etc.
   rownames(globalMean) <- as.character(granges(obj))
