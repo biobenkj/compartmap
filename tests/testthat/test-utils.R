@@ -77,6 +77,13 @@ test_that("getAssayNames", {
 })
 # }}}
 
+# flogit {{{
+test_that("flogit", {
+  input <- c(1, 0, 0.5, -0.5, -1, 1.01)
+  expect_error(flogit(input), "Values of p outside (0,1) detected.", fixed = T)
+})
+# }}}
+
 # getChrs {{{
 test_that("getChrs", {
   expect_equal(
