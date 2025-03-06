@@ -93,6 +93,38 @@ test_that("getChrs", {
 })
 # }}}
 
+# removeEmptyBoots {{{ 
+test_that("removeEmptyBoots", {
+  gr1 <- GRanges("chr2", IRanges(3, 6), strand="+", score=5L, GC=0.45)
+  gr2 <- GRanges(
+    c("chr1", "chr1"),
+    IRanges(c(7,13), width=3),
+    strand=c("+", "-"),
+    score=3:4,
+    GC=c(0.3, 0.5)
+  )
+  gr3 <- GRanges(
+    c("chr1", "chr2"),
+    IRanges(c(1, 4), c(3, 9)),
+    strand=c("-", "-"),
+    score=c(6L, 2L),
+    GC=c(0.4, 0.1)
+  )
+  grlist <- list(gr1, gr2, gr3)
+  grlist.na <- list(gr1, gr2, NA, gr3, NA)
+
+  expect_equal(
+    removeEmptyBoots(grlist),
+    grlist
+  )
+  expect_equal(
+    removeEmptyBoots(grlist.na),
+    grlist
+  )
+
+})
+# }}}
+
 # getGenome {{{
 test_that("getGenome", {
   bundled_genomes <- c("hg19", "hg38", "mm9", "mm10")
