@@ -180,3 +180,33 @@ test_that("cleanAssayCols", {
 })
 ### }}}
 
+# filterOpenSea {{{
+test_that("filterOpenSea", {
+
+  expect_error(
+    filterOpenSea(df, genome = "hg38"),
+    "'obj' needs to be a GRanges or SummarizedExperiment",
+    fixed = TRUE
+  )
+  expect_error(
+    filterOpenSea(gr, other = se, genome = "hg38"),
+    "The 'other' input needs to be a GRanges of open sea regions",
+    fixed = TRUE
+  )
+
+  nrows <- 10; ncols <- 6
+  counts <- matrix(runif(nrows * ncols, 1, 1e4), nrows)
+  colData <- DataFrame(Treatment=rep(c("ChIP", "Input"), 3), row.names=LETTERS[1:6])
+  se <- SummarizedExperiment(assays=SimpleList(counts=counts), colData=colData, rowRanges = gr)
+
+  rownames.cg <- paste0(rep("cg", 5), 1:5)
+  rownames.non_cg <- 6:10
+  rownames(se) <- c(rownames.cg, rownames.non_cg)
+  expected.se <- se[1:5, ]
+
+  expect_equal(
+    filterOpenSea(se, genome = "hg19"),
+    expected.se
+  )
+})
+# }}}
