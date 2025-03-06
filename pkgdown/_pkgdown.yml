@@ -1,0 +1,83 @@
+template:
+  bootstrap: 5
+  light-switch: true
+  math-rendering: mathjax
+
+authors:
+  footer:
+    roles: [cre]
+
+development:
+  mode: unreleased
+
+navbar:
+  structure:
+    right: [search, github, lightswitch]
+
+sidebar:
+  structure: [links, license, community, citation, authors, dev]
+
+reference:
+- title: Data import
+  contents:
+    - importBigWig
+- title: Stat functions
+  contents:
+    - agrestiCoullCI
+    - bootstrapCompartments
+    - condenseRE
+    - condenseSE
+    - estRMT
+    - extractOpenClosed
+    - fexpit
+    - filterCompartments
+    - filterOpenSea
+    - getOpenSeas
+    - fisherZ
+    - fixCompartments
+    - flogit
+    - getABSignal
+    - getATACABsignal
+    - getRNAABsignal
+    - getArrayABsignal
+    - getAssayNames
+    - getBinMatrix
+    - getCorMatrix
+    - getDenoisedCorMatrix
+    - getDomainInflections
+    - getGlobalMeans
+    - getMatrixBlocks
+    - getSVD
+    - getSeqLengths
+    - getShrinkageTargets
+    - hdf5TFIDF
+    - transformTFIDF
+    - ifisherZ
+    - imputeKNN
+    - meanSmoother
+    - precomputeBootstrapMeans
+    - preprocessArrays
+    - scCompartments
+    - shrinkBins
+    - sparseToDenseMatrix
+    - ss3_umi_sce
+    - summarizeBootstraps
+- title: Plotting
+  contents:
+    - starts_with("plot")
+- title: Datasets
+  contents:
+    - hg19.gr
+    - hg38.gr
+    - mm10.gr
+    - mm9.gr
+    - openSeas.hg19
+    - openSeas.hg38
+    - openSeas.mm10
+    - openSeas.mm9
+    - array.data.chr14
+    - k562_scatac_chr14
+    - k562_scrna_chr14
+    - k562_scrna_se_chr14
+
+

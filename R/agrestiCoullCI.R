@@ -4,6 +4,7 @@
 #' 
 #' @return    Z
 #'
+#' @keywords internal
 .z <- function(q) {
   qnorm(1 - ((1 - q) / 2))
 }
@@ -18,7 +19,7 @@
 #' @param q   quantile for eventual CI (e.g. 0.95 for a 95 percent binomial CI)
 #'
 #' @return    the effective sample size for smoothed CIs
-#'
+#' @keywords internal
 .n_approx <- function(n1, n0, q) {
   (n0 + n1) + (.z(q)^2)
 }
@@ -33,7 +34,7 @@
 #' @param q   quantile for eventual CI (e.g. 0.95 for a 95 percent binomial CI)
 #'
 #' @return    the approximate success probability for a smoothed CIs
-#' 
+#' @keywords internal
 .p_approx <- function(n1, n0, q) {
   (1/.n_approx(n1, n0, q)) * (n1 + ((.z(q)^2)/2))
 }

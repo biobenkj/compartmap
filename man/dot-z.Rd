@@ -15,3 +15,7 @@ Z
 \description{
 Normal alpha/2 quantile
 }
+\details{
+\eqn{z_\alpha = \Phi^{-1}(1 - \frac{\alpha}{2})}
+}
+\keyword{internal}

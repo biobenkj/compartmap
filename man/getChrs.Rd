@@ -20,3 +20,4 @@ data("k562_scrna_chr14", package = "compartmap")
 getChrs(k562_scrna_chr14)
 
 }
+\keyword{internal}
