@@ -13,10 +13,10 @@
 #' @examples
 #' data("k562_scrna_chr14", package = "compartmap")
 #' scrna.global.means <- getGlobalMeans(k562_scrna_chr14, assay = "rna")
-#'
 getGlobalMeans <- function(obj, targets = NULL, assay = c("atac", "rna", "array")) {
   # match the assay arg
   assay <- match.arg(assay)
+  is.array <- assay == "array"
 
   # check the names of the assays
   if (!any(getAssayNames(obj) %in% c("counts", "Beta"))) {
@@ -34,11 +34,8 @@ getGlobalMeans <- function(obj, targets = NULL, assay = c("atac", "rna", "array"
     globalMean.input <- obj
   }
 
-  globalMean <- switch(assay,
-    atac = matrix(rowMeans(assays(globalMean.input)$counts, na.rm = TRUE), ncol = 1),
-    rna = matrix(rowMeans(assays(globalMean.input)$counts, na.rm = TRUE), ncol = 1),
-    array = matrix(rowMeans(flogit(assays(globalMean.input)$Beta), na.rm = TRUE), ncol = 1)
-  )
+  assay.data <- .getAssay(globalMean.input, is.array)
+  globalMean <- matrix(rowMeans(assay.data, na.rm = TRUE), ncol = 1)
 
   colnames(globalMean) <- "globalMean"
   # coercion to get the rownames to be the GRanges coordinates
@@ -77,6 +74,7 @@ precomputeBootstrapMeans <- function(
 ) {
   # this function precomputes the bootstrapped global means
   # as a default we will make 100 bootstraps
+  is.array <- assay == "array"
 
   bootMean <- mclapply(1:num.bootstraps, function(b) {
     message("Working on bootstrap ", b)
@@ -84,11 +82,9 @@ precomputeBootstrapMeans <- function(
       if (length(targets) < 5) stop("Need more than 5 samples for targeted bootstrapping to work.")
       obj <- getShrinkageTargets(obj, targets)
     }
-    resamp.mat <- switch(assay,
-      atac = .resampleMatrix(assays(obj)$counts),
-      rna = .resampleMatrix(assays(obj)$counts),
-      array = .resampleMatrix(assays(obj)$Beta)
-    )
+    assay.data <- .getAssay(obj, is.array)
+    resamp.mat <- .resampleMatrix(assay.data)
+
     # turn back into SummarizedExperiment
     resamp.se <- switch(assay,
       atac = SummarizedExperiment(
@@ -109,4 +105,14 @@ precomputeBootstrapMeans <- function(
   }, mc.cores = ifelse(parallel, num.cores, 1))
 
   return(do.call("cbind", bootMean))
+}
+
+# Get $counts of $Beta depening on whether the input is an array experiment or rna/atac
+.getAssay <- function(obj, is.array) {
+  assay.name <- ifelse(is.array, "Beta", "counts")
+  assay.data <- assays(obj)[[assay.name]]
+  if (is.array) {
+    assay.data <- flogit(assay.data)
+  }
+  return(assay.data)
 }
