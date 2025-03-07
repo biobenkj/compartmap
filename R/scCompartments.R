@@ -17,12 +17,18 @@
 #'
 #' @return A RaggedExperiment of inferred compartments
 #' @import SummarizedExperiment
-#' @import parallel
+#' @importFrom parallel mclapply
 #' @import RaggedExperiment
 #' @export
 #' @examples
 #' data("k562_scrna_chr14", package = "compartmap")
-#' sc_compartments <- scCompartments(k562_scrna_chr14, parallel = FALSE, chr = "chr14", bootstrap = FALSE, genome = "hg19")
+#' sc_compartments <- scCompartments(
+#'   k562_scrna_chr14,
+#'   parallel = FALSE,
+#'   chr = "chr14",
+#'   bootstrap = FALSE,
+#'   genome = "hg19"
+#' )
 scCompartments <- function(
   obj,
   res = 1e6,

@@ -11,10 +11,7 @@
 #' Finally, correlation matrix is converted to covariance matrix. This function
 #' was taken and modified from the covmat package (https://github.com/cran/covmat)
 #' which has since been deprecated on CRAN.
-#' 
-#' @importFrom Matrix nearPD
-#' @importFrom RMTstat dmp qmp
-#' 
+#'
 #' @param  R input matrix
 #' @param  Q ratio of rows/size. Can be supplied externally or fit using data
 #' @param  cutoff takes two values max/each. If cutoff is max, Q is fitted and 
@@ -27,6 +24,9 @@
 #'        correlation matrix are replaced with 1 to make the matrix psd.
 #' @param numEig number of eigenvalues that are known for variance calculation.
 #'        Default is set to 1. If numEig = 0 then variance is assumed to be 1.
+#'
+#' @importFrom stats optim cov
+#'
 #' @return A denoised RMT object
 #' 
 #' @examples 
@@ -56,7 +56,7 @@ estRMT <- function(R, Q = NA, cutoff = c("max", "each"),
   
   #eigenvalues can be negative. To avoid this e need a positive-definite matrix 
   S <- cov(.data); S <- as.matrix(Matrix::nearPD(S)$mat)
-  D <- diag(diag(S)); C <- cov2cor(S); 
+  D <- diag(diag(S)); C <- Matrix::cov2cor(S);
   
   # Marchenko Pastur density is defined for eigenvalues of correlation matrix
   eigen.C <- eigen(C,symmetric=T)
@@ -149,8 +149,7 @@ estRMT <- function(R, Q = NA, cutoff = c("max", "each"),
 #' 
 #' @import SummarizedExperiment
 #' @import GenomicRanges
-#' @import scales
-#' 
+#'
 #' @export
 #'
 #' @examples
@@ -221,8 +220,8 @@ getDenoisedCorMatrix <- function(obj, res = 1e6, chr = "chr14",
 #'
 #' @return Either a ggplot object or plot
 #' 
-#' @import ggplot2
-#' @import reshape2
+#' @importFrom rlang .data
+#' @importFrom ggplot2 ggplot aes geom_raster scale_fill_gradient2 theme_minimal theme element_blank
 #' 
 #' @export
 #'
@@ -247,9 +246,9 @@ plotCorMatrix <- function(denoised.cor.mat,
   ## melt for plotting
   cor.mat.melt <- reshape2::melt(denoised.cor.mat)
   ## plot
-  p <- ggplot(cor.mat.melt, aes(x = Var2, y = Var1, fill = value)) +
+  p <- ggplot(cor.mat.melt, aes(x = .data$Var2, y = .data$Var1, fill = .data$value)) +
     geom_raster() +
-    scale_fill_gradient2(low = "white", mid = "white", high = "red3", midpoint = midpoint,
+    scale_fill_gradient2(low = "white", mid = "white", high = "red3", midpoint = {{ midpoint }},
                          name = "Correlation") +
     theme_minimal() +
     theme(
