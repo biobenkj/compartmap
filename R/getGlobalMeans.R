@@ -79,6 +79,7 @@ precomputeBootstrapMeans <- function(
 ) {
   # this function precomputes the bootstrapped global means
   # as a default we will make 100 bootstraps
+  assay <- match.arg(assay)
   is.array <- assay == "array"
 
   if (!is.null(targets)) {
@@ -100,6 +101,12 @@ precomputeBootstrapMeans <- function(
 # Get $counts of $Beta depening on whether the input is an array experiment or rna/atac
 .getAssay <- function(obj, is.array) {
   assay.name <- ifelse(is.array, "Beta", "counts")
+
+  if (!assay.name %in% names(assays(obj))) {
+    msg <- paste(shQuote(assay.name), "not found in the input object's assays")
+    stop(msg)
+  }
+
   assay.data <- assays(obj)[[assay.name]]
   if (is.array) {
     assay.data <- flogit(assay.data)
