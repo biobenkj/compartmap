@@ -1,3 +1,10 @@
+# Get the rowMeans of a matrix
+computeGlobalMean <- function(mat) {
+  globalMean <- matrix(rowMeans(mat, na.rm = TRUE), ncol = 1)
+  colnames(globalMean) <- "globalMean"
+  return(globalMean)
+}
+
 #' Get the global means of a matrix
 #'
 #' @name getGlobalMeans
@@ -35,9 +42,7 @@ getGlobalMeans <- function(obj, targets = NULL, assay = c("atac", "rna", "array"
   }
 
   assay.data <- .getAssay(globalMean.input, is.array)
-  globalMean <- matrix(rowMeans(assay.data, na.rm = TRUE), ncol = 1)
-
-  colnames(globalMean) <- "globalMean"
+  globalMean <- computeGlobalMean(assay.data)
   # coercion to get the rownames to be the GRanges coordinates
   # allows to flip back and forth between a matrix and GRanges for subsetting, etc.
   rownames(globalMean) <- as.character(granges(obj))
@@ -76,35 +81,20 @@ precomputeBootstrapMeans <- function(
   # as a default we will make 100 bootstraps
   is.array <- assay == "array"
 
+  if (!is.null(targets)) {
+    if (length(targets) < 5) stop("Need more than 5 samples for targeted bootstrapping to work.")
+    obj <- getShrinkageTargets(obj, targets)
+  }
   bootMean <- mclapply(1:num.bootstraps, function(b) {
     message("Working on bootstrap ", b)
-    if (!is.null(targets)) {
-      if (length(targets) < 5) stop("Need more than 5 samples for targeted bootstrapping to work.")
-      obj <- getShrinkageTargets(obj, targets)
-    }
     assay.data <- .getAssay(obj, is.array)
     resamp.mat <- .resampleMatrix(assay.data)
-
-    # turn back into SummarizedExperiment
-    resamp.se <- switch(assay,
-      atac = SummarizedExperiment(
-        assays = S4Vectors::SimpleList(counts = resamp.mat),
-        rowRanges = rowRanges(obj)
-      ),
-      rna = SummarizedExperiment(
-        assays = S4Vectors::SimpleList(counts = resamp.mat),
-        rowRanges = rowRanges(obj)
-      ),
-      array = SummarizedExperiment(
-        assays = S4Vectors::SimpleList(Beta = resamp.mat),
-        rowRanges = rowRanges(obj)
-      )
-    )
-    # make sure targets is NULL since we already subset to them!
-    return(getGlobalMeans(obj = resamp.se, targets = NULL, assay = assay))
+    computeGlobalMean(resamp.mat)
   }, mc.cores = ifelse(parallel, num.cores, 1))
 
-  return(do.call("cbind", bootMean))
+  bootResult <- do.call("cbind", bootMean)
+  rownames(bootResult) <- as.character(granges(obj))
+  return(bootResult)
 }
 
 # Get $counts of $Beta depening on whether the input is an array experiment or rna/atac
