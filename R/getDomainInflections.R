@@ -11,6 +11,10 @@
 #' @return A GRanges object of compartment inflection points
 #'
 #' @import GenomicRanges
+#' @importFrom S4Vectors subjectHits queryHits
+#' @importFrom GenomeInfoDb seqlengths
+#' @importFrom methods as is
+#' @importFrom utils data
 #' @export
 #'
 #' @examples
@@ -31,18 +35,14 @@ getDomainInflections <- function(
   stopifnot(is(gr, "GenomicRanges"))
   stopifnot(what %in% names(mcols(gr)))
   # determine which genome we are working with
-  genome <- match.arg(genome)
-  genome <- switch(genome,
-    hg19 = data("hg19.gr", package = "compartmap"),
-    hg38 = data("hg38.gr", package = "compartmap"),
-    mm9 = data("mm9.gr", package = "compartmap"),
-    mm10 = data("mm10.gr", package = "compartmap")
-  )
+  genome.name <- paste0(match.arg(genome), ".gr")
+  genome.gr <- get(genome.name)
+
   # we may not be able to assume continuous compartment structure here
   # so somehow, we need to find continuous runs
   message("Tiling genome.")
   tiles <- tileGenome(
-    seqlengths = seqlengths(get(genome))[chrs],
+    seqlengths = seqlengths(genome.gr)[chrs],
     tilewidth = res,
     cut.last.tile.in.chrom = TRUE
   )
@@ -136,7 +136,7 @@ getDomainInflections <- function(
     gr.inflect <- gr[2, ] # special case
     gr.inflect.new <- GRanges(
       seqnames = seqnames(gr.inflect),
-      ranges = IRanges(
+      ranges = IRanges::IRanges(
         start = start(gr.inflect),
         end = start(gr.inflect)
       ),
@@ -146,7 +146,7 @@ getDomainInflections <- function(
   }
   gr.inflect.new.start <- GRanges(
     seqnames = seqnames(gr.inflect),
-    ranges = IRanges(
+    ranges = IRanges::IRanges(
       start = start(gr.inflect),
       end = start(gr.inflect)
     ),
@@ -154,7 +154,7 @@ getDomainInflections <- function(
   )
   gr.inflect.new.end <- GRanges(
     seqnames = seqnames(gr.inflect),
-    ranges = IRanges(
+    ranges = IRanges::IRanges(
       start = end(gr.inflect),
       end = end(gr.inflect)
     ),
