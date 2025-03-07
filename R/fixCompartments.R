@@ -31,7 +31,7 @@ fixCompartments <- function(obj, min.conf = 0.8, parallel = FALSE, cores = 1) {
 
 #' Helper to invert, or "fix", compartments that have a minimum confidence score (1-min.conf)
 #'
-#' @param obj Input RaggedExperiment or output of condenseSE
+#' @param input_obj Input RaggedExperiment or output of condenseSE
 #' @param min.conf Minimum confidence score to use
 #'
 #' @return A "fixed" set of compartments

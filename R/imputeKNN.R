@@ -12,7 +12,6 @@
 #' @param assay The type of assay ("array", "bisulfite")
 #'
 #' @return Imputed data matrix that is added to the assays slot
-#' @import impute
 #' @import SummarizedExperiment
 #' @export
 #'
@@ -84,7 +83,7 @@ imputeKNN <- function(
     }
 
   message("Imputing missing data with kNN.")
-  imputed.data <- impute.knn(
+  imputed.data <- impute::impute.knn(
     impute.input,
     k = k,
     rowmax = rowmax,
