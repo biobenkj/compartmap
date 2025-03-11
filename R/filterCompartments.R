@@ -16,7 +16,7 @@ filterCompartments <- function(obj, min.conf = 0.7, min.eigen = 0.02) {
   message("Filtering compartments based on a minimum confidence of ", min.conf * 100, "%")
   message("Filtering compartments based on a minimum absolute eigen value of ", min.eigen)
   if (is(obj, "list")) {
-    filt.compartments <- lapply(obj, function(x) {
+    lapply(obj, function(x) {
       filt <- filterer(x, min.conf, min.eigen)
       return(x[filt, ])
     })
