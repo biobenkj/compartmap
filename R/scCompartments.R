@@ -36,8 +36,8 @@ scCompartments <- function(
   group = FALSE,
   assay = c("atac", "rna")
 ) {
-  # make sure we have a SummarizedExperiment flavored object
-  if (!checkAssayType(obj)) stop("Input object needs to be a SummarizedExperiment.")
+
+  verifySE(obj)
 
   # which assay are we working on
   assay <- tolower(match.arg(assay))

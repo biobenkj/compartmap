@@ -177,6 +177,7 @@ preprocessArrays <- function(obj,
 
   # make sure the input is sane
   if (!checkAssayType(obj)) stop("Input needs to be a SummarizedExperiment")
+  verifySE(obj)
 
   # what genome do we have
   genome <- match.arg(genome)

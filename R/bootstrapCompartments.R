@@ -47,8 +47,7 @@ bootstrapCompartments <- function(
   # match the assay args
   assay <- match.arg(assay)
 
-  # double check the obj class is compatible
-  if (!checkAssayType(original.obj)) stop("Input needs to be a SummarizedExperiment")
+  verifySE(original.obj)
 
   # check the names of the assays
   if (!any(getAssayNames(original.obj) %in% c("counts", "Beta"))) {

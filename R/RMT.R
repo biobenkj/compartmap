@@ -167,8 +167,7 @@ getDenoisedCorMatrix <- function(obj, res = 1e6, chr = "chr14",
   #match the genome if given
   genome <- match.arg(genome)
   
-  #double check the obj class is compatible
-  if (!checkAssayType(obj)) stop("Input needs to be a SummarizedExperiment")
+  verifySE(obj)
   
   #subset to selected chromosome(s)
   obj <- keepSeqlevels(obj, chr, pruning.mode = "coarse")

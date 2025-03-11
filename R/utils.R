@@ -32,18 +32,18 @@ extractOpenClosed <- function(
 #' Check if the assay is a SummarizedExperiment
 #'
 #' @param obj Input object
-#'
+#' @return NULL
 #' @importFrom methods is
-#'
-#' @return Boolean
-#' @export
+#' @keywords internal
 #'
 #' @examples
 #' data("k562_scrna_chr14", package = "compartmap")
-#' checkAssayType(k562_scrna_chr14)
-checkAssayType <- function(obj) {
+#' verifySE(k562_scrna_chr14)
+verifySE <- function(obj) {
   # helper function to check the class of an object
-  is(obj, "SummarizedExperiment")
+  if (!is(obj, "SummarizedExperiment")) {
+    stop("Input needs to be a SummarizedExperiment")
+  }
 }
 
 #' Get the assay names from a SummarizedExperiment object
