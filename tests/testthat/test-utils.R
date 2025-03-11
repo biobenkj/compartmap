@@ -192,6 +192,25 @@ checkCleanAssay <- function(se.array, se.bisulfite, cleanFun, dimFun) {
 }
 
 test_that("cleanAssayRows", {
+  expect_type(
+    compartmap:::cleanAssay(by = "row"),
+    "closure"
+  )
+  expect_type(
+    compartmap:::cleanAssay(by = "col"),
+    "closure"
+  )
+  # expect_equal(
+  #   compartmap:::cleanAssay(by = "row"),
+  #   compartmap:::cleanAssayRows
+  # )
+  # expect_equal(
+  #   compartmap:::cleanAssay(by = "col"),
+  #   compartmap:::cleanAssayCols
+  # )
+})
+
+test_that("cleanAssayRows", {
   cleanFun <- compartmap:::cleanAssayRows
   dimFun <- nrow
   m <- matrix(1:10, 10, 10)
