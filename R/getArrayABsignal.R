@@ -50,11 +50,7 @@ getArrayABsignal <- function(
   boot.parallel = TRUE,
   boot.cores = 2
 ) {
-  if (length(seqinfo(rowRanges(obj))) == 0) {
-    message("The SummarizedExperiment you have provided has no coordinates.")
-    message("Compartment extraction will fail.")
-    stop("Please provide rowRanges with genomic coordinates for the object.")
-  }
+  verifyCoords(obj)
 
   # preprocess the arrays
   if (preprocess) {

@@ -46,6 +46,27 @@ verifySE <- function(obj) {
   }
 }
 
+#' Throw error if assay does not contain coordinates
+#'
+#' @param obj Input object
+#'
+#' @return NULL
+#' @keywords internal
+#'
+#' @examples
+#' data("k562_scrna_chr14", package = "compartmap")
+#' verifyCoords(k562_scrna_chr14)
+verifyCoords <- function(obj) {
+  # helper function to check the class of an object
+  if (length(seqinfo(rowRanges(obj))) == 0) {
+    stop(paste(
+      "The SummarizedExperiment you have provided has no coordinates.\n",
+      "Compartment extraction will fail.\n",
+      "Please provide rowRanges with genomic coordinates for the object."
+    ))
+  }
+}
+
 #' Get the assay names from a SummarizedExperiment object
 #'
 #' @param se Input SummarizedExperiment object
