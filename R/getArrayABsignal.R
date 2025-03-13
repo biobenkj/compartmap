@@ -21,8 +21,10 @@
 #'
 #' @return A RaggedExperiment of inferred compartments
 #' @import SummarizedExperiment
-#' @import parallel
 #' @import RaggedExperiment
+#' @importFrom parallel mclapply
+#' @importFrom GenomeInfoDb keepSeqlevels
+#' @importFrom methods as
 #' @export
 #'
 #' @examples
@@ -168,6 +170,11 @@ getArrayABsignal <- function(
 preprocessArrays <- function(obj,
                              genome = c("hg19", "hg38", "mm9", "mm10"),
                              other = NULL, array.type = c("hm450", "EPIC")) {
+
+  if (!requireNamespace("minfi", quietly = TRUE)) {
+    stop("The minfi package must be installed for this functionality")
+  }
+
   # make sure the input is sane
   if (!checkAssayType(obj)) stop("Input needs to be a SummarizedExperiment")
 
@@ -192,7 +199,7 @@ preprocessArrays <- function(obj,
   }
 
   # impute missing values if possible
-  if (any(is.na(getBeta(obj.opensea)))) {
+  if (any(is.na(minfi::getBeta(obj.opensea)))) {
     message("Imputing missing values.")
     obj.opensea <- imputeKNN(obj.opensea, assay = "array")
   }

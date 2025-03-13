@@ -17,7 +17,7 @@
 #'
 #' @return A RaggedExperiment of inferred compartments
 #' @import SummarizedExperiment
-#' @import parallel
+#' @importFrom parallel mclapply
 #' @import RaggedExperiment
 #' @export
 #' @examples

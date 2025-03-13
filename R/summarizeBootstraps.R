@@ -8,7 +8,10 @@
 #' @param assay Type of assay we are working with
 #'
 #' @return A GRanges object with bootstraps summarized
+#'
 #' @import SummarizedExperiment
+#' @importFrom S4Vectors subjectHits queryHits
+#'
 #' @export
 #'
 #' @examples

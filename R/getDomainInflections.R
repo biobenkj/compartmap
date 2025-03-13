@@ -11,6 +11,10 @@
 #' @return A GRanges object of compartment inflection points
 #'
 #' @import GenomicRanges
+#' @importFrom S4Vectors subjectHits queryHits
+#' @importFrom GenomeInfoDb seqlengths
+#' @importFrom methods as is
+#' @importFrom utils data
 #' @export
 #'
 #' @examples
@@ -136,7 +140,7 @@ getDomainInflections <- function(
     gr.inflect <- gr[2, ] # special case
     gr.inflect.new <- GRanges(
       seqnames = seqnames(gr.inflect),
-      ranges = IRanges(
+      ranges = IRanges::IRanges(
         start = start(gr.inflect),
         end = start(gr.inflect)
       ),
@@ -146,7 +150,7 @@ getDomainInflections <- function(
   }
   gr.inflect.new.start <- GRanges(
     seqnames = seqnames(gr.inflect),
-    ranges = IRanges(
+    ranges = IRanges::IRanges(
       start = start(gr.inflect),
       end = start(gr.inflect)
     ),
@@ -154,7 +158,7 @@ getDomainInflections <- function(
   )
   gr.inflect.new.end <- GRanges(
     seqnames = seqnames(gr.inflect),
-    ranges = IRanges(
+    ranges = IRanges::IRanges(
       start = end(gr.inflect),
       end = end(gr.inflect)
     ),

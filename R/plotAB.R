@@ -16,7 +16,10 @@
 #' @param filter.min.eigen  Minimum absolute eigenvalue to include in the plot
 #' @param median.conf Plot the median confidence estimate across the chromosome?
 #' 
-#' @import    GenomicRanges
+#' @import GenomicRanges
+#' @importFrom methods as is
+#' @importFrom stats median
+#' @importFrom graphics abline barplot par
 #' 
 #' @export 
 #'

@@ -6,6 +6,7 @@
 #'
 #' @return A vector of binary/categorical compartment states
 #' @import SummarizedExperiment
+#' @importFrom methods is
 #' @export
 #'
 #' @examples
@@ -31,6 +32,8 @@ extractOpenClosed <- function(
 #' Check if the assay is a SummarizedExperiment
 #'
 #' @param obj Input object
+#'
+#' @importFrom methods is
 #'
 #' @return Boolean
 #' @export
@@ -153,6 +156,9 @@ removeEmptyBoots <- function(obj) {
 #' @param chr What chromosome to extract the seqlengths of
 #'
 #' @return The seqlengths of a specific chromosome
+#'
+#' @importFrom GenomeInfoDb seqlengths seqlevels
+#' @importFrom utils data
 #' @import GenomicRanges
 #'
 #' @examples
@@ -232,7 +238,8 @@ getMatrixBlocks <- function(
 #' @return A dense matrix of the same dimensions as the input
 #'
 #' @import Matrix
-#' @import parallel
+#' @importFrom parallel mclapply
+#' @importFrom methods as
 #'
 #'
 #' @examples
@@ -309,6 +316,7 @@ sparseToDenseMatrix <- function(
 #'
 #' @import SummarizedExperiment
 #' @import GenomicRanges
+#' @importFrom GenomeInfoDb seqlengths seqlevels seqlevelsStyle<-  keepSeqlevels keepStandardChromosomes
 #'
 #' @export
 
@@ -347,7 +355,7 @@ importBigWig <- function(
     bw.bin <- GenomicRanges::binnedAverage(bins, bw.score, "ave_score")
     # cast to a SummarizedExperiment to bin them
     bw.se <- SummarizedExperiment(
-      assays = SimpleList(counts = as.matrix(mcols(bw.bin)$ave_score)),
+      assays = S4Vectors::SimpleList(counts = as.matrix(mcols(bw.bin)$ave_score)),
       rowRanges = granges(bw.bin)
     )
     colnames(bw.se) <- as.character(bw)
@@ -418,6 +426,8 @@ cleanAssayCols <- function(
 #'
 #' @return Filtered to open sea CpG loci
 #' @import SummarizedExperiment
+#' @importFrom methods is
+#' @importFrom utils data
 #' @export
 #'
 #' @examples

@@ -92,15 +92,15 @@ precomputeBootstrapMeans <- function(
     # turn back into SummarizedExperiment
     resamp.se <- switch(assay,
       atac = SummarizedExperiment(
-        assays = SimpleList(counts = resamp.mat),
+        assays = S4Vectors::SimpleList(counts = resamp.mat),
         rowRanges = rowRanges(obj)
       ),
       rna = SummarizedExperiment(
-        assays = SimpleList(counts = resamp.mat),
+        assays = S4Vectors::SimpleList(counts = resamp.mat),
         rowRanges = rowRanges(obj)
       ),
       array = SummarizedExperiment(
-        assays = SimpleList(Beta = resamp.mat),
+        assays = S4Vectors::SimpleList(Beta = resamp.mat),
         rowRanges = rowRanges(obj)
       )
     )

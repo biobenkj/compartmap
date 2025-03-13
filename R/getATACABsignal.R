@@ -19,8 +19,9 @@
 #'
 #' @return A RaggedExperiment of inferred compartments
 #' @import SummarizedExperiment
-#' @import parallel
 #' @import RaggedExperiment
+#' @importFrom parallel mclapply
+#' @importFrom methods as
 #' @export
 #'
 #' @aliases getRNAABsignal

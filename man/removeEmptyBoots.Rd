@@ -13,5 +13,7 @@ removeEmptyBoots(obj)
 A filtered list object
 }
 \description{
-Remove bootstrap estimates that failed
+This can happen if the correlation between the bins and eigenvector fails
+theoretically we can recover these but need an additional utility to find
+consensus
 }

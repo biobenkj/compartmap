@@ -84,6 +84,7 @@ transformTFIDF <- function(obj, scale.factor = 1e5) {
 #' @import DelayedMatrixStats
 #' @import DelayedArray
 #' @import HDF5Array
+#' @importFrom methods as is
 #'
 #' @examples
 #' 

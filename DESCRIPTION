@@ -20,16 +20,19 @@ Encoding: UTF-8
 License: GPL-3 + file LICENSE
 biocViews: Genetics, Epigenetics, ATACSeq, RNASeq, SingleCell
 Depends: 
-   csaw,
    R (>= 4.1.0),
    SummarizedExperiment,
    RaggedExperiment,
-   BiocSingular,
-   bsseq,
    HDF5Array
 Imports: 
+   BiocSingular,
+   rlang,
+   S4Vectors,
+   IRanges,
    GenomicRanges,
+   GenomeInfoDb,
    parallel,
+   methods,
    grid,
    ggplot2,
    reshape2,
