@@ -16,8 +16,8 @@
 #' @export
 #'
 #' @examples
-#' if (require(minfi)) {
-#'   data("meth_array_450k_chr14", package = "compartmap")
+#' if (requireNamespace("minfi", quietly = TRUE)) {
+#'   data("array_data_chr14", package = "compartmap")
 #'   #impute
 #'   imputed <- imputeKNN(array.data.chr14, assay = "array")
 #' }

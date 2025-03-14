@@ -20,8 +20,8 @@ A filtered matrix
 Remove rows with NAs exceeding a threshold
 }
 \examples{
-if (require(minfi)) {
-  data("meth_array_450k_chr14", package = "compartmap")
+if (requireNamespace("minfi", quietly = TRUE)) {
+  data("array_data_chr14", package = "compartmap")
   cleanAssayRows(array.data.chr14, assay = "array")
 }
 }

@@ -14,6 +14,6 @@ Throw error if assay does not contain coordinates
 }
 \examples{
 data("k562_scrna_chr14", package = "compartmap")
-verifyCoords(k562_scrna_chr14)
+compartmap:::verifyCoords(k562_scrna_chr14)
 }
 \keyword{internal}

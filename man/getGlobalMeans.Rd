@@ -22,5 +22,4 @@ Get the global means of a matrix
 \examples{
 data("k562_scrna_chr14", package = "compartmap")
 scrna.global.means <- getGlobalMeans(k562_scrna_chr14, assay = "rna")
-
 }
