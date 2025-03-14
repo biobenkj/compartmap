@@ -4,7 +4,7 @@
 ## Compartmap: Direct inference of higher-order chromatin structure in individual cells from scRNA-seq and scATAC-seq
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/jamespeapen/compartmap/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jamespeapen/compartmap/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/biobenkj/compartmap/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/biobenkj/compartmap/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 ### How to install the R package
