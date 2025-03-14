@@ -32,8 +32,8 @@ getDomainInflections <- function(
   genome = c("hg19", "hg38", "mm9", "mm10")
 ) {
   # find the compartment inflection points
-  stopifnot(is(gr, "GenomicRanges"))
-  stopifnot(what %in% names(mcols(gr)))
+  stopifnot("'gr' is not a GRanges object" = is(gr, "GenomicRanges"))
+  stopifnot("'what' is not present in mcols(gr)" = what %in% names(mcols(gr)))
   # determine which genome we are working with
   genome <- match.arg(genome)
   genome <- switch(genome,
