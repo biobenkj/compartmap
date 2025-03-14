@@ -38,7 +38,7 @@ extractOpenClosed <- function(
 #'
 #' @examples
 #' data("k562_scrna_chr14", package = "compartmap")
-#' verifySE(k562_scrna_chr14)
+#' compartmap:::verifySE(k562_scrna_chr14)
 verifySE <- function(obj) {
   # helper function to check the class of an object
   if (!is(obj, "SummarizedExperiment")) {
@@ -55,7 +55,7 @@ verifySE <- function(obj) {
 #'
 #' @examples
 #' data("k562_scrna_chr14", package = "compartmap")
-#' verifyCoords(k562_scrna_chr14)
+#' compartmap:::verifyCoords(k562_scrna_chr14)
 verifyCoords <- function(obj) {
   # helper function to check the class of an object
   if (length(seqinfo(rowRanges(obj))) == 0) {
