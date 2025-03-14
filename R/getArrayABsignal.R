@@ -181,7 +181,6 @@ preprocessArrays <- function(obj,
   }
 
   # make sure the input is sane
-  if (!checkAssayType(obj)) stop("Input needs to be a SummarizedExperiment")
   verifySE(obj)
 
   # what genome do we have
@@ -232,7 +231,7 @@ preprocessArrays <- function(obj,
 ) {
   # this is the main analysis function for computing compartments from arrays
   # make sure the input is sane
-  if (!checkAssayType(obj)) stop("Input needs to be a SummarizedExperiment")
+  verifySE(obj)
 
   # what genome do we have
   genome <- match.arg(genome)
