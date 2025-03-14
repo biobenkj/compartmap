@@ -1,3 +1,10 @@
+# Get the rowMeans of a matrix
+computeGlobalMean <- function(mat) {
+  globalMean <- matrix(rowMeans(mat, na.rm = TRUE), ncol = 1)
+  colnames(globalMean) <- "globalMean"
+  return(globalMean)
+}
+
 #' Get the global means of a matrix
 #'
 #' @name getGlobalMeans
@@ -13,10 +20,10 @@
 #' @examples
 #' data("k562_scrna_chr14", package = "compartmap")
 #' scrna.global.means <- getGlobalMeans(k562_scrna_chr14, assay = "rna")
-#'
 getGlobalMeans <- function(obj, targets = NULL, assay = c("atac", "rna", "array")) {
   # match the assay arg
   assay <- match.arg(assay)
+  is.array <- assay == "array"
 
   # check the names of the assays
   if (!any(getAssayNames(obj) %in% c("counts", "Beta"))) {
@@ -34,13 +41,8 @@ getGlobalMeans <- function(obj, targets = NULL, assay = c("atac", "rna", "array"
     globalMean.input <- obj
   }
 
-  globalMean <- switch(assay,
-    atac = matrix(rowMeans(assays(globalMean.input)$counts, na.rm = TRUE), ncol = 1),
-    rna = matrix(rowMeans(assays(globalMean.input)$counts, na.rm = TRUE), ncol = 1),
-    array = matrix(rowMeans(flogit(assays(globalMean.input)$Beta), na.rm = TRUE), ncol = 1)
-  )
-
-  colnames(globalMean) <- "globalMean"
+  assay.data <- .getAssay(globalMean.input, is.array)
+  globalMean <- computeGlobalMean(assay.data)
   # coercion to get the rownames to be the GRanges coordinates
   # allows to flip back and forth between a matrix and GRanges for subsetting, etc.
   rownames(globalMean) <- as.character(granges(obj))
@@ -77,36 +79,37 @@ precomputeBootstrapMeans <- function(
 ) {
   # this function precomputes the bootstrapped global means
   # as a default we will make 100 bootstraps
+  assay <- match.arg(assay)
+  is.array <- assay == "array"
 
+  if (!is.null(targets)) {
+    if (length(targets) < 5) stop("Need more than 5 samples for targeted bootstrapping to work.")
+    obj <- getShrinkageTargets(obj, targets)
+  }
   bootMean <- mclapply(1:num.bootstraps, function(b) {
     message("Working on bootstrap ", b)
-    if (!is.null(targets)) {
-      if (length(targets) < 5) stop("Need more than 5 samples for targeted bootstrapping to work.")
-      obj <- getShrinkageTargets(obj, targets)
-    }
-    resamp.mat <- switch(assay,
-      atac = .resampleMatrix(assays(obj)$counts),
-      rna = .resampleMatrix(assays(obj)$counts),
-      array = .resampleMatrix(assays(obj)$Beta)
-    )
-    # turn back into SummarizedExperiment
-    resamp.se <- switch(assay,
-      atac = SummarizedExperiment(
-        assays = S4Vectors::SimpleList(counts = resamp.mat),
-        rowRanges = rowRanges(obj)
-      ),
-      rna = SummarizedExperiment(
-        assays = S4Vectors::SimpleList(counts = resamp.mat),
-        rowRanges = rowRanges(obj)
-      ),
-      array = SummarizedExperiment(
-        assays = S4Vectors::SimpleList(Beta = resamp.mat),
-        rowRanges = rowRanges(obj)
-      )
-    )
-    # make sure targets is NULL since we already subset to them!
-    return(getGlobalMeans(obj = resamp.se, targets = NULL, assay = assay))
+    assay.data <- .getAssay(obj, is.array)
+    resamp.mat <- .resampleMatrix(assay.data)
+    computeGlobalMean(resamp.mat)
   }, mc.cores = ifelse(parallel, num.cores, 1))
 
-  return(do.call("cbind", bootMean))
+  bootResult <- do.call("cbind", bootMean)
+  rownames(bootResult) <- as.character(granges(obj))
+  return(bootResult)
+}
+
+# Get $counts of $Beta depening on whether the input is an array experiment or rna/atac
+.getAssay <- function(obj, is.array) {
+  assay.name <- ifelse(is.array, "Beta", "counts")
+
+  if (!assay.name %in% names(assays(obj))) {
+    msg <- paste(shQuote(assay.name), "not found in the input object's assays")
+    stop(msg)
+  }
+
+  assay.data <- assays(obj)[[assay.name]]
+  if (is.array) {
+    assay.data <- flogit(assay.data)
+  }
+  return(assay.data)
 }
