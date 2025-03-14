@@ -44,11 +44,7 @@ getATACABsignal <- function(
   boot.parallel = FALSE,
   boot.cores = 2
 ) {
-  if (length(seqinfo(rowRanges(obj))) == 0) {
-    message("The SummarizedExperiment you have provided has no coordinates.")
-    message("Compartment extraction will fail.")
-    stop("Please provide rowRanges with genomic coordinates for the object.")
-  }
+  verifyCoords(obj)
 
   # gather the chromosomes we are working on
   if (is.null(chr)) {
@@ -138,6 +134,7 @@ getATACABsignal <- function(
 }
 
 # worker function
+# this is the main analysis function for computing compartments from atacs
 atacCompartments <- function(
   obj,
   original.obj,
@@ -153,9 +150,7 @@ atacCompartments <- function(
   group = group,
   bootstrap.means = NULL
 ) {
-  # this is the main analysis function for computing compartments from atacs
-  # make sure the input is sane
-  if (!checkAssayType(obj)) stop("Input needs to be a SummarizedExperiment")
+  verifySE(obj)
 
   # what genome do we have
   genome <- match.arg(genome)

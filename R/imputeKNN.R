@@ -34,8 +34,7 @@ imputeKNN <- function(
   # match the assay args
   assay <- match.arg(assay)
 
-  # double check the obj class is compatible
-  if (!checkAssayType(obj)) stop("Input needs to be a SummarizedExperiment")
+  verifySE(obj)
 
   # check the names of the assays
   if (!any(getAssayNames(obj) %in% c("Beta", "counts"))) {
