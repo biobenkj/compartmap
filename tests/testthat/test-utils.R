@@ -44,12 +44,13 @@ test_that("extractOpenClosed", {
 })
 # }}}
 
-# checkAssayType{{{
-test_that("checkAssayType", {
-  expect_true(checkAssayType(se))
-  expect_false(checkAssayType(re))
-  expect_false(checkAssayType(gr))
-  expect_false(checkAssayType(df))
+# verifySE{{{
+test_that("verifySE", {
+  err <- "Input needs to be a SummarizedExperiment"
+  expect_no_error(compartmap:::verifySE(se))
+  expect_error(compartmap:::verifySE(re), err)
+  expect_error(compartmap:::verifySE(gr), err)
+  expect_error(compartmap:::verifySE(df), err)
 })
 # }}}
 
