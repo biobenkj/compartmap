@@ -54,6 +54,23 @@ test_that("verifySE", {
 })
 # }}}
 
+# verifyCoords {{{
+test_that("verifyCoords", {
+  se.noranges <- SummarizedExperiment(rowRanges = GRanges())
+  se.ranges <- SummarizedExperiment(rowRanges = gr)
+  err <- paste(
+    "The SummarizedExperiment you have provided has no coordinates.\n",
+    "Compartment extraction will fail.\n",
+    "Please provide rowRanges with genomic coordinates for the object."
+  )
+  expect_error(
+    compartmap:::verifyCoords(se.noranges),
+    err
+  )
+  expect_no_error(compartmap:::verifyCoords(se.ranges))
+})
+# }}}
+
 # getAssayNames{{{
 
 nrows <- 200
