@@ -26,9 +26,10 @@
 #' 
 #' #Generate random genomic intervals of 1-1000 bp on chr1-22
 #' #Modified from https://www.biostars.org/p/225520/
+#' genome.gr <- getGenome("hg19")
 #' random_genomic_int <- data.frame(chr = rep("chr14", 100))
-#' random_genomic_int$start <- apply(random_genomic_int, 1, function(x) { 
-#'   round(runif(1, 0, getSeqLengths(chr = x)[[1]]), 0)
+#' random_genomic_int$start <- apply(random_genomic_int, 1, function(x) {
+#'   round(runif(1, 0, getSeqLengths(genome.gr, chr = x)[[1]]), 0)
 #' })
 #' random_genomic_int$end <- random_genomic_int$start + runif(1, 1, 1000)
 #' random_genomic_int$strand <- "*"
@@ -60,21 +61,7 @@ getBinMatrix <- function(x, genloc, chr = "chr1", chr.start = 0,
   }
   
   #which genome do we have
-  genome <- match.arg(genome)
-  
-  if (is.null(chr.end)) {
-    if (genome %in% c("hg19", "hg38", "mm9", "mm10")) {
-      chr.end <- switch(genome,
-                        hg19 = getSeqLengths(genome = "hg19", chr = chr),
-                        hg38 = getSeqLengths(genome = "hg38", chr = chr),
-                        mm9 = getSeqLengths(genome = "mm9", chr = chr),
-                        mm10 = getSeqLengths(genome = "mm10", chr = chr))
-    }
-    else {
-      message("Don't know what to do with ", genome)
-      stop("If you'd like to use an unsupported genome, specify chr.end to an appropriate value...")
-    }
-  }
+  chr.end <- chr.end %||% getSeqLengths(getGenome(genome), chr = chr)
 
   start <- seq(chr.start, chr.end, res) #Build the possible bin ranges given resolution
   end <- c(start[-1], chr.end) - 1L #Set the end ranges for desired resolution

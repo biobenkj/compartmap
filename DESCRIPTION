@@ -20,7 +20,7 @@ Encoding: UTF-8
 License: GPL-3 + file LICENSE
 biocViews: Genetics, Epigenetics, ATACSeq, RNASeq, SingleCell
 Depends:
-   R (>= 4.1.0),
+   R (>= 4.4.0),
    SummarizedExperiment,
    RaggedExperiment,
    HDF5Array

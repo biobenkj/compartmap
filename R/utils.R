@@ -168,39 +168,60 @@ removeEmptyBoots <- function(obj) {
   Filter(Negate(anyNA), obj)
 }
 
-#' Get the seqlengths of a chromosome
+#' Get a GRanges object from bundled compartmap genomes
+#'
+#' @param genome The desired genome to use ("hg19", "hg38", "mm9", "mm10")
+#' @param type The type of data - full genome or open sea regions
+#'
+#' @return Granges of the genome
+#'
+#' @examples
+#' hg19 <- getGenome(genome = "hg19")
+#'
+#' @export
+getGenome <- function(
+  genome = c("hg19", "hg38", "mm9", "mm10"),
+  type = "genome"
+) {
+  genome.name <- match.arg(genome) |> tryCatch(error = function(e) {
+    e <- gsub("'arg'", "'genome'", e)
+    msg <- paste0(e, "Only human and mouse genomes are supported for the time being.")
+    stop(msg)
+  })
+  gr <- switch(type,
+    genome = paste0(genome.name, ".gr"),
+    openseas = paste0("openSeas.", genome.name)
+  )
+  return(get(gr))
+}
+
+#' Get the seqlengths of a chromosome from a given genome's GRanges
 #'
 #' The goal for this function is to eliminate the need to lug around
 #' large packages when we only want seqlengths for things.
 #'
-#' @param genome The desired genome to use ("hg19", "hg38", "mm9", "mm10")
+#' @param genome.gr A GRanges object of the genome (from `getGenome()`)
 #' @param chr What chromosome to extract the seqlengths of
 #'
 #' @return The seqlengths of a specific chromosome
 #'
 #' @importFrom GenomeInfoDb seqlengths seqlevels
-#' @importFrom utils data
 #' @import GenomicRanges
 #'
 #' @examples
-#' hg19.chr14.seqlengths <- getSeqLengths(genome = "hg19", chr = "chr14")
+#' hg19.chr14.seqlengths <- getSeqLengths(getGenome('hg19'), chr = "chr14")
 #'
 #' @export
-getSeqLengths <- function(
-  genome = c("hg19", "hg38", "mm9", "mm10"),
-  chr = "chr14"
-) {
-  # eventually we should support arbitrary genomes
-  genome.name <- match.arg(genome)
-  # check if the genome used exists in what is currently supported, stopping if not
-  if (!genome.name %in% c("hg19", "hg38", "mm9", "mm10")) stop("Only human and mouse are supported for the time being.")
-  # import
-  genome.gr <- get(paste0(genome.name, ".gr"))
-
-  # make sure that the chromosome specified exists in the seqlevels
-  if (!chr %in% seqlevels(genome.gr)) stop("Desired chromosome is not found in the seqlevels of ", genome.name)
-  # get the seqlengths
+getSeqLengths <- function(genome.gr, chr = "chr14") {
   sl <- seqlengths(genome.gr)[chr]
+  if (is.na(sl)) {
+    genome.build <- unique(genome(genome.gr))
+    msg <- paste(
+      chr, "not found in seqlevels of", genome.build,
+      "- check that the 'genome' and 'chr' arguments are correct"
+    )
+    stop(msg)
+  }
   return(sl)
 }
 
@@ -463,21 +484,15 @@ filterOpenSea <- function(
   genome = c("hg19", "hg38", "mm10", "mm9"),
   other = NULL
 ) {
-  # get the desired open sea loci given the genome
-  genome.name <- match.arg(genome)
-  if (is.null(other)) {
-    openseas.genome <- get(paste0("openSeas.", genome.name))
-  } else {
-    # check if it's a GRanges flavored object
-    if (!is(other, "GRanges")) stop("The 'other' input needs to be a GRanges of open sea regions")
-    openseas.genome <- other
-  }
+  # get the desired open sea loci given the genome GRanges
+  openseas.genome <- other %||% getGenome(genome, type = "openseas")
+  stopifnot("The 'other' input needs to be a GRanges of open sea regions" = is(openseas.genome, "GRanges"))
+
   # Subset by overlaps
   message("Filtering to open sea CpG loci...")
   # subset to just CpG loci if CpH or rs probes still exist
   obj <- obj[grep("cg", rownames(obj)), ]
-  obj.openseas <- subsetByOverlaps(obj, openseas.genome)
-  return(obj.openseas)
+  subsetByOverlaps(obj, openseas.genome)
 }
 
 #' Gather open sea CpG from a GRanges of CpG islands

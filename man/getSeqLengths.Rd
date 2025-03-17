@@ -2,12 +2,12 @@
 % Please edit documentation in R/utils.R
 \name{getSeqLengths}
 \alias{getSeqLengths}
-\title{Get the seqlengths of a chromosome}
+\title{Get the seqlengths of a chromosome from a given genome's GRanges}
 \usage{
-getSeqLengths(genome = c("hg19", "hg38", "mm9", "mm10"), chr = "chr14")
+getSeqLengths(genome.gr, chr = "chr14")
 }
 \arguments{
-\item{genome}{The desired genome to use ("hg19", "hg38", "mm9", "mm10")}
+\item{genome.gr}{A GRanges object of the genome (from \code{getGenome()})}
 
 \item{chr}{What chromosome to extract the seqlengths of}
 }
@@ -19,6 +19,6 @@ The goal for this function is to eliminate the need to lug around
 large packages when we only want seqlengths for things.
 }
 \examples{
-hg19.chr14.seqlengths <- getSeqLengths(genome = "hg19", chr = "chr14")
+hg19.chr14.seqlengths <- getSeqLengths(getGenome('hg19'), chr = "chr14")
 
 }
