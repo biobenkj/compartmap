@@ -5,7 +5,7 @@
 #'
 #' This function is used to generate a list object to be passed to getCorMatrix
 #'
-#' @param x         A p x n matrix where p (rows) = loci and n (columns) = samples/cells
+#' @param mat       A p x n matrix where p (rows) = loci and n (columns) = samples/cells
 #' @param genloc    GRanges object that contains corresponding genomic locations of the loci
 #' @param chr       Chromosome to be analyzed
 #' @param chr.start Starting position (in bp) to be analyzed
@@ -46,7 +46,7 @@
 #'   genome = "hg19"
 #' )
 getBinMatrix <- function(
-  x,
+  mat,
   genloc,
   chr = "chr1",
   chr.start = 0,
@@ -56,10 +56,10 @@ getBinMatrix <- function(
   genome = c("hg19", "hg38", "mm9", "mm10")
 ) {
 
-  if (any(is.na(x))){
+  if (any(is.na(mat))){
     stop("Matrix must not contain NAs")
   }
-  if (nrow(x) != length(genloc)){
+  if (nrow(mat) != length(genloc)){
     stop("Provided GRanges must have length equal to the matrix number of rows")
   }
 
@@ -72,29 +72,29 @@ getBinMatrix <- function(
     ranges = IRanges::IRanges(start = start, end = end)
   )
 
-  ids <- findOverlaps(genloc, gr.bin, select="first")
+  ids <- findOverlaps(genloc, gr.bin, select = "first")
 
   # Get the number of bins overlapping loci
-  n <- length(gr.bin)
-  message(n, " bins created...")
+  binCount <- length(gr.bin)
+  message(binCount, " bins created...")
 
   # User defined function to summarize data in the bins
-  x.bin <- apply(x, 2, function(x) {
-    zvec <- rep(0, n)
-    a <- tapply(x, INDEX=ids, FUN=FUN)  # Summarize
+  mat.bin <- apply(mat, 2, function(x) {
+    zvec <- rep(0, binCount)
+    a <- tapply(x, INDEX = ids, FUN = FUN)  # Summarize
     zvec[as.numeric(names(a))] <- a
     zvec
   })
 
-  colnames(x.bin) <- colnames(x)
-  wh <- rowSums(x.bin) != 0      # Filter out empty bins
+  colnames(mat.bin) <- colnames(mat)
+  wh <- rowSums(mat.bin) != 0      # Filter out empty bins
 
   # Subset the non-empty bins
-  x.bin <- x.bin[wh,]
+  mat.bin <- mat.bin[wh,]
   gr.bin  <- gr.bin[wh]
 
   # Add a check to make sure there are at least 2 bins
-  if (nrow(x.bin) < 2) stop("There are not enough non-empty bins to continue...")
+  if (nrow(mat.bin) < 2) stop("There are not enough non-empty bins to continue...")
 
-  return(list(gr = gr.bin, x = x.bin))
+  return(list(gr = gr.bin, x = mat.bin))
 }
