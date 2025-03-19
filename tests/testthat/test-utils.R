@@ -218,14 +218,6 @@ test_that("cleanAssayRows", {
     compartmap:::cleanAssay(by = "col"),
     "closure"
   )
-  # expect_equal(
-  #   compartmap:::cleanAssay(by = "row"),
-  #   compartmap:::cleanAssayRows
-  # )
-  # expect_equal(
-  #   compartmap:::cleanAssay(by = "col"),
-  #   compartmap:::cleanAssayCols
-  # )
 })
 
 test_that("cleanAssayRows", {
