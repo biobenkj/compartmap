@@ -354,7 +354,7 @@ sparseToDenseMatrix <- function(
 #' @param summarize Whether to perform mean summarization
 #' @param genome Which genome is the bigwig from ("hg19", "hg38", "mm9", "mm10")
 #'
-#' @return SummerizedExperiment object with rowRanges corresponding to summarized features
+#' @return SummarizedExperiment object with rowRanges corresponding to summarized features
 #'
 #' @import SummarizedExperiment
 #' @import GenomicRanges
@@ -484,6 +484,8 @@ filterOpenSea <- function(
   genome = c("hg19", "hg38", "mm10", "mm9"),
   other = NULL
 ) {
+  stopifnot("'obj' needs to be a GRanges or SummarizedExperiment" = is(obj, "GRanges") | is(obj, "SummarizedExperiment"))
+
   # get the desired open sea loci given the genome GRanges
   openseas.genome <- other %||% getGenome(genome, type = "openseas")
   stopifnot("The 'other' input needs to be a GRanges of open sea regions" = is(openseas.genome, "GRanges"))
