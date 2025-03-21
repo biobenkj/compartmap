@@ -79,7 +79,7 @@ summarizeBootstraps <- function(boot.list, est.ab, q = 0.95, assay = c("rna", "a
     # get ones and zeroes input for agrestiCoullCI
     ones <- ifelse(is.open, compartment.call$boot.open, compartment.call$boot.closed)
     zeroes <- ifelse(is.open, compartment.call$boot.closed, compartment.call$boot.open)
-    agrestiCoullCI(ones, zeroes, q = 0.95)
+    agrestiCoullCI(ones, zeroes, q = q)
   })
 
   # combine the conf.est results into something sensible and bind with est.ab
