@@ -54,19 +54,6 @@ summarizeBootstraps <- function(boot.list, est.ab, q = 0.95, assay = c("rna", "a
   return(est.ab)
 }
 
-# Check if a compartment is open based on assay type and eigenvalue
-#
-# For ATAC/RNA:
-# eigen < 0 - closed
-# eigen > 0 - open
-#
-# For methylation the logic is flipped:
-# eigen < 0 - open
-# eigen > 0 - closed
-.isCompartmentOpen <- function(is.atac_or_rna, eigen) {
-  (is.atac_or_rna & eigen > 0) | (!is.atac_or_rna & eigen < 0)
-}
-
 .getSummary <- function(gr.boot, est.ab) {
   # add the pc to the granges object
   gr.boot$score <- gr.boot$pc
