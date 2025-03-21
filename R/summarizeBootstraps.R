@@ -23,39 +23,12 @@ summarizeBootstraps <- function(boot.list, est.ab, q = 0.95, assay = c("rna", "a
 
   message("Summarizing bootstraps.")
 
-  # initialize open and closed counts to enumerate
-  # est.ab$boot.open <- 0
-  # est.ab$boot.closed <- 0
   # filter out failed compartment estimates
   boot.list <- removeEmptyBoots(boot.list)
 
   # summarize
   # create a dummy matrix and then rowSum them up
-  boot.summary.mat.lst <- lapply(boot.list, function(b) {
-    # add the pc to the granges object
-    b$score <- b$pc
-
-    # generate a dummy GRanges object
-    est.ab.dummy <- est.ab
-    est.ab.dummy$boot.open <- 0
-    est.ab.dummy$boot.closed <- 0
-
-    # determine whether compartment is open and convert the boolean to 1/0 binary result for proportions
-    b.isOpen <- .isCompartmentOpen(is.atac_or_rna, b$score)
-    b$open <- as.integer(b.isOpen)
-    b$closed <- as.integer(!b.isOpen)
-
-    # overlap by common intervals
-    ol <- findOverlaps(b, est.ab.dummy)
-    mcols(est.ab.dummy)$boot.open[subjectHits(ol)] <- mcols(est.ab.dummy)$boot.open[subjectHits(ol)] + mcols(b)$open[queryHits(ol)]
-    mcols(est.ab.dummy)$boot.closed[subjectHits(ol)] <- mcols(est.ab.dummy)$boot.closed[subjectHits(ol)] + mcols(b)$closed[queryHits(ol)]
-
-    # return the dummy mcols for bootstrapped open and closed calls
-    return(as.matrix(cbind(
-      mcols(est.ab.dummy)$boot.open,
-      mcols(est.ab.dummy)$boot.closed
-    )))
-  })
+  boot.summary.mat.lst <- lapply(boot.list, .getSummary, est.ab = est.ab)
 
   # eunumerate bootstraps
   .getBootRowSums <- function(index) {
@@ -69,18 +42,7 @@ summarizeBootstraps <- function(boot.list, est.ab, q = 0.95, assay = c("rna", "a
   est.ab$conf.est.upperCI <- 0
   est.ab$conf.est.lowerCI <- 0
 
-  conf.int <- lapply(1:length(est.ab), function(e) {
-    compartment.call <- est.ab[e, ]
-    ab.score <- compartment.call$score
-
-    # check if the compartment is open
-    is.open <- .isCompartmentOpen(is.atac_or_rna, ab.score)
-
-    # get ones and zeroes input for agrestiCoullCI
-    ones <- ifelse(is.open, compartment.call$boot.open, compartment.call$boot.closed)
-    zeroes <- ifelse(is.open, compartment.call$boot.closed, compartment.call$boot.open)
-    agrestiCoullCI(ones, zeroes, q = q)
-  })
+  conf.int <- lapply(1:length(est.ab), .getCI, q = q)
 
   # combine the conf.est results into something sensible and bind with est.ab
   conf.int.ests <- do.call("rbind", conf.int)
@@ -103,4 +65,43 @@ summarizeBootstraps <- function(boot.list, est.ab, q = 0.95, assay = c("rna", "a
 # eigen > 0 - closed
 .isCompartmentOpen <- function(is.atac_or_rna, eigen) {
   (is.atac_or_rna & eigen > 0) | (!is.atac_or_rna & eigen < 0)
+}
+
+.getSummary <- function(gr.boot, est.ab) {
+  # add the pc to the granges object
+  gr.boot$score <- gr.boot$pc
+
+  # generate a dummy GRanges object
+  est.ab.dummy <- est.ab
+  est.ab.dummy$boot.open <- 0
+  est.ab.dummy$boot.closed <- 0
+
+  # determine whether compartment is open and convert the boolean to 1/0 binary result for proportions
+  gr.boot.isOpen <- .isCompartmentOpen(is.atac_or_rna, gr.boot$score)
+  gr.boot$open <- as.integer(gr.boot.isOpen)
+  gr.boot$closed <- as.integer(!gr.boot.isOpen)
+
+  # overlap by common intervals
+  ol <- findOverlaps(gr.boot, est.ab.dummy)
+  mcols(est.ab.dummy)$boot.open[subjectHits(ol)] <- mcols(est.ab.dummy)$boot.open[subjectHits(ol)] + mcols(gr.boot)$open[queryHits(ol)]
+  mcols(est.ab.dummy)$boot.closed[subjectHits(ol)] <- mcols(est.ab.dummy)$boot.closed[subjectHits(ol)] + mcols(gr.boot)$closed[queryHits(ol)]
+
+  # return the dummy mcols for bootstrapped open and closed calls
+  return(as.matrix(cbind(
+    mcols(est.ab.dummy)$boot.open,
+    mcols(est.ab.dummy)$boot.closed
+  )))
+}
+
+.getCI <- function(gr.row, est.ab, q) {
+  compartment.call <- est.ab[gr.row, ]
+  ab.score <- compartment.call$score
+
+  # check if the compartment is open
+  is.open <- .isCompartmentOpen(is.atac_or_rna, ab.score)
+
+  # get ones and zeroes input for agrestiCoullCI
+  ones <- ifelse(is.open, compartment.call$boot.open, compartment.call$boot.closed)
+  zeroes <- ifelse(is.open, compartment.call$boot.closed, compartment.call$boot.open)
+  agrestiCoullCI(ones, zeroes, q = q)
 }
