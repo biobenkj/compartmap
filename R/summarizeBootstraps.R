@@ -64,7 +64,7 @@ summarizeBootstraps <- function(boot.list, est.ab, q = 0.95, assay = c("rna", "a
   est.ab.dummy$boot.closed <- 0
 
   # determine whether compartment is open and convert the boolean to 1/0 binary result for proportions
-  gr.boot.isOpen <- .isCompartmentOpen(is.atac_or_rna, gr.boot$score)
+  gr.boot.isOpen <- gr$compartments == "open"
   gr.boot$open <- as.integer(gr.boot.isOpen)
   gr.boot$closed <- as.integer(!gr.boot.isOpen)
 
@@ -82,10 +82,7 @@ summarizeBootstraps <- function(boot.list, est.ab, q = 0.95, assay = c("rna", "a
 
 .getCI <- function(gr.row, est.ab, q) {
   compartment.call <- est.ab[gr.row, ]
-  ab.score <- compartment.call$score
-
-  # check if the compartment is open
-  is.open <- .isCompartmentOpen(is.atac_or_rna, ab.score)
+  is.open <- compartment.call$compartments == "open"
 
   # get ones and zeroes input for agrestiCoullCI
   ones <- ifelse(is.open, compartment.call$boot.open, compartment.call$boot.closed)
