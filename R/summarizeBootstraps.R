@@ -38,20 +38,7 @@ summarizeBootstraps <- function(boot.list, est.ab, q = 0.95, assay = c("rna", "a
   est.ab$boot.closed <- .getBootRowSums(2)
 
   message("Computing Agresti-Coull 95% confidence intervals.")
-  est.ab$conf.est <- 0
-  est.ab$conf.est.upperCI <- 0
-  est.ab$conf.est.lowerCI <- 0
-
-  conf.int <- lapply(1:length(est.ab), .getCI, q = q)
-
-  # combine the conf.est results into something sensible and bind with est.ab
-  conf.int.ests <- do.call("rbind", conf.int)
-  # should be of the form:
-  # conf.est.lowerCI conf.est conf.est.upperCI
-  est.ab$conf.est.lowerCI <- conf.int.ests[, 1]
-  est.ab$conf.est <- conf.int.ests[, 2]
-  est.ab$conf.est.upperCI <- conf.int.ests[, 3]
-  return(est.ab)
+  .getCI(est.ab, q)
 }
 
 .getSummary <- function(gr.boot, est.ab) {
@@ -64,7 +51,7 @@ summarizeBootstraps <- function(boot.list, est.ab, q = 0.95, assay = c("rna", "a
   est.ab.dummy$boot.closed <- 0
 
   # determine whether compartment is open and convert the boolean to 1/0 binary result for proportions
-  gr.boot.isOpen <- gr$compartments == "open"
+  gr.boot.isOpen <- gr.boot$compartments == "open"
   gr.boot$open <- as.integer(gr.boot.isOpen)
   gr.boot$closed <- as.integer(!gr.boot.isOpen)
 
@@ -80,12 +67,22 @@ summarizeBootstraps <- function(boot.list, est.ab, q = 0.95, assay = c("rna", "a
   )))
 }
 
-.getCI <- function(gr.row, est.ab, q) {
-  compartment.call <- est.ab[gr.row, ]
-  is.open <- compartment.call$compartments == "open"
+# Add agrestiCoullCI to GRanges of compartment calls
+# Uses the boot.open and boot.closed tallies across the bootstraps to get the
+# successes (bootstrapped open/closed counts that match the input est.ab) and
+# failures (bootstrapped open/closed counts that don't match the input est.ab)
+# to pass to agrestiCoullCI
+.getCI <- function(est.ab, q) {
+  is.open <- est.ab$compartments == "open"
+  success <- rep(NA, length(est.ab))
+  failure <- rep(NA, length(est.ab))
 
-  # get ones and zeroes input for agrestiCoullCI
-  ones <- ifelse(is.open, compartment.call$boot.open, compartment.call$boot.closed)
-  zeroes <- ifelse(is.open, compartment.call$boot.closed, compartment.call$boot.open)
-  agrestiCoullCI(ones, zeroes, q = q)
+  success[is.open] <- est.ab$boot.open[is.open]
+  failure[is.open] <- est.ab$boot.closed[is.open]
+  success[!is.open] <- est.ab$boot.closed[!is.open]
+  failure[!is.open] <- est.ab$boot.open[!is.open]
+
+  conf.ests <- agrestiCoullCI(success, failure, q)
+  mcols(est.ab) <- cbind(mcols(est.ab), conf.ests)
+  est.ab
 }
