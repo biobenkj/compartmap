@@ -17,3 +17,5 @@ inst/doc/*.html
 
 # Session Data files
 .RData
+
+.Rprofile

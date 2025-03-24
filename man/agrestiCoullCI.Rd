@@ -19,7 +19,9 @@ the approximate (q x 100) percent confidence interval for (p|n1,n0,q)
 \description{
 Agresti-Coull confidence interval for a binomial proportion
 }
+\details{
+\eqn{p \approx \tilde{p} \pm z_\alpha \times \sqrt{\frac{\tilde{p}}{\tilde{n}} \times (1 - \tilde{p})}}
+}
 \examples{
 binom.ci <- agrestiCoullCI(10, 3, 0.95)
-
 }
