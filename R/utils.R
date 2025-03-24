@@ -1,34 +1,3 @@
-#' Get the open and closed compartment calls based on sign of singular values
-#'
-#' @param gr Input GRanges with associated mcols that represent singular values
-#' @param cutoff Threshold to define open and closed states
-#' @param assay The type of assay we are working with
-#'
-#' @return A vector of binary/categorical compartment states
-#' @import SummarizedExperiment
-#' @importFrom methods is
-#' @export
-#'
-#' @examples
-#'
-#' dummy <- matrix(rnorm(10000), ncol = 25)
-#' sing_vec <- getSVD(dummy, k = 1, sing.vec = "right")
-#'
-extractOpenClosed <- function(
-  gr,
-  cutoff = 0,
-  assay = c("rna", "atac", "array")
-) {
-  # check for input to be GRanges
-  if (!is(gr, "GRanges")) stop("Input needs to be a GRanges.")
-  if (!("pc" %in% names(mcols(gr)))) stop("Need to have an mcols column be named 'pc'.")
-
-  assay <- match.arg(assay)
-  is.atac_or_rna <- assay %in% c("atac", "rna")
-  is.open <- (is.atac_or_rna & gr$pc > cutoff) | (!is.atac_or_rna & gr$pc < cutoff)
-  ifelse(is.open, "open", "closed")
-}
-
 #' Check if the assay is a SummarizedExperiment
 #'
 #' @param obj Input object
