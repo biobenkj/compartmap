@@ -48,20 +48,18 @@
 #' #Get A/B signal
 #' absignal <- getABSignal(bin.cor.counts)
 
-getABSignal <- function(x, squeeze = FALSE,
-                        assay = c("rna", "atac", "array")){
-  message("Calculating eigenvectors.")
+getABSignal <- function(x, squeeze = FALSE, assay = c("rna", "atac", "array")) {
   assay <- match.arg(assay)
+  gr <- x$gr
+
+  message("Calculating eigenvectors.")
   pc <- getSVD(x$binmat.cor, sing.vec = "right")
   if (squeeze) pc <- ifisherZ(pc)
+
   message("Smoothing eigenvector.")
-  pc <- switch(assay,
-               rna = meanSmoother(pc, k=1, iter=2),
-               atac = meanSmoother(pc, k=1, iter=2),
-               array = meanSmoother(pc, k=1, iter=2))
+  gr$pc <- meanSmoother(pc)
   message("Done smoothing.")
-  gr <- x$gr
-  gr$pc <- pc
+
   gr$compartments <- extractOpenClosed(gr, assay = assay)
   return(gr)
 }
