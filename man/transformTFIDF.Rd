@@ -4,10 +4,10 @@
 \alias{transformTFIDF}
 \title{Transform/normalize compartment calls using TF-IDF}
 \usage{
-transformTFIDF(obj, scale.factor = 100000)
+transformTFIDF(mat, scale.factor = 100000)
 }
 \arguments{
-\item{obj}{n x p input matrix (n = samples/cells; p = compartments)}
+\item{mat}{n x p input matrix (n = samples/cells; p = compartments)}
 
 \item{scale.factor}{Scaling factor for the term-frequency (TF)}
 }

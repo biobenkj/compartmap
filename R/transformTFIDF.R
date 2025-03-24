@@ -5,7 +5,7 @@
 #' - http://andrewjohnhill.com/images/posts/2019-5-6-dimensionality-reduction-for-scatac-data/analysis.html
 #' - https://divingintogeneticsandgenomics.rbind.io/post/clustering-scatacseq-data-the-tf-idf-way/
 #'
-#' @param obj n x p input matrix (n = samples/cells; p = compartments)
+#' @param mat n x p input matrix (n = samples/cells; p = compartments)
 #' @param scale.factor Scaling factor for the term-frequency (TF)
 #'
 #' @return A TF-IDF transformed matrix of the same dimensions as the input
@@ -20,9 +20,8 @@
 #' tfidf <- transformTFIDF(mat)
 #'
 #' @export
-transformTFIDF <- function(obj, scale.factor = 1e5) {
-  # this filters using TF-IDF on a *matrix* object
-  if (!is(obj, "matrix") & !is(obj, "Matrix")) {
+transformTFIDF <- function(mat, scale.factor = 1e5) {
+  if (!is(mat, "matrix") & !is(mat, "Matrix")) {
     stop("Input needs to be a matrix.")
   }
 
@@ -30,14 +29,14 @@ transformTFIDF <- function(obj, scale.factor = 1e5) {
   # this assumes n x p matrix (e.g. a wide matrix)
   # check and transpose as needed
   # input matrix is tall
-  if (dim(obj)[1] > dim(obj)[2]) obj <- t(obj)
+  if (dim(mat)[1] > dim(mat)[2]) mat <- t(mat)
 
   # make sparse
-  obj.binary <- Matrix(.binarizeMatrix(t(obj)), sparse = TRUE)
+  mat.binary <- Matrix(.binarizeMatrix(t(mat)), sparse = TRUE)
 
-  tf <- t(t(obj.binary) / Matrix::colSums(obj.binary))           # compute term-frequency
+  tf <- t(t(mat.binary) / Matrix::colSums(mat.binary))           # compute term-frequency
   tf@x <- log1p(tf@x * scale.factor)                             # scale
-  idf <- log(1 + ncol(obj.binary) / Matrix::rowSums(obj.binary)) # inverse-document frequency smooth
+  idf <- log(1 + ncol(mat.binary) / Matrix::rowSums(mat.binary)) # inverse-document frequency smooth
   tfidf <- .tfidf(tf, idf)                                       # transform
 
   # cast back to a matrix since things like UMAP don't like sparse matrices
@@ -51,10 +50,10 @@ transformTFIDF <- function(obj, scale.factor = 1e5) {
 # open chromatin in atac or RNA is 1
 # closed chromatin in bisulfite or arrays is 1
 # just associate 1 with signal
-.binarizeMatrix <- function(obj) {
-  obj[obj > 0] <- 1
-  obj[obj < 0] <- 0
-  return(obj)
+.binarizeMatrix <- function(mat) {
+  mat[mat > 0] <- 1
+  mat[mat < 0] <- 0
+  return(mat)
 }
 
 # helper function for TF-IDF transform
