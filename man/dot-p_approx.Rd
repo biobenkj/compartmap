@@ -19,3 +19,6 @@ the approximate success probability for a smoothed CIs
 \description{
 p_tilde in AC
 }
+\details{
+\eqn{\tilde{p} = \frac{1}{\tilde{n}}(n_{\text{success}} + \frac{z^2_\alpha}{2})}
+}
