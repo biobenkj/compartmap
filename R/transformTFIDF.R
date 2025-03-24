@@ -1,6 +1,9 @@
 #' Transform/normalize compartment calls using TF-IDF
 #'
-#' @name transformTFIDF
+#' @details
+#' This function and its helpers were modeled after or taken from:
+#' - http://andrewjohnhill.com/images/posts/2019-5-6-dimensionality-reduction-for-scatac-data/analysis.html
+#' - https://divingintogeneticsandgenomics.rbind.io/post/clustering-scatacseq-data-the-tf-idf-way/
 #'
 #' @param obj n x p input matrix (n = samples/cells; p = compartments)
 #' @param scale.factor Scaling factor for the term-frequency (TF)
@@ -10,7 +13,6 @@
 #' @import Matrix
 #'
 #' @examples
-#'
 #' m <- 1000
 #' n <- 100
 #' mat <- round(matrix(runif(m * n), m, n))
@@ -23,13 +25,6 @@ transformTFIDF <- function(obj, scale.factor = 1e5) {
   if (!is(obj, "matrix") & !is(obj, "Matrix")) {
     stop("Input needs to be a matrix.")
   }
-
-  #
-  # FIXME: cite the following in the docs
-  #
-  # the following code was modeled after or taken from:
-  # http://andrewjohnhill.com/images/posts/2019-5-6-dimensionality-reduction-for-scatac-data/analysis.html
-  # https://divingintogeneticsandgenomics.rbind.io/post/clustering-scatacseq-data-the-tf-idf-way/
 
   # binarize the matrix
   # this assumes n x p matrix (e.g. a wide matrix)
