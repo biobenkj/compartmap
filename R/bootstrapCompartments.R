@@ -48,12 +48,7 @@ bootstrapCompartments <- function(
   assay <- match.arg(assay)
 
   verifySE(original.obj)
-
-  # check the names of the assays
-  if (!any(getAssayNames(original.obj) %in% c("counts", "Beta"))) {
-    message("The assay slot should contain 'counts' for atac/rna.")
-    stop("The assay slot should contain 'Beta' for methylation arrays.")
-  }
+  verifyAssayNames(original.obj, assay = assay)
 
   # if we are using targeted means
   if (!is.null(targets)) original.obj <- original.obj[, targets]

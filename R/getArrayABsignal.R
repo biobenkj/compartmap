@@ -188,12 +188,7 @@ preprocessArrays <- function(obj,
 
   # subset the array to open sea CpGs
   obj.opensea <- filterOpenSea(obj, genome = genome, other = other)
-
-  # convert things to M-values
-  # check the names of the assays
-  if (!any(getAssayNames(obj.opensea) %in% c("Beta"))) {
-    stop("The assays slot should contain 'Beta' for arrays.")
-  }
+  verifyAssayNames(obj.opensea, assay = "array")
 
   # convert to M-values if beta values given
   # this should be default but allows handling if given M-values in Beta slot

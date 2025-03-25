@@ -23,13 +23,9 @@ computeGlobalMean <- function(mat) {
 getGlobalMeans <- function(obj, targets = NULL, assay = c("atac", "rna", "array")) {
   # match the assay arg
   assay <- match.arg(assay)
-  is.array <- assay == "array"
+  verifyAssayNames(obj, assay)
 
-  # check the names of the assays
-  if (!any(getAssayNames(obj) %in% c("counts", "Beta"))) {
-    message("The assay slot should contain 'Beta' for arrays.")
-    stop("The assay slot should contain 'counts' for atac/rna.")
-  }
+  is.array <- assay == "array"
 
   # get the global means
   # check if shrinkage targets are being used

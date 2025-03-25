@@ -67,6 +67,26 @@ verifyCoords <- function(obj) {
   }
 }
 
+#' Check that the input SummarizedExperiment object has the right assays
+#'
+#' @param se Input SummarizedExperiment object
+#' @param assay The assay type
+#'
+#' @return Error if the right assay type is not present, NULL if it is
+#' @keywords internal
+verifyAssayNames <- function(se, assay) {
+  reqName <- switch(assay,
+    rna = "counts",
+    atac = "counts",
+    array = "Beta",
+    bisulfite = "Beta",
+    stop(shQuote(assay), " is unsupported")
+  )
+  if (!reqName %in% assayNames(se)) {
+    stop("The 'assays' slot should contain ", shQuote(reqName), " for ", assay, " data")
+  }
+}
+
 #' Get the assay names from a SummarizedExperiment object
 #'
 #' @param se Input SummarizedExperiment object
