@@ -23,7 +23,6 @@ computeGlobalMean <- function(mat) {
 getGlobalMeans <- function(obj, targets = NULL, assay = c("atac", "rna", "array")) {
   # match the assay arg
   assay <- match.arg(assay)
-  verifyAssayNames(obj, assay)
 
   is.array <- assay == "array"
 

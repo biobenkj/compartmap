@@ -48,8 +48,6 @@ shrinkBins <- function(
   # match the genome if given
   genome <- match.arg(genome)
 
-  verifySE(x)
-
   # get the prior means
   if (is.null(prior.means)) {
     prior.means <- getGlobalMeans(obj = original.x, targets = targets, assay = assay)

@@ -34,9 +34,6 @@ imputeKNN <- function(
   # match the assay args
   assay <- match.arg(assay)
 
-  verifySE(obj)
-  verifyAssayNames(obj, assay = assay)
-
   # stop early if there aren't any NAs to impute
   if (!any(is.na(assay(obj)))) {
     message("No NAs found. Nothing to impute.")

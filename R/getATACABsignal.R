@@ -53,7 +53,6 @@ getATACABsignal <- function(
   boot.parallel = FALSE,
   boot.cores = 2
 ) {
-  verifyCoords(obj)
 
   # gather the chromosomes we are working on
   if (is.null(chr)) {
@@ -159,7 +158,6 @@ atacCompartments <- function(
   group = group,
   bootstrap.means = NULL
 ) {
-  verifySE(obj)
 
   # what genome do we have
   genome <- match.arg(genome)

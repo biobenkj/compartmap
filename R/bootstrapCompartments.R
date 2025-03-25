@@ -47,9 +47,6 @@ bootstrapCompartments <- function(
   # match the assay args
   assay <- match.arg(assay)
 
-  verifySE(original.obj)
-  verifyAssayNames(original.obj, assay = assay)
-
   # if we are using targeted means
   if (!is.null(targets)) original.obj <- original.obj[, targets]
 

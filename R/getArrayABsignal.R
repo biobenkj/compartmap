@@ -57,7 +57,9 @@ getArrayABsignal <- function(
   boot.parallel = TRUE,
   boot.cores = 2
 ) {
+  verifySE(obj)
   verifyCoords(obj)
+  verifyAssayNames(obj, assay = "array")
 
   # preprocess the arrays
   if (preprocess) {
@@ -180,9 +182,6 @@ preprocessArrays <- function(obj,
     stop("The minfi package must be installed for this functionality")
   }
 
-  # make sure the input is sane
-  verifySE(obj)
-
   # what genome do we have
   genome <- match.arg(genome)
 
@@ -225,8 +224,6 @@ preprocessArrays <- function(obj,
   bootstrap.means = NULL
 ) {
   # this is the main analysis function for computing compartments from arrays
-  # make sure the input is sane
-  verifySE(obj)
 
   # what genome do we have
   genome <- match.arg(genome)
