@@ -64,24 +64,21 @@ condenseSE <- function(obj, sample.name = NULL) {
 
   # check and see how many samples we are extracting
   if (length(sample.name) == 1) {
-    obj.dense <- lapply(1:length(obj), function(a) {
-      gr.sub <- granges(obj[[a]])
-      mcols(gr.sub) <- assay(obj[[a]])[, sample.name]
-      names(mcols(gr.sub)) <- assayNames(obj[[a]])
-      return(gr.sub)
-    })
+    obj.dense <- lapply(1:length(obj), .condenseGR, obj = obj, sample = sample.name)
     return(Reduce("merge", obj.dense))
   } else {
     obj.dense.lst <- lapply(sample.name, function(s) {
-      obj.dense <- lapply(1:length(obj), function(a) {
-        gr.sub <- granges(obj[[a]])
-        mcols(gr.sub) <- assay(obj[[a]])[, s]
-        names(mcols(gr.sub)) <- assayNames(obj[[a]])
-        return(gr.sub)
-      })
+      obj.dense <- lapply(1:length(obj), .condenseGR, obj = obj, sample = s)
       return(Reduce("merge", obj.dense))
     })
     names(obj.dense.lst) <- sample.name
     return(obj.dense.lst)
   }
+}
+
+.condenseGR <- function(index, obj, sample) {
+  gr.sub <- granges(obj[[index]])
+  mcols(gr.sub) <- assay(obj[[index]])[, sample]
+  names(mcols(gr.sub)) <- assayNames(obj[[index]])
+  gr.sub
 }
