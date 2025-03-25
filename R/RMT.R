@@ -163,12 +163,13 @@ getDenoisedCorMatrix <- function(obj, res = 1e6, chr = "chr14",
   ## this is a wrapper to give back a denoised correlation matrix to plot
   #match the assay args
   assay <- match.arg(assay)
-  
+
+  verifySE(obj)
+  verifyAssayNames(obj, assay = assay)
+
   #match the genome if given
   genome <- match.arg(genome)
-  
-  verifySE(obj)
-  
+
   #subset to selected chromosome(s)
   obj <- keepSeqlevels(obj, chr, pruning.mode = "coarse")
   
