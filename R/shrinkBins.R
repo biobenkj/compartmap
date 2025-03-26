@@ -132,6 +132,12 @@ atac_fun <- function(x) {
   return(prior + C * (x - prior))
 }
 
+#' James-Stein estimator
+#' @param x input vector of binned means across samples
+#' @param grand.mean The global mean across samples
+#' @param targets Samples to shrink towards
+#'
+#' \eqn{\hat{\theta}_{JS+} = \left(1 - \frac{(m - 3)\sigma^2}{||\textbf{y} - \nu||^2}\right)}
 .jse <- function(x, grand.mean = NULL, targets = NULL) {
   ## see if we have enough means...
   ## this also assumes we are just computing a straight mean
