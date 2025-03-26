@@ -122,14 +122,8 @@ atac_fun <- function(x) {
 
 # helper functions for computing shrunken means
 .ebayes <- function(x, prior = NULL, targets = NULL) {
-  if (!is.null(targets)) {
-    C <- sd(x[targets])
-  } else {
-    C <- sd(x)
-  }
-
-  # convert back to beta values
-  return(prior + C * (x - prior))
+  C <- if (is.null(targets)) sd(x) else sd(x[targets])
+  prior + C * (x - prior)
 }
 
 #' James-Stein estimator
@@ -139,15 +133,10 @@ atac_fun <- function(x) {
 #'
 #' \eqn{\hat{\theta}_{JS+} = \left(1 - \frac{(m - 3)\sigma^2}{||\textbf{y} - \nu||^2}\right)}
 .jse <- function(x, grand.mean = NULL, targets = NULL) {
-  ## see if we have enough means...
-  ## this also assumes we are just computing a straight mean
-  if (is.null(targets)) {
-    ## typical shrinkage
-    c <- 1 - ((length(x) - 3) * (sd(x)^2) / sum((x - grand.mean)^2))
-  } else {
-    ## targeted shrinkage
-    c <- 1 - ((length(x) - 3) * (sd(x[targets])^2) / sum((x - grand.mean)^2))
-  }
+  m <- length(x)
+  yv.norm <- sum((x - grand.mean)^2)
+  sdsq <- if (is.null(targets)) sd(x)^2 else sd(x[targets])^2
 
-  return(grand.mean + c * (x - grand.mean))
+  c <- 1 - (((m - 3) * sdsq) / yv.norm)
+  grand.mean + c * (x - grand.mean)
 }
