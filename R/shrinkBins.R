@@ -47,9 +47,11 @@ shrinkBins <- function(
   verifySE(x)
 
   # get the prior means
-  if (is.null(prior.means)) {
-    prior.means <- getGlobalMeans(obj = original.x, targets = targets, assay = assay)
-  }
+  prior.means <- prior.means %||% getGlobalMeans(
+    obj = original.x,
+    targets = targets,
+    assay = assay
+  )
 
   # helper function for summary
   # not used if JSE is set to TRUE
