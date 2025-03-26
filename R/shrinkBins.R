@@ -42,11 +42,9 @@ shrinkBins <- function(
   assay = c("rna", "atac", "array"),
   genome = c("hg19", "hg38", "mm9", "mm10")
 ) {
-  # match the assay args
   assay <- match.arg(assay)
-
-  # match the genome if given
   genome <- match.arg(genome)
+  verifySE(x)
 
   # get the prior means
   if (is.null(prior.means)) {
