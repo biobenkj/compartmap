@@ -106,13 +106,18 @@ shrinkBins <- function(
   # this can and does crop up in resampling when you have something sparse
   # for instance single-cell data...
   # the correlation will break otherwise
-  if (any(bin.mat$x[, "globalMean"] == 0)) {
-    bin.mat$gr <- bin.mat$gr[bin.mat$x[, "globalMean"] != 0, ]
-    x.shrink <- x.shrink[bin.mat$x[, "globalMean"] != 0, ]
-    bin.mat$x <- bin.mat$x[bin.mat$x[, "globalMean"] != 0, ]
+  zeroes <- bin.mat$x[, "globalMean"] == 0
+  if (any(zeroes)) {
+    bin.mat$gr <- bin.mat$gr[!zeroes, ]
+    x.shrink <- x.shrink[!zeroes, ]
+    bin.mat$x <- bin.mat$x[!zeroes, ]
   }
 
-  return(list(gr = bin.mat$gr, x = x.shrink[, colnames(x)], gmeans = bin.mat$x[, "globalMean"]))
+  list(
+    gr = bin.mat$gr,
+    x = x.shrink[, colnames(x)],
+    gmeans = bin.mat$x[, "globalMean"]
+  )
 }
 
 # helper function for summary when JSE == FALSE
