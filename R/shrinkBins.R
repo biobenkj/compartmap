@@ -3,7 +3,11 @@
 #' @description
 #' \code{shrinkBins} returns shrunken bin-level estimates
 #'
-#' @details This function computes shrunken bin-level estimates using a James-Stein estimator, reformulated as an eBayes procedure
+#' @details This function computes shrunken bin-level estimates using a
+#' James-Stein estimator (JSE), reformulated as an eBayes procedure. JSE can be
+#' used only if at least 4 targets are provided - any less and `shrinkBins`
+#' will fall back to using Bayes rule which will probably not be great but it
+#' won't explode and may provide some reasonable results anyway
 #'
 #' @param x Input SummarizedExperiment object
 #' @param original.x Full sample set SummarizedExperiment object
@@ -46,6 +50,14 @@ shrinkBins <- function(
   genome <- match.arg(genome)
   verifySE(x)
 
+  target.count <- length(targets)
+  if (target.count == 1) {
+    stop("Cannot perform targeted bin-level shrinkage with one target sample.")
+  } else if (target.count < 4) {
+    message("Number of means fewer than 4. Using Bayes instead of JSE.")
+    jse <- FALSE
+  }
+
   # get the prior means
   prior.means <- prior.means %||% getGlobalMeans(
     obj = original.x,
@@ -82,10 +94,6 @@ shrinkBins <- function(
   x.shrink <- t(apply(bin.mat$x, 1, function(r) {
     r.samps <- r[!names(r) %in% "globalMean"]
     r.prior.m <- r["globalMean"]
-
-    if (!is.null(targets) & length(r.samps[targets]) == 1) {
-      stop("Cannot perform targeted bin-level shrinkage with one target sample.")
-    }
 
     if (jse) {
       .jse(x = r.samps, grand.mean = r.prior.m, targets = targets)
@@ -130,11 +138,6 @@ atac_fun <- function(x) {
   if (is.null(targets)) {
     ## typical shrinkage
     c <- 1 - ((length(x) - 3) * (sd(x)^2) / sum((x - grand.mean)^2))
-  } else if (length(targets) < 4) {
-    message("Number of means fewer than 4. Using Bayes instead.")
-    ## this falls back to using Bayes rule which will probably not be great
-    ## but it won't explode and may provide some reasonable results anyway
-    c <- sd(x[targets])
   } else {
     ## targeted shrinkage
     c <- 1 - ((length(x) - 3) * (sd(x[targets])^2) / sum((x - grand.mean)^2))
