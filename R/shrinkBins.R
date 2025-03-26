@@ -53,12 +53,6 @@ shrinkBins <- function(
     assay = assay
   )
 
-  # helper function for summary
-  # not used if JSE is set to TRUE
-  atac_fun <- function(x) {
-    return(sqrt(mean(x)) * length(x))
-  }
-
   is.atac_or_rna <- assay %in% c("atac", "rna")
   input.fun <- if (jse) {
     mean
@@ -111,6 +105,11 @@ shrinkBins <- function(
   }
 
   return(list(gr = bin.mat$gr, x = x.shrink[, colnames(x)], gmeans = bin.mat$x[, "globalMean"]))
+}
+
+# helper function for summary when JSE == FALSE
+atac_fun <- function(x) {
+  sqrt(mean(x)) * length(x)
 }
 
 # helper functions for computing shrunken means
