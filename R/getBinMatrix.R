@@ -64,37 +64,39 @@ getBinMatrix <- function(
   }
 
   chr.end <- chr.end %||% getSeqLengths(getGenome(genome), chr = chr)
-
-  start <- seq(chr.start, chr.end, res) # Build the possible bin ranges given resolution
-  end <- c(start[-1], chr.end) - 1L     # Set the end ranges for desired resolution
-  gr.bin <- GRanges(
-    seqnames = chr,
-    ranges = IRanges::IRanges(start = start, end = end)
-  )
-
+  gr.bin <- .makeBins(chr.start, chr.end, res, chr)
   ids <- findOverlaps(genloc, gr.bin, select = "first")
 
-  # Get the number of bins overlapping loci
   binCount <- length(gr.bin)
   message(binCount, " bins created...")
 
-  # User defined function to summarize data in the bins
   mat.bin <- apply(mat, 2, function(x) {
-    zvec <- rep(0, binCount)
-    a <- tapply(x, INDEX = ids, FUN = FUN)  # Summarize
-    zvec[as.numeric(names(a))] <- a
-    zvec
+    .summarizeBins(x, binCount, ids, FUN)
   })
-
   colnames(mat.bin) <- colnames(mat)
-  wh <- rowSums(mat.bin) != 0      # Filter out empty bins
 
   # Subset the non-empty bins
+  wh <- rowSums(mat.bin) != 0
   mat.bin <- mat.bin[wh,]
   gr.bin  <- gr.bin[wh]
 
-  # Add a check to make sure there are at least 2 bins
   if (nrow(mat.bin) < 2) stop("There are not enough non-empty bins to continue...")
 
-  return(list(gr = gr.bin, x = mat.bin))
+  list(gr = gr.bin, x = mat.bin)
+}
+
+.makeBins <- function(start, end, res, chr) {
+  starts <- seq(start, end, by = res)
+  ends <- c(starts[-1], end) - 1L
+  GRanges(
+    seqnames = chr,
+    ranges = IRanges::IRanges(start = starts, end = ends)
+  )
+}
+
+.summarizeBins <- function(matCol, binCount, ids, fun) {
+  zvec <- rep(0, binCount)
+  a <- tapply(matCol, INDEX = ids, FUN = fun)  # Summarize with user defined function
+  zvec[as.numeric(names(a))] <- a
+  zvec
 }
