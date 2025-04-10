@@ -138,7 +138,7 @@ shrinkBins <- function(
     c <- sd(x[targets])
   } else {
     ## targeted shrinkage
-    c <- 1 - ((length(x) - 3) * (sd(x[targets])^2) / sum(x - grand.mean)^2)
+    c <- 1 - ((length(x) - 3) * (sd(x[targets])^2) / sum((x - grand.mean)^2))
   }
 
   return(grand.mean + c * (x - grand.mean))
