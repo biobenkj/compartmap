@@ -34,13 +34,6 @@ imputeKNN <- function(
   # match the assay args
   assay <- match.arg(assay)
 
-  verifySE(obj)
-
-  # check the names of the assays
-  if (!any(getAssayNames(obj) %in% c("Beta", "counts"))) {
-    stop("The assay slot should contain either 'Beta' for arrays or 'counts' for atac/bisulfite.")
-  }
-
   # stop early if there aren't any NAs to impute
   if (!any(is.na(assay(obj)))) {
     message("No NAs found. Nothing to impute.")
