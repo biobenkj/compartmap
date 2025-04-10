@@ -56,6 +56,9 @@ agrestiCoullCI <- function(n1, n0, q) {
   p_apx <- .p_approx(n1, n0, q)
   n_apx <- .n_approx(n1, n0, q)
   width <- .z(q) * sqrt( (p_apx/n_apx) * (1 - p_apx) )
-  res <- c(low=pmax(0, (p_apx - width)),est=p_apx,high=pmin((p_apx + width), 1))
-  return(res) 
+  data.frame(
+    conf.est = p_apx,
+    conf.est.lowerCI = pmax(0, (p_apx - width)),
+    conf.est.upperCI = pmin((p_apx + width), 1)
+  )
 }
