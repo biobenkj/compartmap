@@ -1,0 +1,49 @@
+on:
+  push:
+    branches: [dev]
+    paths-ignore:
+      - '**/README.md'
+      - '**.nix'
+      - '**.toml'
+      - 'flake.lock'
+      - '.gitignore'
+      - 'codecov.yml'
+      - 'Makefile'
+      - 'LICENSE'
+      - 'NEWS.md'
+
+name: Dev check
+
+jobs:
+  R-CMD-check-dev:
+    runs-on: ubuntu-latest
+    container:
+      image: rocker/r2u:24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: SessionInfo
+        run: R -q -e 'sessionInfo()'
+
+      - name: apt update
+        # can be used to install e.g. cmake or other build dependencies
+        run: DEBIAN_FRONTEND=noninteractive apt-get update -y
+
+      - name: Install system dependencies
+        run: DEBIAN_FRONTEND=noninteractive apt update &&
+               apt install --yes --no-install-recommends
+               devscripts
+               gdebi-core
+               ghostscript
+               pandoc
+               qpdf
+
+      - name: Package Dependencies
+        run: R -q -e 'remotes::install_deps(".", dependencies=TRUE)'
+
+      - name: Build Package
+        run: R CMD build --no-manual .
+
+      - name: Check Package
+        run: R CMD check --no-manual $(ls -1tr *.tar.gz | tail -1)
+
