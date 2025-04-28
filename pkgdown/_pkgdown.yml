@@ -5,7 +5,7 @@ template:
 
 authors:
   footer:
-    roles: [cre]
+    roles: [aut, cre]
 
 development:
   mode: unreleased
@@ -18,41 +18,56 @@ sidebar:
   structure: [links, license, community, citation, authors, dev]
 
 reference:
-- title: Data import
+- title: Compartment mapping
   contents:
-    - importBigWig
-- title: Stat functions
+    - scCompartments
+    - getArrayABsignal
+- title: Compartment helper
   contents:
-    - agrestiCoullCI
-    - bootstrapCompartments
-    - condenseRE
-    - condenseSE
-    - estRMT
-    - extractOpenClosed
-    - fexpit
     - filterCompartments
-    - filterOpenSea
-    - getOpenSeas
-    - fisherZ
     - fixCompartments
-    - flogit
+    - extractOpenClosed
     - getABSignal
     - getATACABsignal
     - getRNAABsignal
-    - getArrayABsignal
-    - getAssayNames
-    - getBinMatrix
-    - getChrs
+- title: Correlation matrix
+  contents:
+    - estRMT
     - getCorMatrix
     - getDenoisedCorMatrix
+- title: Data transformation
+  contents:
+    - transformTFIDF
+    - hdf5TFIDF
+- title: Bootstrapping
+  contents:
+    - precomputeBootstrapMeans
+    - bootstrapCompartments
+    - summarizeBootstraps
+- title: Data import
+  contents:
+    - importBigWig
+    - filterOpenSea
+    - getOpenSeas
+    - preprocessArrays
+- title: Bioconductor helpers
+  contents:
+    - condenseRE
+    - condenseSE
+    - getAssayNames
+    - getSeqLengths
+- title: Stat functions
+  contents:
+    - agrestiCoullCI
+    - fexpit
+    - fisherZ
+    - flogit
+    - getBinMatrix
     - getDomainInflections
     - getGlobalMeans
     - getMatrixBlocks
     - getSVD
-    - getSeqLengths
     - getShrinkageTargets
-    - hdf5TFIDF
-    - transformTFIDF
     - ifisherZ
     - imputeKNN
     - meanSmoother
@@ -62,8 +77,6 @@ reference:
     - scCompartments
     - shrinkBins
     - sparseToDenseMatrix
-    - ss3_umi_sce
-    - summarizeBootstraps
 - title: Plotting
   contents:
     - starts_with("plot")
@@ -89,5 +102,5 @@ reference:
     - k562_scatac_chr14
     - k562_scrna_chr14
     - k562_scrna_se_chr14
-
+    - ss3_umi_sce
 
