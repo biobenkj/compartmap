@@ -1,4 +1,15 @@
 on:
+  pull_request:
+    paths-ignore:
+      - '**/README.md'
+      - '**.nix'
+      - '**.toml'
+      - 'flake.lock'
+      - '.gitignore'
+      - 'codecov.yml'
+      - 'Makefile'
+      - 'LICENSE'
+      - 'NEWS.md'
   push:
     branches: [dev]
     paths-ignore:
