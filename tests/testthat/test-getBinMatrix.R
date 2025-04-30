@@ -4,7 +4,7 @@ test_that("getBinMatrix", {
   mat.na[1, 1] <- NA
 
   chrs <- c("chr2", "chr2", "chr1", "chr3")
-  gr <- GRanges(Rle(chrs, c(1, 1, 1, 2)), IRanges(1:5, width=1))
+  gr <- GRanges(Rle(chrs, c(1, 1, 1, 2)), IRanges(1:5, width = 1))
   gr.empty <- GRanges()
 
   expect_error(

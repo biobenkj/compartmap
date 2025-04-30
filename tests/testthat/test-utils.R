@@ -8,15 +8,41 @@ df <- data.frame()
 chrs <- c("chr2", "chr2", "chr1", "chr3")
 gr <- GRanges(
   Rle(chrs, c(1, 3, 2, 4)),
-  IRanges(1:10, width=10:1)
+  IRanges(1:10, width = 10:1)
 )
 
 # extractOpenClosed {{{
 gr.pc <- gr
-pc.list <- list('pc' =  c(1,        -1,       1,         -1,       -2,       2,       -5,        5,      -10,     10))
-pc.state.cutoff.zero <- c("open",   "closed", "open",   "closed", "closed", "open",   "closed", "open", "closed", "open")
-pc.state.cutoff.two <-  c("closed", "closed", "closed", "closed", "closed", "closed", "closed", "open", "closed", "open")
-pc.state.array <-  lapply(pc.state.cutoff.zero, function(i) ifelse(i == "open", "closed", "open")) |> unlist()
+pc.list <- list('pc' = c(1, -1, 1, -1, -2, 2, -5, 5, -10, 10))
+pc.state.cutoff.zero <- c(
+  "open",
+  "closed",
+  "open",
+  "closed",
+  "closed",
+  "open",
+  "closed",
+  "open",
+  "closed",
+  "open"
+)
+pc.state.cutoff.two <- c(
+  "closed",
+  "closed",
+  "closed",
+  "closed",
+  "closed",
+  "closed",
+  "closed",
+  "open",
+  "closed",
+  "open"
+)
+pc.state.array <- lapply(
+  pc.state.cutoff.zero,
+  function(i) ifelse(i == "open", "closed", "open")
+) |>
+  unlist()
 mcols(gr.pc) <- pc.list
 
 test_that("extractOpenClosed", {
@@ -153,22 +179,22 @@ test_that("getChrs", {
 })
 # }}}
 
-# removeEmptyBoots {{{ 
+# removeEmptyBoots {{{
 test_that("removeEmptyBoots", {
-  gr1 <- GRanges("chr2", IRanges(3, 6), strand="+", score=5L, GC=0.45)
+  gr1 <- GRanges("chr2", IRanges(3, 6), strand = "+", score = 5L, GC = 0.45)
   gr2 <- GRanges(
     c("chr1", "chr1"),
-    IRanges(c(7,13), width=3),
-    strand=c("+", "-"),
-    score=3:4,
-    GC=c(0.3, 0.5)
+    IRanges(c(7, 13), width = 3),
+    strand = c("+", "-"),
+    score = 3:4,
+    GC = c(0.3, 0.5)
   )
   gr3 <- GRanges(
     c("chr1", "chr2"),
     IRanges(c(1, 4), c(3, 9)),
-    strand=c("-", "-"),
-    score=c(6L, 2L),
-    GC=c(0.4, 0.1)
+    strand = c("-", "-"),
+    score = c(6L, 2L),
+    GC = c(0.4, 0.1)
   )
   grlist <- list(gr1, gr2, gr3)
   grlist.na <- list(gr1, gr2, NA, gr3, NA)
@@ -181,7 +207,6 @@ test_that("removeEmptyBoots", {
     removeEmptyBoots(grlist.na),
     grlist
   )
-
 })
 # }}}
 
@@ -205,19 +230,29 @@ test_that("getGenome", {
 # getSeqLengths{{{
 forseqlengths.gr <- GRanges(
   Rle(c("chr1", "chr2", "chr3"), c(1, 3, 6)),
-  IRanges(1:10, width=10:1, names=head(letters, 10)),
+  IRanges(1:10, width = 10:1, names = head(letters, 10)),
   Rle(strand(c("-", "+", "*", "+", "-")), c(1, 2, 2, 3, 2)),
-  score=1:10,
-  GC=seq(1, 0, length=10)
+  score = 1:10,
+  GC = seq(1, 0, length = 10)
 )
 seqlengths.list <- c(chr1 = 100, chr2 = 200, chr3 = 300)
-seqinfo(forseqlengths.gr) <- GenomeInfoDb::Seqinfo(paste0("chr", 1:3), seqlengths.list, NA, "mock1")
+seqinfo(forseqlengths.gr) <- GenomeInfoDb::Seqinfo(
+  paste0("chr", 1:3),
+  seqlengths.list,
+  NA,
+  "mock1"
+)
 # to get seqlengths(gr) set to
 # chr1 chr2 chr3
 #  100  200  300
 
 seqlengths.list <- c(chr1 = 100, chr2 = 200, chr3 = 300)
-seqinfo(forseqlengths.gr) <- GenomeInfoDb::Seqinfo(paste0("chr", 1:3), seqlengths.list, NA, "mock1")
+seqinfo(forseqlengths.gr) <- GenomeInfoDb::Seqinfo(
+  paste0("chr", 1:3),
+  seqlengths.list,
+  NA,
+  "mock1"
+)
 test_that("getSeqLengths", {
   lapply(seq(1:3), function(i) {
     expect_equal(
@@ -246,7 +281,9 @@ checkCleanAssay <- function(se.array, se.bisulfite, cleanFun, dimFun) {
     10
   )
   expect_equal(
-    dimFun(assays(cleanFun(se.bisulfite, assay = "bisulfite", na.max = 0.9))$counts),
+    dimFun(
+      assays(cleanFun(se.bisulfite, assay = "bisulfite", na.max = 0.9))$counts
+    ),
     10
   )
 }
@@ -285,7 +322,6 @@ test_that("cleanAssayCols", {
 
 # filterOpenSea {{{
 test_that("filterOpenSea", {
-
   expect_error(
     filterOpenSea(df, genome = "hg38"),
     "'obj' needs to be a GRanges or SummarizedExperiment",
@@ -297,10 +333,18 @@ test_that("filterOpenSea", {
     fixed = TRUE
   )
 
-  nrows <- 10; ncols <- 6
+  nrows <- 10
+  ncols <- 6
   counts <- matrix(runif(nrows * ncols, 1, 1e4), nrows)
-  colData <- DataFrame(Treatment=rep(c("ChIP", "Input"), 3), row.names=LETTERS[1:6])
-  se <- SummarizedExperiment(assays=SimpleList(counts=counts), colData=colData, rowRanges = gr)
+  colData <- DataFrame(
+    Treatment = rep(c("ChIP", "Input"), 3),
+    row.names = LETTERS[1:6]
+  )
+  se <- SummarizedExperiment(
+    assays = SimpleList(counts = counts),
+    colData = colData,
+    rowRanges = gr
+  )
 
   rownames.cg <- paste0(rep("cg", 5), 1:5)
   rownames.non_cg <- 6:10

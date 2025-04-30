@@ -19,5 +19,4 @@ test_that("meanSmoother", {
 })
 
 test_that(".meanSmoother.internal", {
-
 })

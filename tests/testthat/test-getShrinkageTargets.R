@@ -5,11 +5,13 @@ test_that("getShrinkageTargets", {
   mat <- mat.no_colnames
   colnames(mat) <- letters[-26]
 
-  se.no_colnames <- SummarizedExperiment(assays=SimpleList(counts=mat.no_colnames))
+  se.no_colnames <- SummarizedExperiment(
+    assays = SimpleList(counts = mat.no_colnames)
+  )
   se.no_colnames.full <- se.no_colnames
   se.no_colnames.two_cols <- se.no_colnames[, 1:2]
 
-  se <- SummarizedExperiment(assays=SimpleList(counts=mat))
+  se <- SummarizedExperiment(assays = SimpleList(counts = mat))
   se.full <- se
   se.two_cols <- se[, 1:2]
 
@@ -48,4 +50,3 @@ test_that("getShrinkageTargets", {
     getShrinkageTargets(se.no_colnames, c(letters[-26]))
   )
 })
-
