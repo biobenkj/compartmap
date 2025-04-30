@@ -91,16 +91,7 @@ shrinkBins <- function(
   )
 
   # shrink the bins using a James-Stein Estimator
-  x.shrink <- t(apply(bin.mat$x, 1, function(r) {
-    r.samps <- r[!names(r) %in% "globalMean"]
-    r.prior.m <- r["globalMean"]
-
-    if (jse) {
-      .jse(x = r.samps, grand.mean = r.prior.m, targets = targets)
-    } else {
-      .ebayes(x = r.samps, prior = r.prior.m, targets = targets)
-    }
-  }))
+  x.shrink <- t(apply(bin.mat$x, 1, .shrinkRow, jse, targets))
 
   # drop things that are zeroes as global means
   # this can and does crop up in resampling when you have something sparse
@@ -118,6 +109,16 @@ shrinkBins <- function(
     x = x.shrink[, colnames(x)],
     gmeans = bin.mat$x[, "globalMean"]
   )
+}
+
+.shrinkRow <- function(x, jse, targets) {
+  x.samps <- x[!names(x) %in% "globalMean"]
+  x.prior.m <- x["globalMean"]
+  if (jse) {
+    .jse(x = x.samps, grand.mean = x.prior.m, targets = targets)
+  } else {
+    .ebayes(x = x.samps, prior = x.prior.m, targets = targets)
+  }
 }
 
 # helper function for summary when JSE == FALSE
