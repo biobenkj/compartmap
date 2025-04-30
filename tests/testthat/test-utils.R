@@ -71,6 +71,48 @@ test_that("verifyCoords", {
 })
 # }}}
 
+# verifyAssayNames{{{
+se.rna <- SummarizedExperiment(
+  assays = SimpleList(counts = matrix()),
+)
+se.atac <- SummarizedExperiment(
+  assays = SimpleList(counts = matrix()),
+)
+se.array <- SummarizedExperiment(
+  assays = SimpleList(Beta = matrix()),
+)
+se.bisulfite <- SummarizedExperiment(
+  assays = SimpleList(Beta = matrix()),
+)
+
+test_that("verifyAssayNames", {
+  expect_error(
+    compartmap:::verifyAssayNames(se, "s"),
+    "'s' is unsupported"
+  )
+  expect_error(
+    compartmap:::verifyAssayNames(se.rna, "array"),
+    "The 'assays' slot should contain 'Beta' for array data"
+  )
+  expect_error(
+    compartmap:::verifyAssayNames(se.array, "rna"),
+    "The 'assays' slot should contain 'counts' for rna data"
+  )
+  expect_no_error(
+    compartmap:::verifyAssayNames(se.rna, "rna")
+  )
+  expect_no_error(
+    compartmap:::verifyAssayNames(se.atac, "atac")
+  )
+  expect_no_error(
+    compartmap:::verifyAssayNames(se.array, "array")
+  )
+  expect_no_error(
+    compartmap:::verifyAssayNames(se.bisulfite, "bisulfite")
+  )
+})
+# }}}
+
 # getAssayNames{{{
 
 nrows <- 200
