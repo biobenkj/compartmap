@@ -42,7 +42,11 @@ A list object to pass to getCorMatrix
 \code{shrinkBins} returns shrunken bin-level estimates
 }
 \details{
-This function computes shrunken bin-level estimates using a James-Stein estimator, reformulated as an eBayes procedure
+This function computes shrunken bin-level estimates using a
+James-Stein estimator (JSE), reformulated as an eBayes procedure. JSE can be
+used only if at least 4 targets are provided - any less and \code{shrinkBins}
+will fall back to using Bayes rule which will probably not be great but it
+won't explode and may provide some reasonable results anyway
 }
 \examples{
 data("k562_scrna_chr14", package = "compartmap")

@@ -3,7 +3,11 @@
 #' @description
 #' \code{shrinkBins} returns shrunken bin-level estimates
 #'
-#' @details This function computes shrunken bin-level estimates using a James-Stein estimator, reformulated as an eBayes procedure
+#' @details This function computes shrunken bin-level estimates using a
+#' James-Stein estimator (JSE), reformulated as an eBayes procedure. JSE can be
+#' used only if at least 4 targets are provided - any less and `shrinkBins`
+#' will fall back to using Bayes rule which will probably not be great but it
+#' won't explode and may provide some reasonable results anyway
 #'
 #' @param x Input SummarizedExperiment object
 #' @param original.x Full sample set SummarizedExperiment object
@@ -42,22 +46,24 @@ shrinkBins <- function(
   assay = c("rna", "atac", "array"),
   genome = c("hg19", "hg38", "mm9", "mm10")
 ) {
-  # match the assay args
   assay <- match.arg(assay)
-
-  # match the genome if given
   genome <- match.arg(genome)
+  verifySE(x)
+
+  target.count <- length(targets)
+  if (target.count == 1) {
+    stop("Cannot perform targeted bin-level shrinkage with one target sample.")
+  } else if (target.count < 4) {
+    message("Number of means fewer than 4. Using Bayes instead of JSE.")
+    jse <- FALSE
+  }
 
   # get the prior means
-  if (is.null(prior.means)) {
-    prior.means <- getGlobalMeans(obj = original.x, targets = targets, assay = assay)
-  }
-
-  # helper function for summary
-  # not used if JSE is set to TRUE
-  atac_fun <- function(x) {
-    return(sqrt(mean(x)) * length(x))
-  }
+  prior.means <- prior.means %||% getGlobalMeans(
+    obj = original.x,
+    targets = targets,
+    assay = assay
+  )
 
   is.atac_or_rna <- assay %in% c("atac", "rna")
   input.fun <- if (jse) {
@@ -85,61 +91,58 @@ shrinkBins <- function(
   )
 
   # shrink the bins using a James-Stein Estimator
-  x.shrink <- t(apply(bin.mat$x, 1, function(r) {
-    r.samps <- r[!names(r) %in% "globalMean"]
-    r.prior.m <- r["globalMean"]
-
-    if (!is.null(targets) & length(r.samps[targets]) == 1) {
-      stop("Cannot perform targeted bin-level shrinkage with one target sample.")
-    }
-
-    if (jse) {
-      .jse(x = r.samps, grand.mean = r.prior.m, targets = targets)
-    } else {
-      .ebayes(x = r.samps, prior = r.prior.m, targets = targets)
-    }
-  }))
+  x.shrink <- t(apply(bin.mat$x, 1, .shrinkRow, jse, targets))
 
   # drop things that are zeroes as global means
   # this can and does crop up in resampling when you have something sparse
   # for instance single-cell data...
   # the correlation will break otherwise
-  if (any(bin.mat$x[, "globalMean"] == 0)) {
-    bin.mat$gr <- bin.mat$gr[bin.mat$x[, "globalMean"] != 0, ]
-    x.shrink <- x.shrink[bin.mat$x[, "globalMean"] != 0, ]
-    bin.mat$x <- bin.mat$x[bin.mat$x[, "globalMean"] != 0, ]
+  zeroes <- bin.mat$x[, "globalMean"] == 0
+  if (any(zeroes)) {
+    bin.mat$gr <- bin.mat$gr[!zeroes, ]
+    x.shrink <- x.shrink[!zeroes, ]
+    bin.mat$x <- bin.mat$x[!zeroes, ]
   }
 
-  return(list(gr = bin.mat$gr, x = x.shrink[, colnames(x)], gmeans = bin.mat$x[, "globalMean"]))
+  list(
+    gr = bin.mat$gr,
+    x = x.shrink[, colnames(x)],
+    gmeans = bin.mat$x[, "globalMean"]
+  )
+}
+
+.shrinkRow <- function(x, jse, targets) {
+  x.samps <- x[!names(x) %in% "globalMean"]
+  x.prior.m <- x["globalMean"]
+  if (jse) {
+    .jse(x = x.samps, grand.mean = x.prior.m, targets = targets)
+  } else {
+    .ebayes(x = x.samps, prior = x.prior.m, targets = targets)
+  }
+}
+
+# helper function for summary when JSE == FALSE
+atac_fun <- function(x) {
+  sqrt(mean(x)) * length(x)
 }
 
 # helper functions for computing shrunken means
 .ebayes <- function(x, prior = NULL, targets = NULL) {
-  if (!is.null(targets)) {
-    C <- sd(x[targets])
-  } else {
-    C <- sd(x)
-  }
-
-  # convert back to beta values
-  return(prior + C * (x - prior))
+  C <- if (is.null(targets)) sd(x) else sd(x[targets])
+  prior + C * (x - prior)
 }
 
+#' James-Stein estimator
+#' @param x input vector of binned means across samples
+#' @param grand.mean The global mean across samples
+#' @param targets Samples to shrink towards
+#'
+#' \eqn{\hat{\theta}_{JS+} = \left(1 - \frac{(m - 3)\sigma^2}{||\textbf{y} - \nu||^2}\right)}
 .jse <- function(x, grand.mean = NULL, targets = NULL) {
-  ## see if we have enough means...
-  ## this also assumes we are just computing a straight mean
-  if (is.null(targets)) {
-    ## typical shrinkage
-    c <- 1 - ((length(x) - 3) * (sd(x)^2) / sum((x - grand.mean)^2))
-  } else if (length(targets) < 4) {
-    message("Number of means fewer than 4. Using Bayes instead.")
-    ## this falls back to using Bayes rule which will probably not be great
-    ## but it won't explode and may provide some reasonable results anyway
-    c <- sd(x[targets])
-  } else {
-    ## targeted shrinkage
-    c <- 1 - ((length(x) - 3) * (sd(x[targets])^2) / sum((x - grand.mean)^2))
-  }
+  m <- length(x)
+  yv.norm <- sum((x - grand.mean)^2)
+  sdsq <- if (is.null(targets)) sd(x)^2 else sd(x[targets])^2
 
-  return(grand.mean + c * (x - grand.mean))
+  c <- 1 - (((m - 3) * sdsq) / yv.norm)
+  grand.mean + c * (x - grand.mean)
 }
