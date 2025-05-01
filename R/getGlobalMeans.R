@@ -84,9 +84,9 @@ precomputeBootstrapMeans <- function(
     if (length(targets) < 5) stop("Need more than 5 samples for targeted bootstrapping to work.")
     obj <- getShrinkageTargets(obj, targets)
   }
+  assay.data <- .getAssay(obj, is.array)
   bootMean <- mclapply(1:num.bootstraps, function(b) {
     message("Working on bootstrap ", b)
-    assay.data <- .getAssay(obj, is.array)
     resamp.mat <- .resampleMatrix(assay.data)
     computeGlobalMean(resamp.mat)
   }, mc.cores = ifelse(parallel, num.cores, 1))
