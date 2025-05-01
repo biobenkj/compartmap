@@ -2,14 +2,14 @@
 % Please edit documentation in R/utils.R
 \name{cleanAssayRows}
 \alias{cleanAssayRows}
-\title{Remove rows with NAs exceeding a threshold}
+\title{Remove rows with NAs exceeding a threshold. See \code{cleanAssay()}}
 \usage{
-cleanAssayRows(se, rowmax = 0.5, assay = c("array", "bisulfite"))
+cleanAssayRows(se, na.max = 0.8, assay = c("array", "bisulfite"))
 }
 \arguments{
 \item{se}{Input SummarizedExperiment object}
 
-\item{rowmax}{The maximum NAs allowed in a row as a fraction}
+\item{na.max}{The maximum number of NAs allowed as a fraction}
 
 \item{assay}{The type of assay we are working with}
 }
@@ -17,11 +17,12 @@ cleanAssayRows(se, rowmax = 0.5, assay = c("array", "bisulfite"))
 A filtered matrix
 }
 \description{
-Remove rows with NAs exceeding a threshold
+Remove rows with NAs exceeding a threshold. See \code{cleanAssay()}
 }
 \examples{
 if (requireNamespace("minfi", quietly = TRUE)) {
   data("array_data_chr14", package = "compartmap")
-  cleanAssayRows(array.data.chr14, assay = "array")
+  compartmap:::cleanAssayRows(array.data.chr14, assay = "array")
 }
 }
+\keyword{internal}

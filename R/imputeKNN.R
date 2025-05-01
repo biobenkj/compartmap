@@ -42,14 +42,14 @@ imputeKNN <- function(
 
   # filter out missing data based on chosen rowmax
   # otherwise imputation will blow up
-  obj.clean <- cleanAssayRows(obj, rowmax = rowmax, assay = assay)
+  obj.clean <- cleanAssayRows(obj, na.max = rowmax, assay = assay)
 
   # drop samples that have too sparse of data to use
   # this is the way to filter to samples with sufficient signal
   # before getting single cell imputation up
   if (drop.sparse.samps) {
     message("Dropping samples with >", colmax * 100, "% NAs.")
-    obj.clean <- cleanAssayCols(obj.clean, colmax = colmax, assay = assay)
+    obj.clean <- cleanAssayCols(obj.clean, na.max = colmax, assay = assay)
     # stop if all the samples are now gone...
     if (ncol(obj.clean) == 0) {
       message("No samples left after sparisty filtering.")

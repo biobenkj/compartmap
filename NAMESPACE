@@ -2,8 +2,6 @@
 
 export(agrestiCoullCI)
 export(bootstrapCompartments)
-export(cleanAssayCols)
-export(cleanAssayRows)
 export(condenseRE)
 export(condenseSE)
 export(estRMT)
