@@ -12,8 +12,6 @@ cleanAssayRows(se, na.max = 0.8, assay = c("array", "bisulfite"))
 \item{na.max}{The maximum number of NAs allowed as a fraction}
 
 \item{assay}{The type of assay we are working with}
-
-\item{rowmax}{The maximum NAs allowed in a row as a fraction}
 }
 \value{
 A filtered matrix

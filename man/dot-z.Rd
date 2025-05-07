@@ -11,6 +11,8 @@
 }
 \value{
 Z
+
+Z
 }
 \description{
 Normal alpha/2 quantile
