@@ -86,7 +86,6 @@ reference:
   contents:
     - cleanAssayCols
     - cleanAssayRows
-    - checkAssayType
     - .n_approx
     - .p_approx
     - .z
