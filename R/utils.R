@@ -138,8 +138,7 @@ fexpit <- function(x, sqz = 0.000001) {
 #' @examples
 #' data("k562_scrna_chr14", package = "compartmap")
 #' getChrs(k562_scrna_chr14)
-#'
-#' @keywords internal
+#' @export
 getChrs <- function(obj) {
   # get the chromosomes present in the object
   return(unique(as.character(seqnames(obj))))

@@ -58,6 +58,7 @@ reference:
     - condenseSE
     - getAssayNames
     - getSeqLengths
+    - getChrs
 - title: Stat functions
   contents:
     - agrestiCoullCI
