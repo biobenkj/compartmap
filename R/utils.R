@@ -169,6 +169,7 @@ removeEmptyBoots <- function(obj) {
 #' @examples
 #' hg19 <- getGenome(genome = "hg19")
 #'
+#' @export
 #' @keywords internal
 getGenome <- function(
   genome = c("hg19", "hg38", "mm9", "mm10"),
