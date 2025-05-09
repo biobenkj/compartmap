@@ -52,6 +52,15 @@ jobs:
       - name: Package Dependencies
         run: R -q -e 'remotes::install_deps(".", dependencies=TRUE)'
 
+      - name: Install latest SummarizedExperiment # TODO: remove this when 1.39.0 gets to release
+        run: |
+          download.file(
+            "https://bioconductor.org/packages/3.22/bioc/src/contrib/SummarizedExperiment_1.39.0.tar.gz",
+            "se_1.39.0.tar.gz"
+          )
+          install.packages("se_1.39.0.tar.gz", repos = NULL, type = "source")
+        shell: Rscript {0}
+
       - name: Build Package
         run: R CMD build --no-manual .
 
