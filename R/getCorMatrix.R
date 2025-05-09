@@ -10,7 +10,7 @@
 #' @import    GenomicRanges
 #' @importFrom stats cor
 #'
-#' @export 
+#' @export
 #'
 #' @examples
 #'
@@ -19,7 +19,7 @@
 #' # Generate random genomic intervals of 1-1000 bp on chr1-22
 #' # Modified from https://www.biostars.org/p/225520/
 #' random_genomic_int <- data.frame(chr = rep("chr14", 100))
-#' random_genomic_int$start <- apply(random_genomic_int, 1, function(x) { 
+#' random_genomic_int$start <- apply(random_genomic_int, 1, function(x) {
 #'   round(runif(1, 0, getSeqLengths(getGenome("hg19"), chr = x)[[1]]), 0)
 #' })
 #' random_genomic_int$end <- random_genomic_int$start + runif(1, 1, 1000)
@@ -49,15 +49,11 @@ getCorMatrix <- function(binmat, squeeze = FALSE) {
   #bind back up the global means and shrunken bins
   binmat$x <- cbind(binmat$x, binmat$gmeans)
   binmat.cor <- suppressWarnings(cor(t(binmat$x)))
-  gr.cor  <- binmat$gr
+  gr.cor <- binmat$gr
   if (squeeze) {
     binmat.cor <- fisherZ(binmat.cor)
-    }
+  }
   message("Done...")
-  return(list(gr.cor=gr.cor, binmat.cor=binmat.cor))
-}
-
-
 #Helper function to squeeze binary matrix for transformation
 .squeezeit <- function(cormat) {
   cormat * 0.999999
