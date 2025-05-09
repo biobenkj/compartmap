@@ -54,7 +54,5 @@ getCorMatrix <- function(binmat, squeeze = FALSE) {
     binmat.cor <- fisherZ(binmat.cor)
   }
   message("Done...")
-#Helper function to squeeze binary matrix for transformation
-.squeezeit <- function(cormat) {
-  cormat * 0.999999
+  return(list(gr.cor = gr.cor, binmat.cor = binmat.cor))
 }
