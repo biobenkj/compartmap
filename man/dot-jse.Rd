@@ -18,3 +18,4 @@
 \description{
 James-Stein estimator
 }
+\keyword{internal}

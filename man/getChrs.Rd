@@ -18,5 +18,4 @@ Get the chromosomes from an object
 \examples{
 data("k562_scrna_chr14", package = "compartmap")
 getChrs(k562_scrna_chr14)
-
 }

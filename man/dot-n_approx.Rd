@@ -22,3 +22,4 @@ n_tilde in AC
 \details{
 \eqn{\tilde{n} = n_{\text{successes}} + n_{\text{failures}} + z^2_\alpha}
 }
+\keyword{internal}

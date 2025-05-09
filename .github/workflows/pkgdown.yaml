@@ -1,0 +1,39 @@
+name: pkgdown
+
+on:
+  push:
+    branches: [main, master, dev]
+
+env:
+  PKGDOWN_DEV_MODE: ${{ github.ref == 'refs/heads/dev' && 'devel' || 'default' }}
+
+jobs:
+  pkgdown:
+
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup
+        uses: eddelbuettel/github-actions/r-ci@master
+
+      - name: Dependencies
+        run: |
+          ./run.sh install_aptget pandoc
+          ./run.sh install_all
+          ./run.sh install_r_binary pkgdown
+
+      - name: Build site
+        run: pkgdown::build_site_github_pages(new_process = FALSE, install = TRUE)
+        shell: Rscript {0}
+
+      - name: Deploy to GitHub pages 🚀
+        if: github.event_name != 'pull_request'
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        with:
+          clean: false
+          branch: gh-pages
+          folder: docs
+

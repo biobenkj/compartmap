@@ -138,6 +138,7 @@ atac_fun <- function(x) {
 #' @param targets Samples to shrink towards
 #'
 #' \eqn{\hat{\theta}_{JS+} = \left(1 - \frac{(m - 3)\sigma^2}{||\textbf{y} - \nu||^2}\right)}
+#' @keywords internal
 .jse <- function(x, grand.mean = NULL, targets = NULL) {
   m <- length(x)
   yv.norm <- sum((x - grand.mean)^2)

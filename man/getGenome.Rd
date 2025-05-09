@@ -21,3 +21,4 @@ Get a GRanges object from bundled compartmap genomes
 hg19 <- getGenome(genome = "hg19")
 
 }
+\keyword{internal}

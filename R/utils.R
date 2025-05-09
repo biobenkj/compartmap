@@ -15,6 +15,7 @@ verifySE <- function(obj) {
   }
 }
 
+
 #' Throw error if assay does not contain coordinates
 #'
 #' @param obj Input object
@@ -137,7 +138,6 @@ fexpit <- function(x, sqz = 0.000001) {
 #' @examples
 #' data("k562_scrna_chr14", package = "compartmap")
 #' getChrs(k562_scrna_chr14)
-#'
 #' @export
 getChrs <- function(obj) {
   # get the chromosomes present in the object
@@ -153,6 +153,7 @@ getChrs <- function(obj) {
 #' @param obj Input list object with elements 'pc' and 'gr'
 #' @return A filtered list object
 #' @export
+#' @keywords internal
 removeEmptyBoots <- function(obj) {
   Filter(Negate(anyNA), obj)
 }
@@ -168,6 +169,7 @@ removeEmptyBoots <- function(obj) {
 #' hg19 <- getGenome(genome = "hg19")
 #'
 #' @export
+#' @keywords internal
 getGenome <- function(
   genome = c("hg19", "hg38", "mm9", "mm10"),
   type = "genome"

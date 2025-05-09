@@ -8,12 +8,12 @@ Description: Compartmap performs direct inference of higher-order chromatin
     achieve a similar "plaid-like" patterning as observed in Hi-C and scHi-C data.
 Version: 1.13.05
 Date: 2022-01-13
-Authors@R: c(person("Benjamin", "Johnson", role = c("aut", "cre"), email = "ben.johnson@vai.org",),
-             person("James", "Eapen", role = c("aut"), email = "james.eapen@vai.org"),
-             person("Tim", "Triche", role = c("aut")),
-             person("Hui", "Shen", role = c("aut")),
-             person("Kasper", "Hansen", role = c("aut")),
-             person("Jean-Philippe", "Fortin", role = c("aut")))
+Authors@R: c(person("Benjamin", "Johnson", role = c("aut", "cre"), email = "ben.johnson@vai.org"),
+             person("James", "Eapen", role = c("aut"), email = "james.eapen@vai.org", comment = c(ORCID = "0000-0001-8592-4744")),
+             person("Kasper", "Hansen", role = c("ctb")),
+             person("Jean-Philippe", "Fortin", role = c("ctb")),
+             person("Tim", "Triche", role = c("aut", "fnd")),
+             person("Hui", "Shen", email = "hui.shen@vai.org", role = c("fnd"), comment = c(ORCID = "0000-0001-9767-4084")))
 URL: https://github.com/huishenlab/compartmap
 BugReports: https://github.com/huishenlab/compartmap/issues
 Encoding: UTF-8

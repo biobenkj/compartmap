@@ -1,0 +1,108 @@
+url: https://biobenkj.github.io/compartmap/
+
+template:
+  bootstrap: 5
+  light-switch: true
+  math-rendering: mathjax
+
+authors:
+  footer:
+    roles: [aut, cre]
+
+development:
+  mode: unreleased
+
+navbar:
+  structure:
+    right: [search, github, lightswitch]
+
+sidebar:
+  structure: [links, license, community, citation, authors, dev]
+
+reference:
+- title: Compartment mapping
+  contents:
+    - scCompartments
+    - getArrayABsignal
+- title: Compartment helper
+  contents:
+    - filterCompartments
+    - fixCompartments
+    - extractOpenClosed
+    - getABSignal
+    - getATACABsignal
+    - getRNAABsignal
+- title: Correlation matrix
+  contents:
+    - estRMT
+    - getCorMatrix
+    - getDenoisedCorMatrix
+- title: Data transformation
+  contents:
+    - transformTFIDF
+    - hdf5TFIDF
+- title: Bootstrapping
+  contents:
+    - precomputeBootstrapMeans
+    - bootstrapCompartments
+    - summarizeBootstraps
+- title: Data import
+  contents:
+    - importBigWig
+    - filterOpenSea
+    - getOpenSeas
+    - preprocessArrays
+- title: Bioconductor helpers
+  contents:
+    - condenseRE
+    - condenseSE
+    - getAssayNames
+    - getSeqLengths
+    - getChrs
+- title: Stat functions
+  contents:
+    - agrestiCoullCI
+    - fexpit
+    - fisherZ
+    - flogit
+    - getBinMatrix
+    - getDomainInflections
+    - getGlobalMeans
+    - getMatrixBlocks
+    - getSVD
+    - getShrinkageTargets
+    - ifisherZ
+    - imputeKNN
+    - meanSmoother
+    - precomputeBootstrapMeans
+    - preprocessArrays
+    - removeEmptyBoots
+    - scCompartments
+    - shrinkBins
+    - sparseToDenseMatrix
+- title: Plotting
+  contents:
+    - starts_with("plot")
+- title: Helpers
+  contents:
+    - cleanAssayCols
+    - cleanAssayRows
+    - .n_approx
+    - .p_approx
+    - .z
+- title: Datasets
+  contents:
+    - hg19.gr
+    - hg38.gr
+    - mm10.gr
+    - mm9.gr
+    - openSeas.hg19
+    - openSeas.hg38
+    - openSeas.mm10
+    - openSeas.mm9
+    - array.data.chr14
+    - k562_scatac_chr14
+    - k562_scrna_chr14
+    - k562_scrna_se_chr14
+    - ss3_umi_sce
+

@@ -21,7 +21,7 @@ importBigWig(
 \item{genome}{Which genome is the bigwig from ("hg19", "hg38", "mm9", "mm10")}
 }
 \value{
-SummerizedExperiment object with rowRanges corresponding to summarized features
+SummarizedExperiment object with rowRanges corresponding to summarized features
 }
 \description{
 Import and optionally summarize a bigwig at a given resolution
