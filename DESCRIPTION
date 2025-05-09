@@ -14,8 +14,8 @@ Authors@R: c(person("Benjamin", "Johnson", role = c("aut", "cre"), email = "ben.
              person("Hui", "Shen", role = c("aut")),
              person("Kasper", "Hansen", role = c("aut")),
              person("Jean-Philippe", "Fortin", role = c("aut")))
-URL: https://github.com/biobenkj/compartmap
-BugReports: https://github.com/biobenkj/compartmap/issues
+URL: https://github.com/huishenlab/compartmap
+BugReports: https://github.com/huishenlab/compartmap/issues
 Encoding: UTF-8
 License: GPL-3 + file LICENSE
 biocViews: Genetics, Epigenetics, ATACSeq, RNASeq, SingleCell
