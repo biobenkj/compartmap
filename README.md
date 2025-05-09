@@ -4,7 +4,7 @@
 ## Compartmap: Direct inference of higher-order chromatin structure in individual cells from scRNA-seq and scATAC-seq
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/biobenkj/compartmap/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/biobenkj/compartmap/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/huishenlab/compartmap/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/huishenlab/compartmap/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 ### How to install the R package
@@ -16,7 +16,7 @@ BiocManager::install("compartmap")
 
 # Development
 install.packages("BiocManager")
-BiocManager::install("biobenkj/compartmap")
+BiocManager::install("huishenlab/compartmap")
 ```
 
 Compartmap extends methods proposed by Fortin and Hansen 2015, Genome Biology (https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0741-y) to perform direct inference of higher-order chromatin in _single cells_ from scRNA-seq and scATAC-seq. Originally, Fortin and Hansen demonstrated that chromatin conformation could be inferred from (sc)ATAC-seq, bisulfite sequencing, DNase-seq and methylation arrays, similar to the results provided by HiC at the group level. Thus, in addition to the base information provided by the aforementioned assays, chromatin state could also be inferred.
