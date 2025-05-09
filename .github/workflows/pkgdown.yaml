@@ -3,6 +3,14 @@ name: pkgdown
 on:
   push:
     branches: [main, master, dev]
+    paths-ignore:
+      - '**/README.md'
+      - '**.nix'
+      - 'flake.lock'
+      - '.gitignore'
+      - 'codecov.yml'
+      - 'Makefile'
+      - 'tests/**'
 
 env:
   PKGDOWN_DEV_MODE: ${{ github.ref == 'refs/heads/dev' && 'devel' || 'default' }}
