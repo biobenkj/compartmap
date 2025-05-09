@@ -24,7 +24,7 @@ library(GenomicRanges)
 # Generate random genomic intervals of 1-1000 bp on chr1-22
 # Modified from https://www.biostars.org/p/225520/
 random_genomic_int <- data.frame(chr = rep("chr14", 100))
-random_genomic_int$start <- apply(random_genomic_int, 1, function(x) { 
+random_genomic_int$start <- apply(random_genomic_int, 1, function(x) {
   round(runif(1, 0, getSeqLengths(getGenome("hg19"), chr = x)[[1]]), 0)
 })
 random_genomic_int$end <- random_genomic_int$start + runif(1, 1, 1000)
