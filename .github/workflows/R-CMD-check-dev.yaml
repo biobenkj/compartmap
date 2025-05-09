@@ -11,7 +11,7 @@ on:
       - 'LICENSE'
       - 'NEWS.md'
   push:
-    branches: [master, dev]
+    branches: [dev]
     paths-ignore:
       - '**/README.md'
       - '**.nix'
