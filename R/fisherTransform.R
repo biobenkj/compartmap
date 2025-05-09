@@ -27,6 +27,11 @@ fisherZ <- function(cormat) {
   atanh(cormat)
 }
 
+#Helper function to squeeze binary matrix for transformation
+.squeezeit <- function(cormat) {
+  cormat * 0.999999
+}
+
 #' @title Fisher's Z transformation
 #'
 #' @description
