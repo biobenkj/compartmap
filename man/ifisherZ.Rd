@@ -2,33 +2,32 @@
 % Please edit documentation in R/fisherTransform.R
 \name{ifisherZ}
 \alias{ifisherZ}
-\title{Fisher's Z transformation}
+\title{Inverse Fisher's Z transformation}
 \usage{
-ifisherZ(cormat)
+ifisherZ(zmat)
 }
 \arguments{
-\item{cormat}{vector of Fisher's Z transformed Pearson correlations or an eignevector}
+\item{zmat}{matrix of Fisher's Z transformed Pearson correlations or an
+eignevector}
 }
 \value{
-Back transformed Fisher's Z
+Back transformed Fisher's Z Pearson correlations
 }
 \description{
-\code{fisherZ} returns the inverse (squeezed) Fisher's Z transformed Pearson's r. This will fail if a matrix is used as input instead of a vector.
-}
-\details{
-This function returns the inverse (squeezed) Fisher's Z transformed Pearson's r
+\code{ifisherZ} returns the inverse (squeezed) Fisher's Z transformed
+Pearson's r.
 }
 \examples{
 
-#Generate a random binary (-1, 1) matrix
-mat <- matrix(sample(c(1,-1), 10000, replace = TRUE), ncol = 100)
+# Generate a random binary (-1, 1) matrix
+(mat <- matrix(sample(c(1,-1), 25, replace = TRUE), ncol = 5))
 
-#Correct matrix diag
+# Correct matrix diag
 diag(mat) <- 1
 
-#Transform
-mat.transform <- fisherZ(mat)
+# Transform
+(mat.transform <- fisherZ(mat))
 
 #Back transform
-mat.transform.inverse <- apply(mat.transform, 1, ifisherZ)
+ifisherZ(mat.transform)
 }
