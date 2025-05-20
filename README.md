@@ -1,4 +1,4 @@
-## <a href="https://biobenkj.github.io/compartmap/"><img src="man/figures/compartmap_logo.png" align="right" height="138" style="float:right; height:138px;"/></a>
+## <img src="man/figures/compartmap_logo.png" align="right" height="138" style="float:right; height:138px;"/>
 
 *Chromatin compartment inference from single-cell RNA- and ATAC-seq*
 
@@ -51,7 +51,7 @@ You can install the development version from Github by cloning the repo and
 running
 
 ```bash
-git clone https://github.com/biobenjk/compartmap
+git clone https://github.com/huishenlab/compartmap
 R CMD INSTALL compartmap
 ```
 
@@ -59,14 +59,14 @@ You can also use [`BiocManager`](https://bioconductor.github.io/BiocManager/),
 [`devtools`](https://devtools.r-lib.org/) or [`pak`](https://pak.r-lib.org/):
 
 ```r
-BiocManager::install("biobenjk/compartmap")
+BiocManager::install("huishenlab/compartmap")
 
-devtools::install_github("biobenjk/compartmap")
+devtools::install_github("huishenlab/compartmap")
 
-pak::pkg_install("biobenjk/compartmap")
+pak::pkg_install("huishenlab/compartmap")
 ```
 
 ### Usage
 
-A user guide is available on the [package website](https://biobenjk.github.io/compartmap).
+A user guide is available on the [package website](https://huishenlab.github.io/compartmap).
 Bug reports may be submitted through GitHub issues.
