@@ -2,3 +2,17 @@
 .direnv
 .envrc
 ^\.git
+
+^LICENSE\.md$
+
+^pkgdown$
+^_pkgdown\.yml$
+^docs$
+vignettes/figure
+
+^codecov\.yml$
+
+Makefile
+flake.*
+
+air.toml
