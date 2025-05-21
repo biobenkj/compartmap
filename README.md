@@ -1,4 +1,5 @@
-## <img src="man/figures/compartmap_logo.png" align="right" height="138" style="float:right; height:138px;"/>
+<br>
+<img src="man/figures/compartmap_logo.png" align="right" height="138" style="float:right; height:138px;"/>
 
 *Chromatin compartment inference from single-cell RNA- and ATAC-seq*
 
