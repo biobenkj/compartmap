@@ -13,8 +13,13 @@ rownames(mat) <- ranges
 colnames(mat) <- letters[1:4]
 
 test_that("granges <-> matrix", {
+  # setAs
   expect_equal(as(gr, "matrix"), mat)
   expect_equal(as(mat, "GRanges"), gr)
+
+  # setMethod
+  expect_equal(granges(mat), gr)
+  expect_equal(as.matrix(gr), mat)
 })
 
 test_that("granges <-> matrix methods", {
