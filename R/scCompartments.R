@@ -42,13 +42,12 @@ scCompartments <- function(
   group = FALSE,
   assay = c("atac", "rna")
 ) {
-
   verifySE(obj)
   verifyCoords(obj)
 
   # which assay are we working on
+  if (!all(assay %in% c("atac", "rna"))) stop("Supported assays are 'atac', and 'rna'.")
   assay <- tolower(match.arg(assay))
-  if (!assay %in% c("atac", "rna")) stop("Supported assays are 'atac', and 'rna'.")
   verifyAssayNames(obj, assay = assay)
 
   sc_compartments <- getATACABsignal(
