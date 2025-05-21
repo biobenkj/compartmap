@@ -72,11 +72,10 @@ test_that("extractOpenClosed", {
 
 # verifySE{{{
 test_that("verifySE", {
-  err <- "Input needs to be a SummarizedExperiment"
   expect_no_error(compartmap:::verifySE(se))
-  expect_error(compartmap:::verifySE(re), err)
-  expect_error(compartmap:::verifySE(gr), err)
-  expect_error(compartmap:::verifySE(df), err)
+  expect_error(compartmap:::verifySE(re), err.verifySE)
+  expect_error(compartmap:::verifySE(gr), err.verifySE)
+  expect_error(compartmap:::verifySE(df), err.verifySE)
 })
 # }}}
 
@@ -84,14 +83,9 @@ test_that("verifySE", {
 test_that("verifyCoords", {
   se.noranges <- SummarizedExperiment(rowRanges = GRanges())
   se.ranges <- SummarizedExperiment(rowRanges = gr)
-  err <- paste(
-    "The SummarizedExperiment you have provided has no coordinates.\n",
-    "Compartment extraction will fail.\n",
-    "Please provide rowRanges with genomic coordinates for the object."
-  )
   expect_error(
     compartmap:::verifyCoords(se.noranges),
-    err
+    err.verifyCoords
   )
   expect_no_error(compartmap:::verifyCoords(se.ranges))
 })
@@ -118,11 +112,11 @@ test_that("verifyAssayNames", {
   )
   expect_error(
     compartmap:::verifyAssayNames(se.rna, "array"),
-    "The 'assays' slot should contain 'Beta' for array data"
+    err.verifyAssayNames.beta
   )
   expect_error(
     compartmap:::verifyAssayNames(se.array, "rna"),
-    "The 'assays' slot should contain 'counts' for rna data"
+    err.verifyAssayNames.rna_counts
   )
   expect_no_error(
     compartmap:::verifyAssayNames(se.rna, "rna")
