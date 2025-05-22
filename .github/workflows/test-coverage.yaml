@@ -40,6 +40,7 @@ jobs:
           plugin: noop
           disable_search: true
           token: ${{ secrets.CODECOV_TOKEN }}
+          override_branch: ${{ github.ref == 'refs/heads/dev' && 'dev' || 'master' }}
 
       - name: Show testthat output
         if: always()
